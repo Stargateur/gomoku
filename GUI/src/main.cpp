@@ -5,11 +5,12 @@
 // Login   <zwertv_e@epitech.net>
 // 
 // Started on  Tue Oct 13 13:26:35 2015 Elliott
-// Last update Tue Oct 13 17:57:58 2015 Elliott
+// Last update Mon Oct 19 01:13:15 2015 Elliott
 //
 
 #include	<iostream>
 #include	<SDL2/SDL.h>
+#include	"GDisplay.hh"
 
 void		print_button(SDL_Surface *dest)
 {
@@ -54,9 +55,9 @@ int		create_win(void)
       return (1);
     }
 
-  render = SDL_CreateRenderer(win, -1, 0);
-  SDL_SetRenderDrawColor(render, 0, 0, 0, 1);
-  SDL_RenderClear(render);
+  //render = SDL_CreateRenderer(win, -1, 0);
+  //SDL_SetRenderDrawColor(render, 0, 0, 0, 1);
+  //SDL_RenderClear(render);
   print_button(SDL_GetWindowSurface(win));
   SDL_UpdateWindowSurface(win);
 
@@ -78,6 +79,13 @@ int		create_win(void)
 
 int		main(void)
 {
-  create_win();
+  GDisplay	gui;
+  bool	        end;
+
+  end = false;
+  gui.create_win("Salut", 300, 100, 12, 12);
+  gui.register_key(SDLK_ESCAPE, &end);
+  while (!end)
+    gui.update();
   return (0);
 }
