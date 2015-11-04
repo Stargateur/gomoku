@@ -5,7 +5,7 @@
 // Login   <zwertv_e@epitech.net>
 // 
 // Started on  Tue Oct 13 13:26:35 2015 Elliott
-// Last update Mon Oct 19 01:13:15 2015 Elliott
+// Last update Wed Nov  4 15:35:01 2015 Elliott
 //
 
 #include	<iostream>
@@ -77,15 +77,23 @@ int		create_win(void)
   return (0);
 }
 
+void		escape(void *user)
+{
+  bool		*run;
+
+  run = (bool *)(user);
+  (*run) = false;
+}
+
 int		main(void)
 {
   GDisplay	gui;
-  bool	        end;
+  bool	        run;
 
-  end = false;
+  run = true;
   gui.create_win("Salut", 300, 100, 12, 12);
-  gui.register_key(SDLK_ESCAPE, &end);
-  while (!end)
+  gui.register_key(SDLK_ESCAPE, &escape, &run);
+  while (run)
     gui.update();
   return (0);
 }

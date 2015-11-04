@@ -5,7 +5,7 @@
 // Login   <zwertv_e@epitech.net>
 // 
 // Started on  Wed Oct 14 17:45:26 2015 Elliott
-// Last update Mon Oct 19 01:08:05 2015 Elliott
+// Last update Wed Nov  4 15:32:09 2015 Elliott
 //
 
 #ifndef GDisplay_HH__
@@ -16,6 +16,14 @@
 
 class	GDisplay
 {
+public:
+  struct	s_reg_event
+  {
+    void	(*func)(void *);
+    void	*user;
+  };
+  typedef	s_reg_event	t_reg_event;
+
 private:
   SDL_Window	*win;
   SDL_Renderer	*renderer;
@@ -24,7 +32,7 @@ private:
   Uint32	grid_x;
   Uint32	grid_y;
 
-  std::map<SDL_Keycode , void *> bounded_keys;
+  std::map<SDL_Keycode , t_reg_event> bounded_keys;
   
 public:
   GDisplay(void);
@@ -36,7 +44,7 @@ public:
 
   bool		update(void);
 
-  bool		register_key(SDL_Keycode keycode, void *user);
+  bool		register_key(SDL_Keycode _keycode, void (*_func)(void *), void *_user);
 };
 
 #endif /* GDisplay_HH__ */

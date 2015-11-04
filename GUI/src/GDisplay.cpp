@@ -5,7 +5,7 @@
 // Login   <zwertv_e@epitech.net>
 // 
 // Started on  Wed Oct 14 17:34:02 2015 Elliott
-// Last update Mon Oct 19 01:13:18 2015 Elliott
+// Last update Wed Nov  4 15:32:01 2015 Elliott
 //
 
 #include	<stdexcept>
@@ -50,22 +50,26 @@ SDL_Window	*GDisplay::create_win(std::string _title, Uint32 _h, Uint32 _w, Uint3
 bool		GDisplay::update(void)
 {
   SDL_Event	event;
-  void		*user;
+  t_reg_event	ev;
 
   SDL_WaitEvent(&event);
   if (event.type != SDL_KEYDOWN)
     {
       if (this->bounded_keys.find(event.key.keysym.sym) != this->bounded_keys.end())
 	{
-	  user = this->bounded_keys[event.key.keysym.sym];
-	  *((bool *)user) = true;
+	  ev = this->bounded_keys[event.key.keysym.sym];
+	  (*ev.func)(ev.user);
 	}
     }
   return (false);
 }
 
-bool		GDisplay::register_key(SDL_Keycode keycode, void *user)
+bool		GDisplay::register_key(SDL_Keycode _keycode, void (*_func)(void *), void *_user)
 {
-  this->bounded_keys[keycode] = user;
+  t_reg_event	ev;
+
+  ev.func = _func;
+  ev.user = _user;
+  this->bounded_keys[_keycode] = ev;
   return (true);
 }
