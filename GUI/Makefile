@@ -5,7 +5,7 @@
 ## Login   <zwertv_e@epitech.net>
 ## 
 ## Started on  Tue Oct 13 11:25:44 2015 Elliott
-## Last update Tue Oct 13 11:58:06 2015 Elliott
+## Last update Wed Nov  4 20:35:39 2015 Elliott
 ##
 
 NAME		=	gui_client
@@ -18,7 +18,7 @@ DEBUG		?=	no
 
 LIB		=	-lSDL2
 
-INCLUDE		=	-I include/
+INCLUDE		=	-I include/ -I include/RenderObject/
 
 CXXFLAGS	+=	-Wall -Wextra
 CXXFLAGS	+=	-Wno-padded

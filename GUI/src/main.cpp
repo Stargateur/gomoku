@@ -5,7 +5,7 @@
 // Login   <zwertv_e@epitech.net>
 // 
 // Started on  Tue Oct 13 13:26:35 2015 Elliott
-// Last update Wed Nov  4 15:35:01 2015 Elliott
+// Last update Wed Nov  4 22:09:31 2015 Elliott
 //
 
 #include	<iostream>
@@ -89,11 +89,16 @@ int		main(void)
 {
   GDisplay	gui;
   bool	        run;
+  GROButton	btn(2, 2);
 
   run = true;
-  gui.create_win("Salut", 300, 100, 12, 12);
+  gui.create_win("Salut", 800, 640, 4, 2);
   gui.register_key(SDLK_ESCAPE, &escape, &run);
   while (run)
-    gui.update();
+    {
+      gui.resolve_events();
+      gui.draw(&btn);
+      SDL_Delay(10);
+    }
   return (0);
 }
