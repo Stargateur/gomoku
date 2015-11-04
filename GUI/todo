@@ -1,0 +1,10 @@
+Ajouter toutes les vérifs et les throw d'exceptions dans les classes présentes
+Finir l'implémentation des commandes de GDisplay (draw, etc..)
+Création des objets:
+	 - Bouton
+	 - Label
+	 - Formes géométriques (rectangle, triangle, ...)
+	 - Gestion des texture ?
+Création des différentes exceptions pour le display (NotEnoughMemory, PropertyError, ...)
+
+Des idées ?
