@@ -5,17 +5,18 @@
 // Login   <zwertv_e@epitech.net>
 // 
 // Started on  Wed Oct 14 17:34:02 2015 Elliott
-// Last update Wed Nov  4 22:08:33 2015 Elliott
+// Last update Wed Nov  4 22:12:20 2015 Elliott
 //
 
 #include	<stdexcept>
+#include	"GError.hh"
 #include	"GDisplay.hh"
 #include	<iostream>
 
 GDisplay::GDisplay() : win(NULL), renderer(NULL), surface(NULL), grid_col(12), grid_row(12)
 {
   if (SDL_Init(SDL_INIT_VIDEO) != 0)
-    throw new std::runtime_error("Failed init SDL");
+    throw GInitError("Failed init SDL", "GDisplayConstructor");
 }
 
 GDisplay::~GDisplay(void)
