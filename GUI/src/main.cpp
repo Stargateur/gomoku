@@ -5,11 +5,12 @@
 // Login   <zwertv_e@epitech.net>
 // 
 // Started on  Tue Oct 13 13:26:35 2015 Elliott
-// Last update Wed Nov  4 15:35:01 2015 Elliott
+// Last update Wed Nov  4 17:13:05 2015 Roussel Rodolphe
 //
 
 #include	<iostream>
 #include	<SDL2/SDL.h>
+#include	"GError.hh"
 #include	"GDisplay.hh"
 
 void		print_button(SDL_Surface *dest)
@@ -87,13 +88,20 @@ void		escape(void *user)
 
 int		main(void)
 {
-  GDisplay	gui;
-  bool	        run;
+  try
+    {
+      GDisplay	gui;
+      bool	run;
 
-  run = true;
-  gui.create_win("Salut", 300, 100, 12, 12);
-  gui.register_key(SDLK_ESCAPE, &escape, &run);
-  while (run)
-    gui.update();
+      run = true;
+      gui.create_win("Salut", 300, 100, 12, 12);
+      gui.register_key(SDLK_ESCAPE, &escape, &run);
+      while (run)
+	gui.update();
+    }
+  catch (const GError &e)
+    {
+      std::cerr << e.where() << " : " << e.what() << std::endl;
+    }
   return (0);
 }
