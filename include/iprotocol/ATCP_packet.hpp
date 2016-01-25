@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:57:06 2015 Antoine Plaskowski
-// Last update Sun Dec 27 18:02:15 2015 Antoine Plaskowski
+// Last update Mon Jan 25 18:39:54 2016 Antoine Plaskowski
 //
 
 #ifndef		ATCP_PACKET_HPP_
@@ -25,26 +25,7 @@ public:
     Disconnect,
     Ping,
     Pong,
-    List_meta_games,
-    Meta_games,
-    Create_game,
-    Join_game,
-    Message,
-    List_meta_params,
-    Meta_params,
-    Change_param,
-    List_meta_sprites,
-    Meta_sprites,
-    Take_sprite,
-    Give_sprite,
-    List_meta_sounds,
-    Meta_sounds,
-    Take_sound,
-    Give_sound,
-    Ready,
-    Start,
-    End,
-    Leave
+
   };
   ATCP_packet(void);
   virtual ~ATCP_packet(void);

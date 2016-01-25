@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 04:04:29 2015 Antoine Plaskowski
-// Last update Sun Dec 27 18:03:04 2015 Antoine Plaskowski
+// Last update Mon Jan 25 18:40:04 2016 Antoine Plaskowski
 //
 
 #include	"ATCP_packet.hpp"
@@ -53,46 +53,6 @@ char const	*ATCP_packet::get_str_opcode(ATCP_packet::Opcode opcode)
       return ("Ping");
     case ATCP_packet::Pong:
       return ("Pong");
-    case ATCP_packet::List_meta_games:
-      return ("List_meta_games");
-    case ATCP_packet::Meta_games:
-      return ("Meta_games");
-    case ATCP_packet::Create_game:
-      return ("Create_game");
-    case ATCP_packet::Join_game:
-      return ("Join_game");
-    case ATCP_packet::Message:
-      return ("Message");
-    case ATCP_packet::List_meta_params:
-      return ("List_meta_params");
-    case ATCP_packet::Meta_params:
-      return ("Meta_params");
-    case ATCP_packet::Change_param:
-      return ("Change_param");
-    case ATCP_packet::List_meta_sprites:
-      return ("List_meta_sprites");
-    case ATCP_packet::Meta_sprites:
-      return ("Meta_sprites");
-    case ATCP_packet::Take_sprite:
-      return ("Take_sprite");
-    case ATCP_packet::Give_sprite:
-      return ("Give_sprite");
-    case ATCP_packet::List_meta_sounds:
-      return ("List_meta_sounds");
-    case ATCP_packet::Meta_sounds:
-      return ("Meta_sounds");
-    case ATCP_packet::Take_sound:
-      return ("Take_sound");
-    case ATCP_packet::Give_sound:
-      return ("Give_sound");
-    case ATCP_packet::Ready:
-      return ("Ready");
-    case ATCP_packet::Start:
-      return ("Start");
-    case ATCP_packet::End:
-      return ("End");
-    case ATCP_packet::Leave:
-      return ("Leave");
     }
 }
 
