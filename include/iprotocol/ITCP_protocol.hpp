@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Mon Jan 25 18:47:45 2016 Antoine Plaskowski
+// Last update Mon Jan 25 21:12:52 2016 Antoine Plaskowski
 //
 
 #ifndef		ITCP_PROTOCOL_HPP_
@@ -42,6 +42,10 @@ public:
   };
 public:
   virtual ~ITCP_protocol(void);
+  virtual void	set_callback(Callback *callback) = 0;
+  virtual void	set_data(T *data) = 0;
+  virtual T	*get_data(void) = 0;
+  virtual T const	*get_data(void) const = 0;
   virtual bool	want_send(void) const = 0;
   virtual bool	want_recv(void) const = 0;
   virtual void	send(ITCP_client const &socket) = 0;
@@ -52,5 +56,7 @@ public:
   virtual void	send_ping(void) = 0;
   virtual void	send_pong(void) = 0;
 };
+
+# include "../../source/iprotocol/ITCP_protocol.cpp"
 
 #endif		/* !ITCP_PROTOCOL_HPP_ */

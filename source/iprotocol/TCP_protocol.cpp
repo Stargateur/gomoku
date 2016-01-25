@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:40:34 2015 Antoine Plaskowski
-// Last update Mon Jan 25 18:56:59 2016 Antoine Plaskowski
+// Last update Mon Jan 25 21:05:32 2016 Antoine Plaskowski
 //
 
 #include	<algorithm>
@@ -13,8 +13,9 @@
 #include	"TCP_protocol.hpp"
 
 template<typename T>
-TCP_protocol<T>::TCP_protocol(typename ITCP_protocol<T>::Callback &callback) :
-  m_callback(callback)
+TCP_protocol<T>::TCP_protocol(typename ITCP_protocol<T>::Callback *callback, T *data) :
+  m_callback(callback),
+  m_data(data)
 {
 }
 
@@ -23,10 +24,29 @@ TCP_protocol<T>::~TCP_protocol(void)
 {
 }
 
-// void	TCP_protocol<T>::set_callback(ITCP_protocol<T>::Callback &callback)
-// {
-//   m_callback = &callback;
-// }
+template<typename T>
+void	TCP_protocol<T>::set_callback(typename ITCP_protocol<T>::Callback *callback)
+{
+  m_callback = callback;
+}
+
+template<typename T>
+T	*TCP_protocol<T>::get_data(void)
+{
+  return (m_data);
+}
+
+template<typename T>
+T const	*TCP_protocol<T>::get_data(void) const
+{
+  return (m_data);
+}
+
+template<typename T>
+void	TCP_protocol<T>::set_data(T *data)
+{
+  m_data = data;
+}
 
 template<typename T>
 void	TCP_protocol<T>::set_to_send(TCP_packet_send *to_send, ATCP_packet::Opcode opcode)
@@ -110,7 +130,7 @@ void	TCP_protocol<T>::recv_result(void)
 {
   typename ITCP_protocol<T>::Error	error;
   m_to_recv.get(error);
-  m_callback.result(*this, error);
+  m_callback->result(*this, error);
 }
 
 template<typename T>
@@ -135,7 +155,7 @@ void	TCP_protocol<T>::recv_connect(void)
   m_to_recv.get(password);
   if (version != 1) // chiant !
     throw std::exception();
-  m_callback.connect(*this, login, password);
+  m_callback->connect(*this, login, password);
 }
 
 template<typename T>
@@ -148,7 +168,7 @@ void	TCP_protocol<T>::send_disconnect(void)
 template<typename T>
 void	TCP_protocol<T>::recv_disconnect(void)
 {
-  m_callback.disconnect(*this);
+  m_callback->disconnect(*this);
 }
 
 template<typename T>
@@ -161,7 +181,7 @@ void	TCP_protocol<T>::send_ping(void)
 template<typename T>
 void	TCP_protocol<T>::recv_ping(void)
 {
-  m_callback.ping(*this);
+  m_callback->ping(*this);
 }
 
 template<typename T>
@@ -174,5 +194,5 @@ void	TCP_protocol<T>::send_pong(void)
 template<typename T>
 void	TCP_protocol<T>::recv_pong(void)
 {
-  m_callback.pong(*this);
+  m_callback->pong(*this);
 }

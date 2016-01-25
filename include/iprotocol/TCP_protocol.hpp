@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Mon Jan 25 18:56:47 2016 Antoine Plaskowski
+// Last update Mon Jan 25 21:09:44 2016 Antoine Plaskowski
 //
 
 #ifndef		TCP_PROTOCOL_HPP_
@@ -21,11 +21,14 @@ template<typename T>
 class	TCP_protocol : public ITCP_protocol<T>
 {
 public:
-  TCP_protocol(typename ITCP_protocol<T>::Callback &callback);
+  TCP_protocol(typename ITCP_protocol<T>::Callback *callback, T *data);
   ~TCP_protocol(void);
+  void	set_callback(typename ITCP_protocol<T>::Callback *callback);
+  T	*get_data(void);
+  T const	*get_data(void) const;
+  void	set_data(T *data);
 private:
   void	set_to_send(TCP_packet_send *to_send, ATCP_packet::Opcode opcode);
-  //  void	set_callback(ITCP_protocol::Callback &callback);
 public:
   bool	want_send(void) const;
   bool	want_recv(void) const;
@@ -57,9 +60,12 @@ private:
   void	recv_ping(void);
   void	recv_pong(void);
 private:
-  typename ITCP_protocol<T>::Callback	&m_callback;
+  typename ITCP_protocol<T>::Callback	*m_callback;
+  T	*m_data;
   TCP_packet_recv	m_to_recv;
   std::list<TCP_packet_send *>	m_to_send;
 };
+
+#include	"../../source/iprotocol/TCP_protocol.cpp"
 
 #endif		/* !TCP_PROTOCOL_HPP_ */
