@@ -1,0 +1,11 @@
+a.out
+*.o
+*~
+*.so
+\#*#
+.#*
+gomuku_client
+gomuku_server
+*.dpd
+*.autosave
+gui_client
