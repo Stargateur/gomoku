@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ## 
 ## Started on  Mon Jan 25 18:27:08 2016 Antoine Plaskowski
-## Last update Mon Jan 25 21:10:26 2016 Antoine Plaskowski
+## Last update Tue Jan 26 00:42:03 2016 Antoine Plaskowski
 ##
 
 DIR		=	source
@@ -33,8 +33,6 @@ SRC		+=	 $(DIR_ISOCKET)/TCP_client.cpp
 SRC		+=	 $(DIR_ISOCKET)/ITCP_server.cpp
 SRC		+=	 $(DIR_ISOCKET)/TCP_server.cpp
 
-#SRC		+=	 $(DIR_IPROTOCOL)/ITCP_protocol.cpp
-#SRC		+=	 $(DIR_IPROTOCOL)/TCP_protocol.cpp
 SRC		+=	 $(DIR_IPROTOCOL)/ATCP_packet.cpp
 SRC		+=	 $(DIR_IPROTOCOL)/TCP_packet_recv.cpp
 SRC		+=	 $(DIR_IPROTOCOL)/TCP_packet_send.cpp

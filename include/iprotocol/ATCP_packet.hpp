@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:57:06 2015 Antoine Plaskowski
-// Last update Mon Jan 25 18:39:54 2016 Antoine Plaskowski
+// Last update Tue Jan 26 00:29:38 2016 Antoine Plaskowski
 //
 
 #ifndef		ATCP_PACKET_HPP_
@@ -21,11 +21,20 @@ public:
   enum  Opcode : uint8_t
   {
     Result = 0,
-    Connect,
-    Disconnect,
-    Ping,
-    Pong,
-
+      Connect,
+      Disconnect,
+      Ping,
+      Pong,
+      Create_game,
+      Join_game,
+      Leave_game,
+      Game_create,
+      Game_delete,
+      Player_joined,
+      Message,
+      Start_game,
+      Ready_game,
+      Result_game,
   };
   ATCP_packet(void);
   virtual ~ATCP_packet(void);

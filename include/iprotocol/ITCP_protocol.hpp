@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Mon Jan 25 22:41:36 2016 Antoine Plaskowski
+// Last update Tue Jan 26 07:06:23 2016 Antoine Plaskowski
 //
 
 #ifndef		ITCP_PROTOCOL_HPP_
@@ -23,12 +23,22 @@ template<typename T>
 class	ITCP_protocol
 {
 public:
-  enum  Error : uint8_t
+  enum	Error : uint8_t
   {
     NONE = 0,
       IGNORED,
       UNKNOW,
       WRONGLOGIN
+  };
+  struct	Game
+  {
+    std::string	*name;
+    std::string	*owner;
+  };
+  struct	Param
+  {
+    std::string	*name;
+    std::string	*value;
   };
   class	Callback
   {
@@ -41,6 +51,7 @@ public:
     virtual void	disconnect(ITCP_protocol &itcp_protocol) = 0;
     virtual void	ping(ITCP_protocol &itcp_protocol) = 0;
     virtual void	pong(ITCP_protocol &itcp_protocol) = 0;
+    virtual void	create_game(ITCP_protocol &itcp_protocol, Game const &game) = 0;
   };
 public:
   virtual ~ITCP_protocol(void)
@@ -59,6 +70,7 @@ public:
   virtual void	send_disconnect(void) = 0;
   virtual void	send_ping(void) = 0;
   virtual void	send_pong(void) = 0;
+  virtual void	send_create_game(Game const &game) = 0;
 };
 
 #endif		/* !ITCP_PROTOCOL_HPP_ */

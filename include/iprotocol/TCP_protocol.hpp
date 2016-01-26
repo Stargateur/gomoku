@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Mon Jan 25 22:56:14 2016 Antoine Plaskowski
+// Last update Tue Jan 26 07:15:21 2016 Antoine Plaskowski
 //
 
 #ifndef		TCP_PROTOCOL_HPP_
@@ -59,13 +59,15 @@ public:
   }
 
 private:
-  void	set_to_send(TCP_packet_send *to_send, ATCP_packet::Opcode opcode)
+  TCP_packet_send	&get_to_send(ATCP_packet::Opcode opcode)
   {
+    TCP_packet_send	*to_send = new TCP_packet_send();
     to_send->set_opcode(opcode);
 #ifdef	DEBUG
-    std::cerr << "je prépare un packet " << to_send->get_opcode() << to_send << std::endl;
+    std::cerr << "je prépare un packet " << to_send->get_opcode() << " " << to_send << std::endl;
 #endif	/* !DEBUG */
     m_to_send.push_back(to_send);
+    return (*to_send);
   }
 
 public:
@@ -122,6 +124,26 @@ public:
       case ATCP_packet::Pong:
 	recv_pong();
 	return;
+      case ATCP_packet::Create_game:
+	return;
+      case ATCP_packet::Join_game:
+	return;
+      case ATCP_packet::Leave_game:
+	return;
+      case ATCP_packet::Game_create:
+	return;
+      case ATCP_packet::Game_delete:
+	return;
+      case ATCP_packet::Player_joined:
+	return;
+      case ATCP_packet::Message:
+	return;
+      case ATCP_packet::Start_game:
+	return;
+      case ATCP_packet::Ready_game:
+	return;
+      case ATCP_packet::Result_game:
+	return;
       }
     throw std::exception();
   }
@@ -129,9 +151,8 @@ public:
 public:
   void	send_result(typename ITCP_protocol<T>::Error error)
   {
-    TCP_packet_send	*to_send = new TCP_packet_send();
-    to_send->put(error);
-    set_to_send(to_send, ATCP_packet::Result);
+    TCP_packet_send	&to_send = get_to_send(ATCP_packet::Result);;
+    to_send.put(error);    
   }
 
 private:
@@ -145,11 +166,10 @@ private:
 public:
   void	send_connect(std::string const &login, std::string const &password)
   {
-    TCP_packet_send	*to_send = new TCP_packet_send();
-    to_send->put<uint8_t>(1);
-    to_send->put(login);
-    to_send->put(password);
-    set_to_send(to_send, ATCP_packet::Connect);
+    TCP_packet_send	&to_send = get_to_send(ATCP_packet::Connect);
+    to_send.put<uint8_t>(1);
+    to_send.put(login);
+    to_send.put(password);
   }
 
 private:
@@ -170,8 +190,7 @@ private:
 public:
   void	send_disconnect(void)
   {
-    TCP_packet_send	*to_send = new TCP_packet_send();
-    set_to_send(to_send, ATCP_packet::Disconnect);
+    get_to_send(ATCP_packet::Disconnect);
   }
 
 private:
@@ -183,8 +202,7 @@ private:
 public:
   void	send_ping(void)
   {
-    TCP_packet_send	*to_send = new TCP_packet_send();
-    set_to_send(to_send, ATCP_packet::Ping);
+    get_to_send(ATCP_packet::Ping);
   }
 
 private:
@@ -196,8 +214,7 @@ private:
 public:
   void	send_pong(void)
   {
-    TCP_packet_send	*to_send = new TCP_packet_send();
-    set_to_send(to_send, ATCP_packet::Pong);
+    get_to_send(ATCP_packet::Pong);
   }
 
 private:
@@ -206,20 +223,47 @@ private:
     m_callback->pong(*this);
   }
 
+public:
+  void	send_create_game(typename ITCP_protocol<T>::Game const &game)
+  {
+    set_rec(get_to_send(ATCP_packet::Create_game), *game.name, *game.owner);
+  }
+
+private:
+  void	recv_create_game(void)
+  {
+    typename ITCP_protocol<T>::Game	game;
+    game.name = new std::string();
+    game.owner = new std::string();
+    set_rec(m_to_recv, *game.name, *game.owner);
+  }
+
 private:
   template<typename... Ts>
-  void	test(TCP_packet_send *to_send, ATCP_packet::Opcode opcode, Ts... args)
+  static void	set_rec(TCP_packet_send &)
   {
-    if (sizeof...(args) > 0)
-      test(to_send, opcode, args...);
-    else
-      set_to_send(to_send, opcode);
   }
-  template<typename Toto, typename... Ts>
-  void	test(TCP_packet_send *to_send, ATCP_packet::Opcode opcode, Toto first, Ts... args)
+
+private:
+  template<typename Arg, typename... Args>
+  static void	set_rec(TCP_packet_send &to_send, Arg first, Args... args)
   {
-    to_send->put(first);
-    test(to_send, opcode, args...);
+    to_send.put(first);
+    set_rec(to_send, args...);
+  }
+
+private:
+  template<typename... Args>
+  static void	get_rec(TCP_packet_recv &)
+  {
+  }
+
+private:
+  template<typename Arg, typename... Args>
+  static void	get_rec(TCP_packet_recv &to_recv, Arg first, Args... args)
+  {
+    to_recv.get(first);
+    get_rec(to_recv, args...);
   }
 
 private:
