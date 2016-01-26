@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Tue Jan 26 13:57:50 2016 Antoine Plaskowski
+// Last update Tue Jan 26 14:04:05 2016 Antoine Plaskowski
 //
 
 #ifndef		ITCP_PROTOCOL_HPP_
@@ -73,7 +73,7 @@ public:
     {
     }
     virtual void	result(ITCP_protocol &itcp_protocol, Error error) = 0;
-    virtual void	connect(ITCP_protocol &itcp_protocol, std::string const *login, std::string const *password) = 0;
+    virtual void	connect(ITCP_protocol &itcp_protocol, std::string *login, std::string *password) = 0;
     virtual void	disconnect(ITCP_protocol &itcp_protocol) = 0;
     virtual void	ping(ITCP_protocol &itcp_protocol) = 0;
     virtual void	pong(ITCP_protocol &itcp_protocol) = 0;
