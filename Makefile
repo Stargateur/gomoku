@@ -5,12 +5,12 @@
 ## Login   <plasko_a@epitech.eu>
 ## 
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Mon Jan 25 21:04:14 2016 Antoine Plaskowski
+## Last update Tue Jan 26 13:40:39 2016 Antoine Plaskowski
 ##
 
-CLIENT		=	gomuku_client
+CLIENT		=	gomoku_client
 
-SERVER		=	gomuku_server
+SERVER		=	gomoku_server
 
 CXX		?=	g++
 

@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Tue Jan 26 13:16:33 2016 Antoine Plaskowski
+// Last update Tue Jan 26 13:57:50 2016 Antoine Plaskowski
 //
 
 #ifndef		ITCP_PROTOCOL_HPP_
@@ -114,14 +114,19 @@ public:
   virtual void	send_create_game(Game const &game) = 0;
   virtual void	send_join_game(Game const &game) = 0;
   virtual void	send_leave_game(void) = 0;
+  virtual void	send_put_stone_game(Game_stone const &stone) = 0;
+  virtual void	send_change_param_game(Game_param const &param) = 0;
+  virtual void	send_list_param_game(std::iterator<std::input_iterator_tag, Game_param *> const &begin, std::iterator<std::input_iterator_tag, Game_param *> const &end) = 0;
   virtual void	send_game_created(Game const &game) = 0;
   virtual void	send_game_player_joined(std::string const &name) = 0;
   virtual void	send_game_player_left(std::string const &name) = 0;
+  virtual void	send_game_param_changed(Game_param const &param) = 0;
+  virtual void	send_game_stone_put(Game_stone const &stone) = 0;
   virtual void	send_game_deleted(Game const &game) = 0;
   virtual void	send_start_game(void) = 0;
   virtual void	send_ready_game(bool ready) = 0;
   virtual void	send_result_game(Game_result const &result) = 0;
-  virtual void	send_message(std::string const &name, std::string const &message) = 0;
+  virtual void	send_message(Message const &message) = 0;
 };
 
 #endif		/* !ITCP_PROTOCOL_HPP_ */
