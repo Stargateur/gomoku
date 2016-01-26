@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Tue Jan 26 07:15:21 2016 Antoine Plaskowski
+// Last update Tue Jan 26 07:58:50 2016 Antoine Plaskowski
 //
 
 #ifndef		TCP_PROTOCOL_HPP_
@@ -89,11 +89,22 @@ public:
       throw std::logic_error("il n'y a rien a envoyé");
     TCP_packet_send	*to_send = m_to_send.front();
 #ifdef	DEBUG
-    std::cerr << "j'envoie sur une socket client tcp " << to_send->get_opcode() << to_send << std::endl;
+    std::cerr << "j'envoie sur une socket client tcp " << to_send->get_opcode() << " " << to_send << std::endl;
 #endif	/* !DEBUG */    
     m_to_send.pop_front();
-    to_send->send(socket);
-    delete to_send;
+    if (to_send->send(socket))
+      {
+#ifdef	DEBUG
+	std::cerr << "Success en une fois" << std::endl;
+#endif	/* !DEBUG */    
+	delete to_send;
+      }
+    else
+      {
+#ifdef	DEBUG
+	std::cerr << "Fail en une fois" << std::endl;
+#endif	/* !DEBUG */    
+      }
   }
 
 public:
@@ -125,6 +136,7 @@ public:
 	recv_pong();
 	return;
       case ATCP_packet::Create_game:
+	recv_create_game();
 	return;
       case ATCP_packet::Join_game:
 	return;
@@ -235,7 +247,8 @@ private:
     typename ITCP_protocol<T>::Game	game;
     game.name = new std::string();
     game.owner = new std::string();
-    set_rec(m_to_recv, *game.name, *game.owner);
+    get_rec(m_to_recv, *game.name, *game.owner);
+    m_callback->create_game(*this, game);
   }
 
 private:
@@ -246,7 +259,7 @@ private:
 
 private:
   template<typename Arg, typename... Args>
-  static void	set_rec(TCP_packet_send &to_send, Arg first, Args... args)
+  static void	set_rec(TCP_packet_send &to_send, Arg &first, Args &... args)
   {
     to_send.put(first);
     set_rec(to_send, args...);
@@ -260,7 +273,7 @@ private:
 
 private:
   template<typename Arg, typename... Args>
-  static void	get_rec(TCP_packet_recv &to_recv, Arg first, Args... args)
+  static void	get_rec(TCP_packet_recv &to_recv, Arg &first, Args &... args)
   {
     to_recv.get(first);
     get_rec(to_recv, args...);
