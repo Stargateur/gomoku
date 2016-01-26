@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:57:06 2015 Antoine Plaskowski
-// Last update Tue Jan 26 00:29:38 2016 Antoine Plaskowski
+// Last update Tue Jan 26 13:04:02 2016 Antoine Plaskowski
 //
 
 #ifndef		ATCP_PACKET_HPP_
@@ -28,13 +28,19 @@ public:
       Create_game,
       Join_game,
       Leave_game,
-      Game_create,
-      Game_delete,
-      Player_joined,
-      Message,
+      Put_stone_game,
+      Change_param_game,
+      List_param_game,
+      Game_created,
+      Game_player_joined,
+      Game_player_left,
+      Game_param_changed,
+      Game_stone_put,
+      Game_deleted,
       Start_game,
       Ready_game,
       Result_game,
+      Message,
   };
   ATCP_packet(void);
   virtual ~ATCP_packet(void);

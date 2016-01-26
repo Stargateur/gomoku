@@ -5,7 +5,7 @@
 // Login   <plasko_a@epitech.eu>
 // 
 // Started on  Sun Dec 27 01:06:19 2015 Antoine Plaskowski
-// Last update Sun Dec 27 20:25:12 2015 Antoine Plaskowski
+// Last update Tue Jan 26 10:55:46 2016 Antoine Plaskowski
 //
 
 #ifndef TIME_HPP_
@@ -21,7 +21,7 @@ public:
   Time(intmax_t second = 0, intmax_t nano = 0);
   ~Time(void);
 public:
-  static const Time	second;
+  static Time const	&second(void);
   intmax_t	get_second(void) const;
   void	set_second(intmax_t second);
   intmax_t	get_nano(void) const;

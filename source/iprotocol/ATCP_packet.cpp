@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 04:04:29 2015 Antoine Plaskowski
-// Last update Tue Jan 26 00:48:47 2016 Antoine Plaskowski
+// Last update Tue Jan 26 13:08:33 2016 Antoine Plaskowski
 //
 
 #include	"ATCP_packet.hpp"
@@ -59,22 +59,34 @@ char const	*ATCP_packet::get_str_opcode(ATCP_packet::Opcode opcode)
       return ("Join_game");
     case ATCP_packet::Leave_game:
       return ("Leave_game");
-    case ATCP_packet::Game_create:
-      return ("Create_game");
-    case ATCP_packet::Game_delete:
-      return ("Game_delete");
-    case ATCP_packet::Player_joined:
-      return ("Player_joined");
-    case ATCP_packet::Message:
-      return ("Message");
+    case ATCP_packet::Put_stone_game:
+      return ("Put_stone_game");
+    case ATCP_packet::Change_param_game:
+      return ("Change_param_game");
+    case ATCP_packet::List_param_game:
+      return ("List_Param_game");
+    case ATCP_packet::Game_created:
+      return ("Game_created");
+    case ATCP_packet::Game_player_joined:
+      return ("Game_player_joined");
+    case ATCP_packet::Game_player_left:
+      return ("Game_player_left");
+    case ATCP_packet::Game_param_changed:
+      return ("Game_param_changed");
+    case ATCP_packet::Game_stone_put:
+      return ("Game_stone_put");
+    case ATCP_packet::Game_deleted:
+      return ("Game_deleted");
     case ATCP_packet::Start_game:
       return ("Start_game");
     case ATCP_packet::Ready_game:
       return ("Ready_game");
     case ATCP_packet::Result_game:
       return ("Result_game");
+    case ATCP_packet::Message:
+      return ("Message");
     }
-  throw std::exception();
+  throw std::logic_error("Unknow Opcode");
 }
 
 std::ostream	&operator<<(std::ostream &os, ATCP_packet::Opcode opcode)

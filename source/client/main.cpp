@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Mon Jan 25 18:31:24 2016 Antoine Plaskowski
-// Last update Tue Jan 26 07:52:00 2016 Antoine Plaskowski
+// Last update Tue Jan 26 10:50:16 2016 Antoine Plaskowski
 //
 
 #include	"Select.hpp"
@@ -15,29 +15,29 @@
 class	mdr : public ITCP_protocol<int>::Callback
 {
 public:
-  void        result(ITCP_protocol<int> &itcp_protocol, typename ITCP_protocol<int>::Error error)
+  void        result(ITCP_protocol<int> &, typename ITCP_protocol<int>::Error)
   {
   }
-  void        connect(ITCP_protocol<int> &itcp_protocol, std::string const &login, std::string const &password)
+  void        connect(ITCP_protocol<int> &, std::string const &, std::string const &)
   {
   }
-  void        disconnect(ITCP_protocol<int> &itcp_protocol)
+  void        disconnect(ITCP_protocol<int> &)
   {
   }
-  void        ping(ITCP_protocol<int> &itcp_protocol)
+  void        ping(ITCP_protocol<int> &)
   {
   }
-  void        pong(ITCP_protocol<int> &itcp_protocol)
+  void        pong(ITCP_protocol<int> &)
   {
   }
-  void        create_game(ITCP_protocol<int> &itcp_protocol, typename ITCP_protocol<int>::Game const &game)
+  void        create_game(ITCP_protocol<int> &, typename ITCP_protocol<int>::Game const &game)
   {
-    std::cout << *game.name << *game.owner << std::endl;
+    std::cout << *game.name << " " << *game.owner << std::endl;
   }
 };
 
 int	main(void)
-{
+{/*
   mdr	ptdr;
   int toto;
   ITCP_protocol<int>	&lol = *new TCP_protocol<int>(&ptdr, &toto);
@@ -48,7 +48,7 @@ int	main(void)
     {
       iselect.want_read(xd);
       iselect.select();
-      if (iselect.can_read(xd));
-      lol.recv(xd);
-    }
+      if (iselect.can_read(xd))
+	lol.recv(xd);
+	}*/
 }

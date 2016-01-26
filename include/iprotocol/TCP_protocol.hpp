@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Tue Jan 26 07:58:50 2016 Antoine Plaskowski
+// Last update Tue Jan 26 13:09:02 2016 Antoine Plaskowski
 //
 
 #ifndef		TCP_PROTOCOL_HPP_
@@ -23,10 +23,12 @@ template<typename T>
 class	TCP_protocol : public ITCP_protocol<T>
 {
 public:
-  TCP_protocol(typename ITCP_protocol<T>::Callback *callback, T *data) :
+  TCP_protocol(typename ITCP_protocol<T>::Callback *callback, T *data = nullptr) :
     m_callback(callback),
     m_data(data)
   {
+    if (callback == nullptr)
+      throw std::logic_error("callback can't be nullptr");
   }
 
 public:
@@ -37,6 +39,8 @@ public:
 public:
   void	set_callback(typename ITCP_protocol<T>::Callback *callback)
   {
+    if (callback == nullptr)
+      throw std::logic_error("callback can't be nullptr");
     m_callback = callback;
   }
 
@@ -142,13 +146,23 @@ public:
 	return;
       case ATCP_packet::Leave_game:
 	return;
-      case ATCP_packet::Game_create:
+      case ATCP_packet::Put_stone_game:
 	return;
-      case ATCP_packet::Game_delete:
+      case ATCP_packet::Change_param_game:
 	return;
-      case ATCP_packet::Player_joined:
+      case ATCP_packet::List_param_game:
 	return;
-      case ATCP_packet::Message:
+      case ATCP_packet::Game_created:
+	return;
+      case ATCP_packet::Game_player_joined:
+	return;
+      case ATCP_packet::Game_player_left:
+	return;
+      case ATCP_packet::Game_param_changed:
+	return;
+      case ATCP_packet::Game_stone_put:
+	return;
+      case ATCP_packet::Game_deleted:
 	return;
       case ATCP_packet::Start_game:
 	return;
@@ -156,8 +170,10 @@ public:
 	return;
       case ATCP_packet::Result_game:
 	return;
+      case ATCP_packet::Message:
+	return;
       }
-    throw std::exception();
+    throw std::logic_error("recv a Unknow opcode");
   }
 
 public:
