@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Tue Jan 26 16:18:56 2016 Antoine Plaskowski
+// Last update Tue Jan 26 20:07:52 2016 Antoine Plaskowski
 //
 
 #ifndef		ITCP_PROTOCOL_HPP_
@@ -25,10 +25,10 @@ class	ITCP_protocol
 public:
   enum	Error : uint8_t
   {
-    NONE = 0,
-      IGNORED,
-      UNKNOW,
-      WRONGLOGIN
+    None = 0,
+      Ignore,
+      Unknow,
+      Wrong_login
   };
   
   struct	Game
@@ -127,6 +127,27 @@ public:
   virtual void	send_ready_game(bool ready) = 0;
   virtual void	send_result_game(Game_result const &result) = 0;
   virtual void	send_message(Message const &message) = 0;
+  static char const	*get_str_error(Error error)
+  {
+    switch (error)
+      {
+      case None:
+	return ("None");
+      case Ignore:
+	return ("Ignore");
+      case Unknow:
+	return ("Unknow");
+      case Wrong_login:
+	return ("Wrong_login");
+      };
+    throw std::logic_error("Unknown error code");
+  }
 };
+
+template<typename T>
+std::ostream    &operator<<(std::ostream &os, typename ITCP_protocol<T>::Error error)
+{
+  return (os << ITCP_protocol<T>::get_str_error(error));
+}
 
 #endif		/* !ITCP_PROTOCOL_HPP_ */
