@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Tue Jan 26 16:38:08 2016 Antoine Plaskowski
+// Last update Tue Jan 26 17:55:39 2016 Antoine Plaskowski
 //
 
 #ifndef		TCP_PROTOCOL_HPP_
@@ -105,14 +105,14 @@ public:
     if (to_send->send(socket))
       {
 #ifdef	DEBUG
-	std::cerr << "Success en une fois" << std::endl;
+	std::cerr << "Finis d'écrire" << std::endl;
 #endif	/* !DEBUG */    
 	delete to_send;
       }
     else
       {
 #ifdef	DEBUG
-	std::cerr << "Fail en une fois" << std::endl;
+	std::cerr << "Reste à écrire" << std::endl;
 #endif	/* !DEBUG */    
       }
   }
@@ -360,7 +360,7 @@ private:
     game->name = new std::string();
     game->value = new std::string();
     get_rec(m_to_recv, *game->name, *game->value);
-    m_callback.game_created(*this, game);
+    m_callback->game_created(*this, game);
   }
 
 public:
@@ -375,7 +375,7 @@ private:
   {
     std::string *name = new std::string();
     get_rec(m_to_recv, name);
-    m_callback.game_player_joined(*this, name);
+    m_callback->game_player_joined(*this, name);
   }
 
 public:
@@ -390,7 +390,7 @@ private:
   {
     std::string *name = new std::string();
     get_rec(m_to_recv, name);
-    m_callback.game_player_left(*this, name);
+    m_callback->game_player_left(*this, name);
   }
 
 public:
@@ -407,7 +407,7 @@ private:
     param->name = new std::string();
     param->value = new std::string();
     get_rec(m_to_recv, *param->name, *param->value);
-    m_callback.game_param_changed(*this, param);
+    m_callback->game_param_changed(*this, param);
   }
 
 public:
@@ -422,7 +422,7 @@ private:
   {
     typename ITCP_protocol<T>::Game_stone *stone = new typename ITCP_protocol<T>::Game_stone();
     get_rec(m_to_recv, stone->x, stone->y, stone->color);
-    m_callback.game_stone_put(*this, stone);
+    m_callback->game_stone_put(*this, stone);
   }
 
 public:
@@ -439,7 +439,7 @@ private:
     game->name = new std::string();
     game->owner = new std::string();
     get_rec(m_to_recv, game->name, game->owner);
-    m_callback.game_deleted(*this, game);
+    m_callback->game_deleted(*this, game);
   }
 
 public:
@@ -453,7 +453,7 @@ private:
   void	recv_start_game(void)
   {
     get_rec(m_to_recv);
-    m_callback.start_game(*this);
+    m_callback->start_game(*this);
   }
 
 public:
@@ -468,7 +468,7 @@ private:
   {
     bool	ready;
     get_rec(m_to_recv, ready);
-    m_callback.ready_game(*this, ready);
+    m_callback->ready_game(*this, ready);
   }
 
 public:
@@ -484,7 +484,7 @@ private:
     typename ITCP_protocol<T>::Game_result *result = new typename ITCP_protocol<T>::Game_result();
     result->winner = new std::string();
     get_rec(m_to_recv, result->winner);
-    m_callback.result_game(*this, result);
+    m_callback->result_game(*this, result);
   }
 
 public:
@@ -501,7 +501,7 @@ private:
     message->name = new std::string();
     message->owner = new std::string();
     get_rec(m_to_recv, *message->name, *message->owner);
-    m_callback.message(*this, message);
+    m_callback->message(*this, message);
   }
 
 private:
