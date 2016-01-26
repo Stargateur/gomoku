@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Tue Jan 26 13:09:02 2016 Antoine Plaskowski
+// Last update Tue Jan 26 16:38:08 2016 Antoine Plaskowski
 //
 
 #ifndef		TCP_PROTOCOL_HPP_
@@ -36,6 +36,12 @@ public:
   {
   }
 
+public:
+  uint8_t	get_version(void) const
+  {
+    return (1);
+  }
+  
 public:
   void	set_callback(typename ITCP_protocol<T>::Callback *callback)
   {
@@ -195,7 +201,7 @@ public:
   void	send_connect(std::string const &login, std::string const &password)
   {
     TCP_packet_send	&to_send = get_to_send(ATCP_packet::Connect);
-    to_send.put<uint8_t>(1);
+    to_send.put<uint8_t>(get_version());
     to_send.put(login);
     to_send.put(password);
   }
@@ -203,16 +209,14 @@ public:
 private:
   void	recv_connect(void)
   {
-    std::string	login;
-    std::string	password;
+    std::string	*login = new std::string();
+    std::string	*password = new std::string();
     uint8_t	version;
 
     m_to_recv.get(version);
-    m_to_recv.get(login);
-    m_to_recv.get(password);
-    if (version != 1) // chiant !
-      throw std::exception();
-    m_callback->connect(*this, login, password);
+    m_to_recv.get(*login);
+    m_to_recv.get(*password);
+    m_callback->connect(*this, version, login, password);
   }
 
 public:
@@ -260,11 +264,244 @@ public:
 private:
   void	recv_create_game(void)
   {
-    typename ITCP_protocol<T>::Game	game;
-    game.name = new std::string();
-    game.owner = new std::string();
-    get_rec(m_to_recv, *game.name, *game.owner);
+    typename ITCP_protocol<T>::Game	*game = new typename ITCP_protocol<T>::Game();
+    game->name = new std::string();
+    game->owner = new std::string();
+    get_rec(m_to_recv, *game->name, *game->owner);
     m_callback->create_game(*this, game);
+  }
+
+public:
+  void	send_join_game(typename ITCP_protocol<T>::Game const &game)
+  {
+    set_rec(get_to_send(ATCP_packet::Join_game), *game.name, *game.owner);
+  }
+
+private:
+  void	recv_join_game(void)
+  {
+    typename ITCP_protocol<T>::Game	*game = new typename ITCP_protocol<T>::Game();
+    game->name = new std::string();
+    game->owner = new std::string();
+    get_rec(m_to_recv, *game->name, *game->owner);
+    m_callback->join_game(*this, game);
+  }
+
+public:
+  void	send_leave_game(void)
+  {
+    set_rec(get_to_send(ATCP_packet::Leave_game));
+  }
+
+private:
+  void	recv_leave_game(void)
+  {
+    m_callback->leave_game(*this);
+  }
+
+public:
+  void	send_put_stone_game(typename ITCP_protocol<T>::Game_stone const &stone)
+  {
+    set_rec(get_to_send(ATCP_packet::Put_stone_game), stone.x, stone.y, stone.color);
+  }
+
+private:
+  void	recv_put_stone_game(void)
+  {
+    typename ITCP_protocol<T>::Game_stone *stone = new typename ITCP_protocol<T>::Game_stone();
+    get_rec(m_to_recv, stone->x, stone->y, stone->color);
+    m_callback->put_stone_game(*this, stone);
+  }
+
+public:
+  void	send_change_param_game(typename ITCP_protocol<T>::Game_param const &param)
+  {
+    set_rec(get_to_send(ATCP_packet::Change_param_game), *param.name, *param.value);
+  }
+
+private:
+  void	recv_change_param_game(void)
+  {
+    typename ITCP_protocol<T>::Game_param *param = new typename ITCP_protocol<T>::Game_param();
+    param->name = new std::string();
+    param->value = new std::string();
+    get_rec(m_to_recv, *param->name, *param->owner);
+    m_callback->change_param_game(*this, param);
+  }
+
+public:
+  void	send_list_param_game(std::list<typename ITCP_protocol<T>::Game_param *> const &params)
+  {
+    TCP_packet_send &to_send = get_to_send(ATCP_packet::List_param_game);
+    to_send.put(static_cast<uint8_t>(params.size()));
+    for (auto param : params)
+      set_rec(to_send, *param->name, *param->value);
+  }
+
+private:
+  void	recv_list_param_game(void)
+  {
+    std::list<typename ITCP_protocol<T>::Game_param *> *params = new std::list<typename ITCP_protocol<T>::Game_param *>();
+    uint8_t	size;
+    m_to_recv.get(size);
+  }
+
+public:
+  void	send_game_created(typename ITCP_protocol<T>::Game const &game)
+  {
+    TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_created);
+    set_rec(to_send, *game.name, *game.owner);
+  }
+
+private:
+  void	recv_game_created(void)
+  {
+    typename ITCP_protocol<T>::Game *game = new typename ITCP_protocol<T>::Game();
+    game->name = new std::string();
+    game->value = new std::string();
+    get_rec(m_to_recv, *game->name, *game->value);
+    m_callback.game_created(*this, game);
+  }
+
+public:
+  void	send_game_player_joined(std::string const &name)
+  {
+    TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_player_joined);
+    set_rec(to_send, name);
+  }
+
+private:
+  void	recv_game_player_joined(void)
+  {
+    std::string *name = new std::string();
+    get_rec(m_to_recv, name);
+    m_callback.game_player_joined(*this, name);
+  }
+
+public:
+  void	send_game_player_left(std::string const &name)
+  {
+    TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_player_left);
+    set_rec(to_send, name);
+  }
+
+private:
+  void	recv_game_player_left(void)
+  {
+    std::string *name = new std::string();
+    get_rec(m_to_recv, name);
+    m_callback.game_player_left(*this, name);
+  }
+
+public:
+  void	send_game_param_changed(typename ITCP_protocol<T>::Game_param const &param)
+  {
+    TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_param_changed);
+    set_rec(to_send, *param.name, *param.value);
+  }
+
+private:
+  void	recv_game_param_changed(void)
+  {
+    typename ITCP_protocol<T>::Game_param *param = new typename ITCP_protocol<T>::Game_param;
+    param->name = new std::string();
+    param->value = new std::string();
+    get_rec(m_to_recv, *param->name, *param->value);
+    m_callback.game_param_changed(*this, param);
+  }
+
+public:
+  void	send_game_stone_put(typename ITCP_protocol<T>::Game_stone const &stone)
+  {
+    TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_stone_put);
+    set_rec(to_send, stone.x, stone.y, stone.color);
+  }
+
+private:
+  void	recv_game_stone_put(void)
+  {
+    typename ITCP_protocol<T>::Game_stone *stone = new typename ITCP_protocol<T>::Game_stone();
+    get_rec(m_to_recv, stone->x, stone->y, stone->color);
+    m_callback.game_stone_put(*this, stone);
+  }
+
+public:
+  void	send_game_deleted(typename ITCP_protocol<T>::Game const &game)
+  {
+    TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_deleted);
+    set_rec(to_send, game.name, game.owner);
+  }
+
+private:
+  void	recv_game_deleted(void)
+  {
+    typename ITCP_protocol<T>::Game *game = new typename ITCP_protocol<T>::Game_game();
+    game->name = new std::string();
+    game->owner = new std::string();
+    get_rec(m_to_recv, game->name, game->owner);
+    m_callback.game_deleted(*this, game);
+  }
+
+public:
+  void	send_start_game(void)
+  {
+    TCP_packet_send &to_send = get_to_send(ATCP_packet::Start_game);
+    set_rec(to_send);
+  }
+
+private:
+  void	recv_start_game(void)
+  {
+    get_rec(m_to_recv);
+    m_callback.start_game(*this);
+  }
+
+public:
+  void	send_ready_game(bool ready)
+  {
+    TCP_packet_send &to_send = get_to_send(ATCP_packet::Ready_game);
+    set_rec(to_send, ready);
+  }
+
+private:
+  void	recv_ready_game(void)
+  {
+    bool	ready;
+    get_rec(m_to_recv, ready);
+    m_callback.ready_game(*this, ready);
+  }
+
+public:
+  void	send_result_game(typename ITCP_protocol<T>::Game_result const &result)
+  {
+    TCP_packet_send &to_send = get_to_send(ATCP_packet::Result_game);
+    set_rec(to_send, result.winner);
+  }
+
+private:
+  void	recv_result_game(void)
+  {
+    typename ITCP_protocol<T>::Game_result *result = new typename ITCP_protocol<T>::Game_result();
+    result->winner = new std::string();
+    get_rec(m_to_recv, result->winner);
+    m_callback.result_game(*this, result);
+  }
+
+public:
+  void	send_message(typename ITCP_protocol<T>::Message const &message)
+  {
+    TCP_packet_send &to_send = get_to_send(ATCP_packet::Message);
+    set_rec(to_send, *message.name, *message.message);
+  }
+
+private:
+  void	recv_message(void)
+  {
+    typename ITCP_protocol<T>::Message *message = new typename ITCP_protocol<T>::Message();
+    message->name = new std::string();
+    message->owner = new std::string();
+    get_rec(m_to_recv, *message->name, *message->owner);
+    m_callback.message(*this, message);
   }
 
 private:

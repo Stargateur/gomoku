@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Mon Jan 25 18:31:24 2016 Antoine Plaskowski
-// Last update Tue Jan 26 14:03:57 2016 Antoine Plaskowski
+// Last update Tue Jan 26 14:07:37 2016 Antoine Plaskowski
 //
 
 #include	"Select.hpp"
@@ -18,7 +18,7 @@ public:
   void        result(ITCP_protocol<int> &, typename ITCP_protocol<int>::Error)
   {
   }
-  void        connect(ITCP_protocol<int> &, std::string *, std::string *)
+  void        connect(ITCP_protocol<int> &, uint8_t, std::string *, std::string *)
   {
   }
   void        disconnect(ITCP_protocol<int> &)
