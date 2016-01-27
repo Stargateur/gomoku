@@ -9,3 +9,4 @@ gomoku_server
 *.dpd
 *.autosave
 gui_client
+SFML
