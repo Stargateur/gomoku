@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 04:07:41 2015 Antoine Plaskowski
-// Last update Tue Jan 26 07:46:23 2016 Antoine Plaskowski
+// Last update Wed Jan 27 11:31:18 2016 Antoine Plaskowski
 //
 
 #include	<iostream>
@@ -27,7 +27,7 @@ bool	TCP_packet_send::send(ITCP_client const &socket)
     throw std::exception();
   uintmax_t	ret = socket.send(m_buffer[m_send], m_size_header + get_size() - m_send);
 
-  std::cout << ret;
+  std::cout << ret << std::endl;
   if (ret == 0)
     throw std::exception();
   m_send += ret;

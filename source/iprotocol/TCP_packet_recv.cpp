@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 04:05:19 2015 Antoine Plaskowski
-// Last update Tue Jan 26 07:46:13 2016 Antoine Plaskowski
+// Last update Wed Jan 27 11:31:09 2016 Antoine Plaskowski
 //
 
 #include	<iostream>
@@ -30,7 +30,7 @@ bool	TCP_packet_recv::recv(ITCP_client const &socket)
     ret = socket.recv(m_buffer[m_recv], m_size_header - m_recv);
   else
     ret = socket.recv(m_buffer[m_recv], m_size_header + get_size() - m_recv);
-  std::cout << ret;
+  std::cout << ret << std::endl;
   if (ret == 0)
     throw std::exception();
   m_recv += ret;

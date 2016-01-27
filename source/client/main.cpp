@@ -5,9 +5,14 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Mon Jan 25 18:31:24 2016 Antoine Plaskowski
-// Last update Tue Jan 26 18:39:16 2016 Antoine Plaskowski
+// Last update Wed Jan 27 11:29:33 2016 Antoine Plaskowski
 //
+
+#include	"Client.hpp"
 
 int	main(void)
 {
+  Client	client;
+
+  client.run();
 }

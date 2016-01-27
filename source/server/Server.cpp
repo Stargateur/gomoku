@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Tue Jan 26 17:50:03 2016 Antoine Plaskowski
-// Last update Wed Jan 27 10:59:26 2016 Antoine Plaskowski
+// Last update Wed Jan 27 11:32:19 2016 Antoine Plaskowski
 //
 
 #include	"Server.hpp"
@@ -62,15 +62,26 @@ void	Server::run(void)
       
       if (m_iselect->can_read(*m_itcp_server))
 	m_itcp_protocols.push_back(new TCP_protocol<Client>(this, new Client(&m_itcp_server->accept())));
-      for (auto itcp_protocol : m_itcp_protocols)
+      for (auto it = m_itcp_protocols.begin(); it != m_itcp_protocols.end();)
 	{
-	  Client &client = *itcp_protocol->get_data();
+	  Client &client = *(*it)->get_data();
 
-	  if (m_iselect->can_read(*client.m_itcp_client))
-	    itcp_protocol->recv(*client.m_itcp_client);
+	  try
+	    {
+	      if (m_iselect->can_read(*client.m_itcp_client))
+		(*it)->recv(*client.m_itcp_client);
 
-	  if (m_iselect->can_write(*client.m_itcp_client))
-	    itcp_protocol->send(*client.m_itcp_client);
+	      if (m_iselect->can_write(*client.m_itcp_client))
+		(*it)->send(*client.m_itcp_client);
+
+	      it++;
+	    }
+	  catch (...)
+	    {
+	      delete (*it)->get_data();
+	      delete (*it);
+	      it = m_itcp_protocols.erase(it);
+	    }
 	}
     }
 }
@@ -84,7 +95,8 @@ void	Server::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std:
 {
   if (version != itcp_protocol.get_version())
     throw std::logic_error("Wrong version");
-  if (login != password)
+  std::cout << *login << " " << *password << std::endl;
+  if (*login != *password)
     throw std::logic_error("Wrong login and/or password");
   delete itcp_protocol.get_data()->m_login;
   itcp_protocol.get_data()->m_login = login;
