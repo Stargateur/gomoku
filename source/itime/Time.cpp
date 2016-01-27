@@ -5,15 +5,13 @@
 // Login   <bertra_l@epitech.net>
 //
 // Started on  Wed Oct 21 21:04:15 2015 Bertrand-Rapello Baptiste
-// Last update Sun Dec 27 20:25:38 2015 Antoine Plaskowski
+// Last update Wed Jan 27 00:38:54 2016 Antoine Plaskowski
 //
 
 #ifndef _WIN32
 
 #include	<stdio.h>
 #include	"Time.hpp"
-
-Time const	Time::second(1);
 
 Time::Time(intmax_t second, intmax_t nano) :
   m_timespec({second, nano})

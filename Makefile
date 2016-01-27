@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Mon Jan 25 18:26:47 2016 Antoine Plaskowski
+## Last update Tue Jan 26 13:40:39 2016 Antoine Plaskowski
 ##
 
 WINDOWS		?=	no
@@ -62,7 +62,7 @@ CXXFLAGS	+=	-ansi -pedantic -std=c++11
 CXXFLAGS	+=	$(INCLUDE)
 
 ifeq ($(CXX), clang++)
-CXXFLAGS	+=	-Weverything -Wno-c++98-compat -Wno-padded
+CXXFLAGS	+=	-Weverything -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic
 endif
 
 ifneq ($(DEBUG), no)

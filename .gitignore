@@ -4,8 +4,9 @@ a.out
 *.so
 \#*#
 .#*
-gomuku_client
-gomuku_server
+gomoku_client
+gomoku_server
 *.dpd
 *.autosave
 gui_client
+SFML
