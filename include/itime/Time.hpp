@@ -1,15 +1,17 @@
 //
 // Time.hpp for Time.hpp in /home/plasko_a/projet/cplusplus/rtype
-// 
+//
 // Made by Antoine Plaskowski
 // Login   <plasko_a@epitech.eu>
-// 
+//
 // Started on  Sun Dec 27 01:06:19 2015 Antoine Plaskowski
 // Last update Sun Dec 27 20:25:12 2015 Antoine Plaskowski
 //
 
 #ifndef TIME_HPP_
 # define TIME_HPP_
+
+#ifndef _WIN32
 
 # include	<ctime>
 # include	<cstdint>
@@ -29,7 +31,9 @@ public:
   bool	now(void);
   ITime	&clone(void) const;
 private:
-  struct timespec	m_timespec;  
+  struct timespec	m_timespec;
 };
+
+#endif // _WIN32
 
 #endif	/* !TIME_HPP_ */

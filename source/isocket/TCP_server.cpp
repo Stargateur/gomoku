@@ -1,15 +1,16 @@
 //
 // TCP_server.cpp for TCP_server in /home/plasko_a/projet/cplusplus/rtype
-// 
+//
 // Made by Antoine Plaskowski
 // Login   <antoine.plaskowski@epitech.eu>
-// 
+//
 // Started on  Fri Nov 20 07:15:53 2015 Antoine Plaskowski
 // Last update Tue Dec  8 15:34:37 2015 Antoine Plaskowski
 //
 
 #include	<iostream>
 #ifdef		_WIN32
+#define _WIN32_WINNT 0xA000
 # include <io.h>
 # include <WinSock2.h>
 # include <WS2tcpip.h>

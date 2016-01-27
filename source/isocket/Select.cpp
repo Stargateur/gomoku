@@ -1,9 +1,9 @@
 //
 // Select.cpp for Select in /home/plasko_a/projet/cplusplus/rtype/source/isocket
-// 
+//
 // Made by Antoine Plaskowski
 // Login   <antoine.plaskowski@epitech.eu>
-// 
+//
 // Started on  Tue Dec  8 14:01:13 2015 Antoine Plaskowski
 // Last update Tue Dec  8 15:50:57 2015 Antoine Plaskowski
 //
@@ -13,9 +13,13 @@
 #include	<cerrno>
 #include	"Select.hpp"
 
+#ifdef		_WIN32
+# pragma comment (lib, "ws2_32.a")
+#endif // _WIN32
+
 Select::Select(void) :
-  m_readfds({}),
-  m_writefds({}),
+  m_readfds(),
+  m_writefds(),
   m_nfds(-1)
 {
 }

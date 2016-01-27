@@ -1,21 +1,41 @@
 ##
 ## Makefile for makefile in /home/plasko_a/projet/gomoku
-## 
+##
 ## Made by Antoine Plaskowski
 ## Login   <plasko_a@epitech.eu>
-## 
+##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
 ## Last update Mon Jan 25 18:26:47 2016 Antoine Plaskowski
 ##
 
-CLIENT		=	gomuku_client
+WINDOWS		?=	no
 
-SERVER		=	gomuku_server
+ifeq ($(WINDOWS), yes)
+CLIENT		=	gomoku_client.exe
+else
+CLIENT		=	gomoku_client
+endif
+
+
+ifeq ($(WINDOWS), yes)
+SERVER		=	gomoku_server.exe
+else
+SERVER		=	gomoku_server
+endif
 
 CXX		?=	g++
 
+ifeq ($(WINDOWS), yes)
+RM		=	cmd /c del
+else
 RM		=	rm
+endif
 
+ifeq ($(WINDOWS), yes)
+RM_FLAG		=	/f
+else
+RM_FLAG		=	-f
+endif
 MAKE		=	make
 
 DEBUG		?=	yes
@@ -24,14 +44,20 @@ LEVEL		?=	3
 
 COLOR		?=	no
 
-LIB_SERVER	=	
+LIB_SERVER	=
 
-LIB_CLIENT	=	$(shell pkg-config --libs sfml-graphics sfml-window sfml-system sfml-network)
+ifeq ($(WINDOWS), yes)
+LIB_CLIENT	=	-L lib -lsfml-main -lsfml-graphics -lsfml-window -lsfml-system
+else
+LIB_CLENT	=	$(shell pkg-config --libs sfml-graphics sfml-window sfml-system sfml-network)
+endif
 
 INCLUDE		=	-I include -I include/itime -I include/isocket -I include/iprotocol
+ifneq ($(WINDOWS), yes)
 INCLUDE		+=	$(shell pkg-config --cflags sfml-graphics sfml-window sfml-system sfml-network)
+endif
 
-CXXFLAGS	+=	-Wall -Wextra
+CXXFLAGS	+=	-Wall -Wextra -Wno-unknown-pragmas
 CXXFLAGS	+=	-ansi -pedantic -std=c++11
 CXXFLAGS	+=	$(INCLUDE)
 
@@ -49,7 +75,11 @@ ifneq ($(COLOR), no)
 CXXFLAGS	+=	-fdiagnostics-color
 endif
 
+ifeq ($(WINDOWS), yes)
+LDFLAGS		= -l ws2_32
+else
 LDFLAGS		=
+endif
 
 ifeq ($(DEBUG), no)
 LDFLAGS		+=	-s
@@ -79,17 +109,32 @@ $(CLIENT)	:	$(OBJ) $(OBJ_CLIENT)
 $(DPD_SERVER)	:	CXXFLAGS += -I include/server
 $(DPD_CLIENT)	:	CXXFLAGS += -I include/client
 
+
 clean		:
-			$(RM) -f $(OBJ)
-			$(RM) -f $(DPD)
-			$(RM) -f $(OBJ_SERVER)
-			$(RM) -f $(DPD_SERVER)
-			$(RM) -f $(OBJ_CLIENT)
-			$(RM) -f $(DPD_CLIENT)
+ifeq ($(WINDOWS), yes)
+			$(RM) $(RM_FLAG) $(subst /,\,$(OBJ))
+			$(RM) $(RM_FLAG) $(subst /,\,$(DPD))
+			$(RM) $(RM_FLAG) $(subst /,\,$(OBJ_SERVER))
+			$(RM) $(RM_FLAG) $(subst /,\,$(DPD_SERVER))
+			$(RM) $(RM_FLAG) $(subst /,\,$(OBJ_CLIENT))
+			$(RM) $(RM_FLAG) $(subst /,\,$(DPD_CLIENT))
+else
+			$(RM) $(RM_FLAG) $(OBJ)
+			$(RM) $(RM_FLAG) $(DPD)
+			$(RM) $(RM_FLAG) $(OBJ_SERVER)
+			$(RM) $(RM_FLAG) $(DPD_SERVER)
+			$(RM) $(RM_FLAG) $(OBJ_CLIENT)
+			$(RM) $(RM_FLAG) $(DPD_CLIENT)
+endif
 
 fclean		:	clean
-			$(RM) -f $(SERVER)
-			$(RM) -f $(CLIENT)
+ifeq ($(WINDOWS), yes)
+			$(RM) $(RM_FLAG) $(subst /,\,$(SERVER))
+			$(RM) $(RM_FLAG) $(subst /,\,$(CLIENT))
+else
+			$(RM) $(RM_FLAG) $(SERVER)
+			$(RM) $(RM_FLAG) $(CLIENT)
+endif
 
 re		:	fclean
 			$(MAKE) -C .

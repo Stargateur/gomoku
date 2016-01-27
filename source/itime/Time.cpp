@@ -1,12 +1,14 @@
 //
 // Time.cpp for  in /home/bbr2394/renduTek3/cpp_spider/source
-// 
+//
 // Made by Bertrand-Rapello Baptiste
 // Login   <bertra_l@epitech.net>
-// 
+//
 // Started on  Wed Oct 21 21:04:15 2015 Bertrand-Rapello Baptiste
 // Last update Sun Dec 27 20:25:38 2015 Antoine Plaskowski
 //
+
+#ifndef _WIN32
 
 #include	<stdio.h>
 #include	"Time.hpp"
@@ -74,3 +76,5 @@ ITime	*new_itime(void)
 {
   return (new Time());
 }
+
+#endif // WIN32

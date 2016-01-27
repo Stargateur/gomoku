@@ -1,9 +1,9 @@
 //
 // TCP_client.cpp for TCP_client in /home/plasko_a/projet/cplusplus/rtype
-// 
+//
 // Made by Antoine Plaskowski
 // Login   <antoine.plaskowski@epitech.eu>
-// 
+//
 // Started on  Fri Nov 20 06:49:55 2015 Antoine Plaskowski
 // Last update Tue Dec  8 16:09:24 2015 Antoine Plaskowski
 //
@@ -12,11 +12,11 @@
 #include	<cstring>
 #include	<utility>
 #ifdef		_WIN32
+#define _WIN32_WINNT 0xA000
 # include	<WinSock2.h>
-# include <WS2tcpip.h>
-# include <io.h>
+# include   <WS2tcpip.h>
+# include   <io.h>
 # pragma comment (lib, "Ws2_32.lib")
-typedef long ssize_t;
 #else
 # include	<unistd.h>
 # include	<arpa/inet.h>
