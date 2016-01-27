@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ## 
 ## Started on  Mon Jan 25 18:27:08 2016 Antoine Plaskowski
-## Last update Tue Jan 26 19:01:48 2016 Antoine Plaskowski
+## Last update Wed Jan 27 11:02:11 2016 Antoine Plaskowski
 ##
 
 DIR		=	source
@@ -45,3 +45,4 @@ SRC_SERVER	+=	$(DIR_SERVER)/Server.cpp
 SRC_SERVER	+=	$(DIR_SERVER)/Client.cpp
 
 SRC_CLIENT	=	$(DIR_CLIENT)/main.cpp
+SRC_CLIENT	+=	$(DIR_CLIENT)/Client.cpp

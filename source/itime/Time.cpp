@@ -5,7 +5,7 @@
 // Login   <bertra_l@epitech.net>
 // 
 // Started on  Wed Oct 21 21:04:15 2015 Bertrand-Rapello Baptiste
-// Last update Tue Jan 26 10:56:26 2016 Antoine Plaskowski
+// Last update Wed Jan 27 00:38:54 2016 Antoine Plaskowski
 //
 
 #include	<stdio.h>
@@ -18,13 +18,6 @@ Time::Time(intmax_t second, intmax_t nano) :
 
 Time::~Time(void)
 {
-}
-
-Time const	&Time::second(void)
-{
-  static Time const	second(1);
-
-  return (second);
 }
 
 intmax_t	Time::get_second(void) const
