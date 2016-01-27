@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Tue Jan 26 20:07:52 2016 Antoine Plaskowski
+// Last update Wed Jan 27 17:28:56 2016 Antoine Plaskowski
 //
 
 #ifndef		ITCP_PROTOCOL_HPP_
@@ -60,8 +60,8 @@ public:
     uint8_t	y;
     enum	Color : uint8_t
       {
-	WHITE = 0,
-	BLACK
+	White = 0,
+	Black
       }		color;
   };
   

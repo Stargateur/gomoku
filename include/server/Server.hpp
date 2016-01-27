@@ -5,7 +5,7 @@
 // Login   <plasko_a@epitech.eu>
 // 
 // Started on  Tue Jan 26 17:48:04 2016 Antoine Plaskowski
-// Last update Wed Jan 27 11:10:38 2016 Antoine Plaskowski
+// Last update Wed Jan 27 18:33:47 2016 Antoine Plaskowski
 //
 
 #ifndef		SERVER_HPP_
@@ -25,6 +25,7 @@ public:
   Server(void);
   ~Server(void);
   void	run(void);
+  void	timeout(ITCP_protocol<Client> &itcp_protocol) const;
   void	result(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Error error);
   void	connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std::string *login, std::string *password);
   void	disconnect(ITCP_protocol<Client> &itcp_protocol);
@@ -51,6 +52,7 @@ private:
   IStandard	*m_istandard;
   std::list<ITCP_protocol<Client> *>	m_itcp_protocols;
   ISelect	*m_iselect;
+  ITime	*m_timeout;
 };
 
 #endif		/* !SERVER_HPP_ */

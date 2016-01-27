@@ -5,13 +5,13 @@
 // Login   <plasko_a@epitech.eu>
 //
 // Started on  Sun Dec 27 01:06:19 2015 Antoine Plaskowski
-// Last update Wed Jan 27 00:38:42 2016 Antoine Plaskowski
+// Last update Wed Jan 27 18:34:38 2016 Antoine Plaskowski
 //
 
 #ifndef TIME_HPP_
 # define TIME_HPP_
 
-#ifndef _WIN32
+#ifndef _WIN32
 
 # include	<ctime>
 # include	<cstdint>

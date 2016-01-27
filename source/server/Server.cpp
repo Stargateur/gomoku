@@ -5,16 +5,18 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Tue Jan 26 17:50:03 2016 Antoine Plaskowski
-// Last update Wed Jan 27 11:32:19 2016 Antoine Plaskowski
+// Last update Wed Jan 27 18:39:23 2016 Antoine Plaskowski
 //
 
 #include	"Server.hpp"
+#include	"Time.hpp"
 
 Server::Server(void) :
   m_itcp_server(new TCP_server("4242")),
   m_istandard(new Standard(IStandard::In)),
   m_itcp_protocols(),
-  m_iselect(new Select())
+  m_iselect(new Select()),
+  m_timeout(new Time(5))
 {
 }
 
@@ -25,6 +27,7 @@ Server::~Server(void)
   for (auto itcp_protocol : m_itcp_protocols)
     delete itcp_protocol;
   delete m_iselect;
+  delete m_timeout;
 }
 
 void	Server::run(void)
@@ -61,28 +64,55 @@ void	Server::run(void)
 	}
       
       if (m_iselect->can_read(*m_itcp_server))
-	m_itcp_protocols.push_back(new TCP_protocol<Client>(this, new Client(&m_itcp_server->accept())));
+	{
+	  Client	*client = new Client;
+	  client->m_itcp_client = &m_itcp_server->accept();
+	  client->m_last = new Time();
+	  m_itcp_protocols.push_back(new TCP_protocol<Client>(this, client));
+	}
       for (auto it = m_itcp_protocols.begin(); it != m_itcp_protocols.end();)
 	{
-	  Client &client = *(*it)->get_data();
+	  auto itcp_protocol = *it;
+	  Client &client = *itcp_protocol->get_data();
 
 	  try
 	    {
 	      if (m_iselect->can_read(*client.m_itcp_client))
-		(*it)->recv(*client.m_itcp_client);
+		itcp_protocol->recv(*client.m_itcp_client);
+	      else
+		timeout(*itcp_protocol);
 
 	      if (m_iselect->can_write(*client.m_itcp_client))
-		(*it)->send(*client.m_itcp_client);
+		itcp_protocol->send(*client.m_itcp_client);
 
 	      it++;
 	    }
 	  catch (...)
 	    {
-	      delete (*it)->get_data();
-	      delete (*it);
+	      delete itcp_protocol->get_data();
+	      delete itcp_protocol;
 	      it = m_itcp_protocols.erase(it);
 	    }
 	}
+    }
+}
+
+void	Server::timeout(ITCP_protocol<Client> &itcp_protocol) const
+{
+  Client	&client = *itcp_protocol.get_data();
+  ITime		&last = *client.m_last;
+  intmax_t      second = last.get_second();
+  intmax_t      nano = last.get_nano();
+
+  last.now();
+  if (last.get_second() - second > m_timeout->get_second()
+      || (last.get_second() - second == m_timeout->get_second()
+	  && last.get_nano() - nano > m_timeout->get_nano()))
+    {
+      if (client.m_wait_pong == true)
+	throw std::logic_error("timeout");
+      client.m_wait_pong = true;
+      itcp_protocol.send_ping();
     }
 }
 
@@ -115,6 +145,9 @@ void	Server::ping(ITCP_protocol<Client> &itcp_protocol)
 
 void	Server::pong(ITCP_protocol<Client> &itcp_protocol)
 {
+  Client	&client = *itcp_protocol.get_data();
+
+  client.m_wait_pong = false;
 }
 
 void	Server::create_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
