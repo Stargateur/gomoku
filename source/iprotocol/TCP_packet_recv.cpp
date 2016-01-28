@@ -30,7 +30,9 @@ bool	TCP_packet_recv::recv(ITCP_client const &socket)
         ret = socket.recv(m_buffer[m_recv], m_size_header - m_recv);
     else
         ret = socket.recv(m_buffer[m_recv], m_size_header + get_size() - m_recv);
-    std::cout << ret << std::endl;
+#ifdef DEBUG
+    std::cerr << "Nombre d'octect lu " << ret << std::endl;
+#endif
     if (ret == 0)
         throw std::logic_error("client disconnected");
     m_recv += ret;

@@ -27,7 +27,9 @@ bool	TCP_packet_send::send(ITCP_client const &socket)
         throw std::exception();
     uintmax_t	ret = socket.send(m_buffer[m_send], m_size_header + get_size() - m_send);
 
-    std::cout << ret << std::endl;
+#ifdef DEBUG
+    std::cerr << "Nombre d'octect envoyé " << ret << std::endl;
+#endif
     if (ret == 0)
         throw std::logic_error("Client disconnected");
     m_send += ret;

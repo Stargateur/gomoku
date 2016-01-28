@@ -63,32 +63,35 @@ private:
     std::list<ITCP_protocol<Client> *>  m_itcp_protocols;
 };
 
-class	IServer_exception : public std::exception
+class	AServer_exception : public std::exception
 {
 public:
-    IServer_exception(void) noexcept;
-    IServer_exception(IServer_exception const &) noexcept;
-    virtual ~IServer_exception(void) noexcept;
-    IServer_exception	&operator=(IServer_exception const &) noexcept;
+    AServer_exception(void) noexcept;
+    AServer_exception(AServer_exception const &) noexcept;
+    virtual ~AServer_exception(void) noexcept;
+    virtual char const  *what(void) const noexcept;
+    AServer_exception	&operator=(AServer_exception const &) noexcept;
 };
 
-class	Server_exception_client_transfer : public IServer_exception
+class	Server_exception_client_transfer : public AServer_exception
 {
 public:
-    Server_exception_client_transfer(Game &game) noexcept;
+    Server_exception_client_transfer(Game *game) noexcept;
     Server_exception_client_transfer(Server_exception_client_transfer const &) noexcept;
-    virtual ~Server_exception_client_transfer(void) noexcept;
+    ~Server_exception_client_transfer(void) noexcept;
+    char const  *what(void) const noexcept;
     Server_exception_client_transfer	&operator=(Server_exception_client_transfer const &) noexcept;
 public:
-    Game	&m_game;
+    Game	*m_game;
 };
 
-class   Server_exception_client_disconnected : public IServer_exception
+class   Server_exception_client_disconnected : public AServer_exception
 {
 public:
     Server_exception_client_disconnected(void) noexcept;
     Server_exception_client_disconnected(Server_exception_client_disconnected const &) noexcept;
-    virtual ~Server_exception_client_disconnected(void) noexcept;
+    ~Server_exception_client_disconnected(void) noexcept;
+    char const  *what(void) const noexcept;
     Server_exception_client_disconnected	&operator=(Server_exception_client_disconnected const &) noexcept;
 };
 

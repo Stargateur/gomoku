@@ -54,7 +54,6 @@ catch (...)
 
 Server::~Server(void)
 {
-    std::cout << "ptdr" << std::endl;
     delete m_itcp_server;
     delete m_istandard;
     for (auto itcp_protocol : m_itcp_protocols)
@@ -123,16 +122,8 @@ void	Server::run(void)
             }
             catch (Server_exception_client_transfer &e)
             {
-                e.m_game.m_itcp_protocols.push_back(itcp_protocol);
-                itcp_protocol->set_callback(&e.m_game);
-                it = m_itcp_protocols.erase(it);
-            }
-            catch (Server_exception_client_disconnected &e)
-            {
-#ifdef DEBUG
-                std::cout << "Un Client s'est déconnecter : " << (client.get_login() != nullptr ? *client.get_login() : "") << std::endl;
-#endif
-                delete itcp_protocol;
+                e.m_game->m_itcp_protocols.push_back(itcp_protocol);
+                itcp_protocol->set_callback(e.m_game);
                 it = m_itcp_protocols.erase(it);
             }
             catch (std::exception &e)
@@ -200,81 +191,81 @@ void	Server::create_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pro
 {
     Game	*game = new Game(*this, game_info->name);
 
-    itcp_protocol.set_callback(game);
     game->m_itcp_protocols.push_back(&itcp_protocol);
-    throw Server_exception_client_transfer(*game);
+    throw Server_exception_client_transfer(game);
 }
 
 void	Server::join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game_info)
 {
     for (auto game : m_games)
         if (*game_info->name == game->get_name())
-            throw Server_exception_client_transfer(*game);
+            throw Server_exception_client_transfer(game);
+    throw AServer_exception();
 }
 
 void	Server::leave_game(ITCP_protocol<Client> &itcp_protocol)
 {
-    throw std::logic_error("tu n'est pas en game");
+    throw AServer_exception();
 }
 
 void	Server::put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
 {
-    throw std::logic_error("tu n'est pas en game");
+    throw AServer_exception();
 }
 
 void	Server::change_param_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param)
 {
-    throw std::logic_error("tu n'est pas en game");
+    throw AServer_exception();
 }
 
 void	Server::list_param_game(ITCP_protocol<Client> &itcp_protocol, std::list<typename ITCP_protocol<Client>::Game_param *> *params)
 {
-    throw std::logic_error("tu n'est pas en game");
+    throw AServer_exception();
 }
 
 void	Server::game_created(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
 {
-    throw std::logic_error("je suis le server et toi le client !");
+    throw AServer_exception();
 }
 
 void	Server::game_player_joined(ITCP_protocol<Client> &itcp_protocol, std::string *name)
 {
-    throw std::logic_error("je suis le server et toi le client !");
+    throw AServer_exception();
 }
 
 void	Server::game_player_left(ITCP_protocol<Client> &itcp_protocol, std::string *name)
 {
-    throw std::logic_error("je suis le server et toi le client !");
+    throw AServer_exception();
 }
 
 void	Server::game_param_changed(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param)
 {
-    throw std::logic_error("je suis le server et toi le client !");
+    throw AServer_exception();
 }
 
 void	Server::game_stone_put(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
 {
-    throw std::logic_error("je suis le server et toi le client !");
+    throw AServer_exception();
 }
 
 void	Server::game_deleted(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
 {
-    throw std::logic_error("je suis le server et toi le client !");
+    throw AServer_exception();
 }
 
 void	Server::start_game(ITCP_protocol<Client> &itcp_protocol)
 {
-    throw std::logic_error("tu n'est pas en game");
+    throw AServer_exception();
 }
 
 void	Server::ready_game(ITCP_protocol<Client> &itcp_protocol, bool ready)
 {
-    throw std::logic_error("tu n'est pas en game");
+    throw AServer_exception();
 }
 
 void	Server::result_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_result *game_result)
 {
-    throw std::logic_error("je suis le server et toi le client !");
+    throw AServer_exception();
 }
 
 void	Server::message(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Message *message)
@@ -283,42 +274,60 @@ void	Server::message(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protoco
         for (auto it : m_itcp_protocols)
             it->send_message(*message);
     else
+    {
         for (auto it : m_itcp_protocols)
         {
-            Client	*client = it->get_data();
+            Client  *client = it->get_data();
 
             if (*message->name == *client->get_login())
             {
                 it->send_message(*message);
-                break;
+                return;
             }
         }
+        for (auto game : m_games)
+            for (auto it : game->m_itcp_protocols)
+            {
+                Client  *client = it->get_data();
+
+                if (*message->name == *client->get_login())
+                {
+                    it->send_message(*message);
+                    return;
+                }
+            }
+    }
 }
 
-IServer_exception::IServer_exception(void) noexcept
+AServer_exception::AServer_exception(void) noexcept
 {
 }
 
-IServer_exception::IServer_exception(IServer_exception const &) noexcept
+AServer_exception::AServer_exception(AServer_exception const &) noexcept
 {
 }
 
-IServer_exception::~IServer_exception(void) noexcept
+AServer_exception::~AServer_exception(void) noexcept
 {
 }
 
-IServer_exception     &IServer_exception::operator=(IServer_exception const &) noexcept
+AServer_exception     &AServer_exception::operator=(AServer_exception const &) noexcept
 {
     return (*this);
 }
 
-Server_exception_client_transfer::Server_exception_client_transfer(Game &game) noexcept :
+char const  *AServer_exception::AServer_exception::what(void) const noexcept
+{
+    return ("AServer_exception");
+}
+
+Server_exception_client_transfer::Server_exception_client_transfer(Game *game) noexcept :
     m_game(game)
 {
 }
 
 Server_exception_client_transfer::Server_exception_client_transfer(Server_exception_client_transfer const &other) noexcept :
-    IServer_exception(),
+    AServer_exception(),
     m_game(other.m_game)
 {
 }
@@ -332,13 +341,18 @@ Server_exception_client_transfer     &Server_exception_client_transfer::operator
     return (*this);
 }
 
+char const  *Server_exception_client_transfer::Server_exception_client_transfer::what(void) const noexcept
+{
+    return ("Server_exception_client_transfer");
+}
+
 Server_exception_client_disconnected::Server_exception_client_disconnected(void) noexcept :
-    IServer_exception()
+    AServer_exception()
 {
 }
 
 Server_exception_client_disconnected::Server_exception_client_disconnected(Server_exception_client_disconnected const &) noexcept :
-    IServer_exception()
+    AServer_exception()
 {
 }
 
@@ -349,4 +363,9 @@ Server_exception_client_disconnected::~Server_exception_client_disconnected(void
 Server_exception_client_disconnected     &Server_exception_client_disconnected::operator=(Server_exception_client_disconnected const &) noexcept
 {
     return (*this);
+}
+
+char const  *Server_exception_client_disconnected::Server_exception_client_disconnected::what(void) const noexcept
+{
+    return ("Server_exception_client_disconnected");
 }

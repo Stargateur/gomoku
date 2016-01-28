@@ -8,6 +8,7 @@
 // Last update Thu Jan 28 16:33:33 2016 Antoine Plaskowski
 //
 
+#include	<iostream>
 #include	"Server.hpp"
 
 int	main(void) try
@@ -16,6 +17,7 @@ int	main(void) try
 
     	server.run();
 }
-catch (...)
+catch (std::exception &e)
 {
+	std::cerr << e.what() << std::endl;
 }

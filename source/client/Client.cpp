@@ -19,6 +19,7 @@ Client::Client(void) :
     m_iselect(new Select)
 {
     m_itcp_protocol->send_connect("plasko_a", "plasko_a");
+    m_itcp_protocol->send_disconnect();
 }
 
 Client::~Client(void)
