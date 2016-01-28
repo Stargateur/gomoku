@@ -5,48 +5,30 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Wed Jan 27 15:21:28 2016 Antoine Plaskowski
-// Last update Wed Jan 27 18:09:52 2016 Antoine Plaskowski
+// Last update Thu Jan 28 10:28:15 2016 Antoine Plaskowski
 //
 
 #include	"Game.hpp"
 
-Game::Game(typename ITCP_protocol<Client>::Callback &callback) :
-  m_callback(callback),
+Game::Game(typename ITCP_protocol<Client>::Callback &callback, std::string *name) :
+  ACallback(callback),
   m_is_start(false),
   m_white_is_ready(false),
   m_black_is_ready(false),
-  m_turn(ITCP_protocol<Client>::Game_stone::Color::Black)
+  m_turn(ITCP_protocol<Client>::Game_stone::Color::Black),
+  m_name(name)
 {
   m_board.fill(None);
 }
 
 Game::~Game(void)
 {
+  delete m_name;
 }
 
-void	Game::result(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Error error)
+std::string const	&Game::get_name(void) const
 {
-  m_callback.result(itcp_protocol, error);
-}
-
-void	Game::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)
-{
-  throw std::logic_error("Already connected");
-}
-
-void	Game::disconnect(ITCP_protocol<Client> &itcp_protocol)
-{
-  m_callback.disconnect(itcp_protocol);
-}
-
-void	Game::ping(ITCP_protocol<Client> &itcp_protocol)
-{
-  m_callback.ping(itcp_protocol);
-}
-
-void	Game::pong(ITCP_protocol<Client> &itcp_protocol)
-{
-  m_callback.pong(itcp_protocol);
+  return (*m_name);
 }
 
 void	Game::create_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
@@ -100,36 +82,6 @@ void	Game::list_param_game(ITCP_protocol<Client> &itcp_protocol, std::list<typen
 {
 }
 
-void	Game::game_created(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
-{
-  m_callback.game_created(itcp_protocol, game);
-}
-
-void	Game::game_player_joined(ITCP_protocol<Client> &itcp_protocol, std::string *name)
-{
-  m_callback.game_player_joined(itcp_protocol, name);
-}
-
-void	Game::game_player_left(ITCP_protocol<Client> &itcp_protocol, std::string *name)
-{
-  m_callback.game_player_left(itcp_protocol, name);
-}
-
-void	Game::game_param_changed(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param)
-{
-  m_callback.game_param_changed(itcp_protocol, param);
-}
-
-void	Game::game_stone_put(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
-{
-  m_callback.game_stone_put(itcp_protocol, stone);
-}
-
-void	Game::game_deleted(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
-{
-  m_callback.game_deleted(itcp_protocol, game);
-}
-
 void	Game::start_game(ITCP_protocol<Client> &itcp_protocol)
 {
   if (m_white == nullptr || m_black == nullptr)
@@ -148,14 +100,4 @@ void	Game::ready_game(ITCP_protocol<Client> &itcp_protocol, bool ready)
     m_white_is_ready = ready;
   else
     throw std::logic_error("Impossible has happen");
-}
-
-void	Game::result_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_result *game_result)
-{
-  m_callback.result_game(itcp_protocol, game_result);
-}
-
-void	Game::message(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Message *message)
-{
-  m_callback.message(itcp_protocol, message);
 }

@@ -5,9 +5,13 @@
 // Login   <antoine.plaskowski@epitech.eu>
 // 
 // Started on  Tue Jan 26 17:50:03 2016 Antoine Plaskowski
-// Last update Wed Jan 27 18:39:23 2016 Antoine Plaskowski
+// Last update Thu Jan 28 09:45:18 2016 Antoine Plaskowski
 //
 
+#include	"TCP_protocol.hpp"
+#include	"TCP_server.hpp"
+#include	"TCP_client.hpp"
+#include	"Standard.hpp"
 #include	"Server.hpp"
 #include	"Time.hpp"
 
@@ -47,10 +51,10 @@ void	Server::run(void)
 	  Client &client = *itcp_protocol->get_data();
 
 	  if (itcp_protocol->want_recv())
-	    m_iselect->want_read(*client.m_itcp_client);
+	    m_iselect->want_read(*client.itcp_client);
 
 	  if (itcp_protocol->want_send())
-	    m_iselect->want_write(*client.m_itcp_client);
+	    m_iselect->want_write(*client.itcp_client);
 	}
       
       m_iselect->select();
@@ -66,8 +70,8 @@ void	Server::run(void)
       if (m_iselect->can_read(*m_itcp_server))
 	{
 	  Client	*client = new Client;
-	  client->m_itcp_client = &m_itcp_server->accept();
-	  client->m_last = new Time();
+	  client->itcp_client = &m_itcp_server->accept();
+	  client->last = new Time();
 	  m_itcp_protocols.push_back(new TCP_protocol<Client>(this, client));
 	}
       for (auto it = m_itcp_protocols.begin(); it != m_itcp_protocols.end();)
@@ -77,13 +81,13 @@ void	Server::run(void)
 
 	  try
 	    {
-	      if (m_iselect->can_read(*client.m_itcp_client))
-		itcp_protocol->recv(*client.m_itcp_client);
+	      if (m_iselect->can_read(*client.itcp_client))
+		itcp_protocol->recv(*client.itcp_client);
 	      else
 		timeout(*itcp_protocol);
 
-	      if (m_iselect->can_write(*client.m_itcp_client))
-		itcp_protocol->send(*client.m_itcp_client);
+	      if (m_iselect->can_write(*client.itcp_client))
+		itcp_protocol->send(*client.itcp_client);
 
 	      it++;
 	    }
@@ -100,7 +104,7 @@ void	Server::run(void)
 void	Server::timeout(ITCP_protocol<Client> &itcp_protocol) const
 {
   Client	&client = *itcp_protocol.get_data();
-  ITime		&last = *client.m_last;
+  ITime		&last = *client.last;
   intmax_t      second = last.get_second();
   intmax_t      nano = last.get_nano();
 
@@ -109,9 +113,9 @@ void	Server::timeout(ITCP_protocol<Client> &itcp_protocol) const
       || (last.get_second() - second == m_timeout->get_second()
 	  && last.get_nano() - nano > m_timeout->get_nano()))
     {
-      if (client.m_wait_pong == true)
+      if (client.wait_pong == true)
 	throw std::logic_error("timeout");
-      client.m_wait_pong = true;
+      client.wait_pong = true;
       itcp_protocol.send_ping();
     }
 }
@@ -128,8 +132,8 @@ void	Server::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std:
   std::cout << *login << " " << *password << std::endl;
   if (*login != *password)
     throw std::logic_error("Wrong login and/or password");
-  delete itcp_protocol.get_data()->m_login;
-  itcp_protocol.get_data()->m_login = login;
+  delete itcp_protocol.get_data()->login;
+  itcp_protocol.get_data()->login = login;
   delete password;
 }
 
@@ -147,69 +151,107 @@ void	Server::pong(ITCP_protocol<Client> &itcp_protocol)
 {
   Client	&client = *itcp_protocol.get_data();
 
-  client.m_wait_pong = false;
+  client.wait_pong = false;
 }
 
-void	Server::create_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
+void	Server::create_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game_info)
 {
+  Game	*game = new Game(*this, game_info->name);
+
+  itcp_protocol.set_callback(game);
+  game->m_black = &itcp_protocol;
+  m_games.push_back(game);
+  throw std::logic_error("don't sup this player");
 }
 
-void	Server::join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
+void	Server::join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game_info)
 {
+  for (auto game : m_games)
+    {
+      if (*game_info->name == game->get_name())
+	;
+    }
 }
 
 void	Server::leave_game(ITCP_protocol<Client> &itcp_protocol)
 {
+  throw std::logic_error("tu n'est pas en game");
 }
 
 void	Server::put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
 {
+  throw std::logic_error("tu n'est pas en game");
 }
 
 void	Server::change_param_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param)
 {
+  throw std::logic_error("tu n'est pas en game");
 }
 
 void	Server::list_param_game(ITCP_protocol<Client> &itcp_protocol, std::list<typename ITCP_protocol<Client>::Game_param *> *params)
 {
+  throw std::logic_error("tu n'est pas en game");
 }
 
 void	Server::game_created(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
 {
+  throw std::logic_error("je suis le server et toi le client !");
 }
 
 void	Server::game_player_joined(ITCP_protocol<Client> &itcp_protocol, std::string *name)
 {
+  throw std::logic_error("je suis le server et toi le client !");
 }
 
 void	Server::game_player_left(ITCP_protocol<Client> &itcp_protocol, std::string *name)
 {
+  throw std::logic_error("je suis le server et toi le client !");
 }
 
 void	Server::game_param_changed(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param)
 {
+  throw std::logic_error("je suis le server et toi le client !");
 }
 
 void	Server::game_stone_put(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
 {
+  throw std::logic_error("je suis le server et toi le client !");
 }
 
 void	Server::game_deleted(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
 {
+  throw std::logic_error("je suis le server et toi le client !");
 }
 
 void	Server::start_game(ITCP_protocol<Client> &itcp_protocol)
 {
+  throw std::logic_error("tu n'est pas en game");
 }
 
 void	Server::ready_game(ITCP_protocol<Client> &itcp_protocol, bool ready)
 {
+  throw std::logic_error("tu n'est pas en game");
 }
 
 void	Server::result_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_result *game_result)
 {
+  throw std::logic_error("je suis le server et toi le client !");  
 }
 
 void	Server::message(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Message *message)
 {
+  if (*itcp_protocol.get_data()->login == *message->name)
+    for (auto it : m_itcp_protocols)
+      it->send_message(*message);
+  else
+    for (auto it : m_itcp_protocols)
+      {
+	Client	*client = it->get_data();
+
+	if (*message->name == *client->login)
+	  {
+	    it->send_message(*message);
+	    break;
+	  }
+      }
 }

@@ -5,7 +5,7 @@
 // Login   <plasko_a@epitech.eu>
 // 
 // Started on  Tue Jan 26 17:48:04 2016 Antoine Plaskowski
-// Last update Wed Jan 27 18:33:47 2016 Antoine Plaskowski
+// Last update Thu Jan 28 09:22:14 2016 Antoine Plaskowski
 //
 
 #ifndef		SERVER_HPP_
@@ -13,11 +13,12 @@
 
 # include	<list>
 # include	<string>
-# include	"TCP_server.hpp"
-# include	"TCP_protocol.hpp"
-# include	"Standard.hpp"
+# include	"ITCP_server.hpp"
+# include	"ITCP_protocol.hpp"
+# include	"IStandard.hpp"
 # include	"Select.hpp"
 # include	"Client.hpp"
+# include	"Game.hpp"
 
 class	Server : public ITCP_protocol<Client>::Callback
 {
@@ -53,6 +54,7 @@ private:
   std::list<ITCP_protocol<Client> *>	m_itcp_protocols;
   ISelect	*m_iselect;
   ITime	*m_timeout;
+  std::list<Game *>	m_games;
 };
 
 #endif		/* !SERVER_HPP_ */
