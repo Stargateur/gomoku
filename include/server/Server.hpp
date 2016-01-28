@@ -22,8 +22,14 @@
 
 class	Server : public ITCP_protocol<Client>::Callback
 {
+
 public:
     Server(void);
+private:
+    Server(IStandard *);
+    Server(IStandard *, ITCP_server *);
+    Server(IStandard *, ITCP_server *, ISelect *);
+public:
     ~Server(void);
     void	run(void);
     void	timeout(ITCP_protocol<Client> &itcp_protocol) const;
@@ -49,12 +55,12 @@ public:
     void	result_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_result *game_result);
     void	message(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Message *message);
 private:
-    ITCP_server const	*m_itcp_server;
-    IStandard	*m_istandard;
-    std::list<ITCP_protocol<Client> *>	m_itcp_protocols;
+    IStandard   *m_istandard;
+    ITCP_server const   *m_itcp_server;
     ISelect	*m_iselect;
     ITime	*m_timeout;
     std::list<Game *>	m_games;
+    std::list<ITCP_protocol<Client> *>  m_itcp_protocols;
 };
 
 class	IServer_exception : public std::exception
@@ -75,6 +81,15 @@ public:
     Server_exception_client_transfer	&operator=(Server_exception_client_transfer const &) noexcept;
 public:
     Game	&m_game;
+};
+
+class   Server_exception_client_disconnected : public IServer_exception
+{
+public:
+    Server_exception_client_disconnected(void) noexcept;
+    Server_exception_client_disconnected(Server_exception_client_disconnected const &) noexcept;
+    virtual ~Server_exception_client_disconnected(void) noexcept;
+    Server_exception_client_disconnected	&operator=(Server_exception_client_disconnected const &) noexcept;
 };
 
 #endif		/* !SERVER_HPP_ */

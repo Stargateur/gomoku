@@ -36,7 +36,7 @@ TCP_server::~TCP_server(void)
 int	TCP_server::aux_bind(struct addrinfo const *rp)
 {
     if (rp == NULL)
-        throw TCP_server_exception(strerror(errno));
+        throw TCP_server_exception(::strerror(errno));
     int	fd = ::socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
     if (fd == -1)
         return (aux_bind(rp->ai_next));
@@ -73,9 +73,17 @@ int	TCP_server::bind(std::string const &port)
 #ifdef	_WIN32
     WSAStartup(MAKEWORD(2, 2), NULL);
 #endif
-    int	fd = aux_bind(result);
-    ::freeaddrinfo(result);
-    return (fd);
+    try
+    {
+        int	fd = aux_bind(result);
+        ::freeaddrinfo(result);
+        return (fd);
+    }
+    catch (TCP_server_exception &e)
+    {
+        ::freeaddrinfo(result);
+        throw;
+    }
 }
 
 ITCP_client	&TCP_server::accept(void) const
@@ -85,6 +93,10 @@ ITCP_client	&TCP_server::accept(void) const
 
 TCP_server_exception::TCP_server_exception(char const *what) :
     m_what(what)
+{
+}
+
+TCP_server_exception::~TCP_server_exception(void)
 {
 }
 

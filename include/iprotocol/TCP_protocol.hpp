@@ -34,6 +34,9 @@ public:
 public:
     ~TCP_protocol(void)
     {
+        for (auto it : m_to_send)
+            delete it;
+        delete m_data;
     }
 
 public:
@@ -71,6 +74,7 @@ public:
 public:
     void	set_data(T *data)
     {
+        delete m_data;
         m_data = data;
     }
 

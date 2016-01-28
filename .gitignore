@@ -10,3 +10,4 @@ gomoku_server
 *.autosave
 gui_client
 SFML
+gomoku.sublime-workspace
