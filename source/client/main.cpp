@@ -12,7 +12,7 @@
 
 int	main(void)
 {
-  Client	client;
+    Client	client;
 
-  client.run();
+    client.run();
 }

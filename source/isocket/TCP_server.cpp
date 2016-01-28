@@ -28,67 +28,67 @@ TCP_server::TCP_server(std::string const &port) : ASocket(bind(port))
 TCP_server::~TCP_server(void)
 {
 #ifdef	_WIN32
-	WSACleanup();
+    WSACleanup();
 #endif
-  close(m_fd);
+    close(m_fd);
 }
 
 int	TCP_server::aux_bind(struct addrinfo const *rp)
 {
-  if (rp == NULL)
-    throw TCP_server_exception(strerror(errno));
-  int	fd = ::socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-  if (fd == -1)
-    return (aux_bind(rp->ai_next));
-  if (::bind(fd, rp->ai_addr, rp->ai_addrlen) != 0)
+    if (rp == NULL)
+        throw TCP_server_exception(strerror(errno));
+    int	fd = ::socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+    if (fd == -1)
+        return (aux_bind(rp->ai_next));
+    if (::bind(fd, rp->ai_addr, rp->ai_addrlen) != 0)
     {
-      ::close(fd);
-      return (aux_bind(rp->ai_next));
+        ::close(fd);
+        return (aux_bind(rp->ai_next));
     }
-  if (::listen(fd, 42) != 0)
+    if (::listen(fd, 42) != 0)
     {
-      ::close(fd);
-      return (aux_bind(rp->ai_next));
+        ::close(fd);
+        return (aux_bind(rp->ai_next));
     }
-  return (fd);
+    return (fd);
 }
 
 int	TCP_server::bind(std::string const &port)
 {
-  struct addrinfo const	hints =
+    struct addrinfo const	hints =
     {
-      AI_PASSIVE,
-      AF_UNSPEC,
-      SOCK_STREAM,
-      IPPROTO_TCP,
-      0,
-      NULL,
-      NULL,
-      NULL
+        AI_PASSIVE,
+        AF_UNSPEC,
+        SOCK_STREAM,
+        IPPROTO_TCP,
+        0,
+        NULL,
+        NULL,
+        NULL
     };
-  struct addrinfo	*result;
-  int	status = ::getaddrinfo(NULL, port.c_str(), &hints, &result);
-  if (status != 0)
-    throw TCP_server_exception(gai_strerror(status));
+    struct addrinfo	*result;
+    int	status = ::getaddrinfo(NULL, port.c_str(), &hints, &result);
+    if (status != 0)
+        throw TCP_server_exception(gai_strerror(status));
 #ifdef	_WIN32
-	WSAStartup(MAKEWORD(2, 2), NULL);
+    WSAStartup(MAKEWORD(2, 2), NULL);
 #endif
-  int	fd = aux_bind(result);
-  ::freeaddrinfo(result);
-  return (fd);
+    int	fd = aux_bind(result);
+    ::freeaddrinfo(result);
+    return (fd);
 }
 
 ITCP_client	&TCP_server::accept(void) const
 {
-  return (*new TCP_client(*this));
+    return (*new TCP_client(*this));
 }
 
 TCP_server_exception::TCP_server_exception(char const *what) :
-  m_what(what)
+    m_what(what)
 {
 }
 
 char const	*TCP_server_exception::what(void) const noexcept
 {
-  return (m_what);
+    return (m_what);
 }

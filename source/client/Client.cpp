@@ -1,9 +1,9 @@
 //
 // Client.cpp for Client in /home/plasko_a/projet/gomoku
-// 
+//
 // Made by Antoine Plaskowski
 // Login   <antoine.plaskowski@epitech.eu>
-// 
+//
 // Started on  Wed Jan 27 11:01:51 2016 Antoine Plaskowski
 // Last update Wed Jan 27 11:22:59 2016 Antoine Plaskowski
 //
@@ -15,10 +15,10 @@
 #include	"Select.hpp"
 
 Client::Client(void) :
-  m_itcp_protocol(new TCP_protocol<ITCP_client>(this, new TCP_client("localhost", "4242"))),
-  m_iselect(new Select)
+    m_itcp_protocol(new TCP_protocol<ITCP_client>(this, new TCP_client("localhost", "4242"))),
+    m_iselect(new Select)
 {
-  m_itcp_protocol->send_connect("plasko_a", "plasko_a");
+    m_itcp_protocol->send_connect("plasko_a", "plasko_a");
 }
 
 Client::~Client(void)
@@ -27,26 +27,26 @@ Client::~Client(void)
 
 void	Client::run(void)
 {
-  bool	g_keep_running = true;
+    bool	g_keep_running = true;
 
-  while (g_keep_running == true)
+    while (g_keep_running == true)
     {
-      m_iselect->reset();
-      if (m_itcp_protocol->want_recv() == true)
-	m_iselect->want_read(*m_itcp_protocol->get_data());
-      if (m_itcp_protocol->want_send() == true)
-	m_iselect->want_write(*m_itcp_protocol->get_data());
-      m_iselect->select();
-      if (m_iselect->can_read(*m_itcp_protocol->get_data()) == true)
-	m_itcp_protocol->recv(*m_itcp_protocol->get_data());
-      if (m_iselect->can_write(*m_itcp_protocol->get_data()) == true)
-	m_itcp_protocol->send(*m_itcp_protocol->get_data());
+        m_iselect->reset();
+        if (m_itcp_protocol->want_recv() == true)
+            m_iselect->want_read(*m_itcp_protocol->get_data());
+        if (m_itcp_protocol->want_send() == true)
+            m_iselect->want_write(*m_itcp_protocol->get_data());
+        m_iselect->select();
+        if (m_iselect->can_read(*m_itcp_protocol->get_data()) == true)
+            m_itcp_protocol->recv(*m_itcp_protocol->get_data());
+        if (m_iselect->can_write(*m_itcp_protocol->get_data()) == true)
+            m_itcp_protocol->send(*m_itcp_protocol->get_data());
     }
 }
 
 void	Client::result(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Error error)
 {
-  std::cout << error << std::endl;
+    std::cout << error << std::endl;
 }
 
 void	Client::connect(ITCP_protocol<ITCP_client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)
@@ -59,7 +59,7 @@ void	Client::disconnect(ITCP_protocol<ITCP_client> &itcp_protocol)
 
 void	Client::ping(ITCP_protocol<ITCP_client> &itcp_protocol)
 {
-  itcp_protocol.send_pong();
+    itcp_protocol.send_pong();
 }
 
 void	Client::pong(ITCP_protocol<ITCP_client> &itcp_protocol)

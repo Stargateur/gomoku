@@ -14,7 +14,7 @@
 #include	"Time.hpp"
 
 Time::Time(intmax_t second, intmax_t nano) :
-  m_timespec({second, nano})
+    m_timespec({second, nano})
 {
 }
 
@@ -24,55 +24,55 @@ Time::~Time(void)
 
 intmax_t	Time::get_second(void) const
 {
-  return (m_timespec.tv_sec);
+    return (m_timespec.tv_sec);
 }
 
 void	Time::set_second(intmax_t second)
 {
-  m_timespec.tv_sec = second;
+    m_timespec.tv_sec = second;
 }
 
 intmax_t	Time::get_nano(void) const
 {
-  return (m_timespec.tv_nsec);
+    return (m_timespec.tv_nsec);
 }
 
 void	Time::set_nano(intmax_t nano)
 {
-  m_timespec.tv_nsec = nano;
-  if (get_nano() >= ITime::nano_by_second)
+    m_timespec.tv_nsec = nano;
+    if (get_nano() >= ITime::nano_by_second)
     {
-      if (get_second() >= 0)
-	set_second(get_second() + 1);
-      else
-	set_second(get_second() - 1);
-      set_nano(get_nano() - ITime::nano_by_second);
+        if (get_second() >= 0)
+            set_second(get_second() + 1);
+        else
+            set_second(get_second() - 1);
+        set_nano(get_nano() - ITime::nano_by_second);
     }
-  else if (get_nano() < 0)
+    else if (get_nano() < 0)
     {
-      if (get_second() >= 0)
-	set_second(get_second() - 1);
-      else
-	set_second(get_second() + 1);
-      set_nano(get_nano() + ITime::nano_by_second);
+        if (get_second() >= 0)
+            set_second(get_second() - 1);
+        else
+            set_second(get_second() + 1);
+        set_nano(get_nano() + ITime::nano_by_second);
     }
 }
 
 bool	Time::now(void)
 {
-  if (clock_gettime(CLOCK_REALTIME, &m_timespec) == -1)
-    return true;
-  return false;
+    if (clock_gettime(CLOCK_REALTIME, &m_timespec) == -1)
+        return true;
+    return false;
 }
 
 ITime	&Time::clone(void) const
 {
-  return (*new Time(get_second(), get_nano()));
+    return (*new Time(get_second(), get_nano()));
 }
 
 ITime	*new_itime(void)
 {
-  return (new Time());
+    return (new Time());
 }
 
 #endif // WIN32

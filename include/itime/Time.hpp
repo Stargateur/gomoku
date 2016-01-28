@@ -20,17 +20,17 @@
 class Time : public ITime
 {
 public:
-  Time(intmax_t second = 0, intmax_t nano = 0);
-  ~Time(void);
+    Time(intmax_t second = 0, intmax_t nano = 0);
+    ~Time(void);
 public:
-  intmax_t	get_second(void) const;
-  void	set_second(intmax_t second);
-  intmax_t	get_nano(void) const;
-  void	set_nano(intmax_t nano);
-  bool	now(void);
-  ITime	&clone(void) const;
+    intmax_t	get_second(void) const;
+    void	set_second(intmax_t second);
+    intmax_t	get_nano(void) const;
+    void	set_nano(intmax_t nano);
+    bool	now(void);
+    ITime	&clone(void) const;
 private:
-  struct timespec	m_timespec;
+    struct timespec	m_timespec;
 };
 
 #endif // _WIN32
