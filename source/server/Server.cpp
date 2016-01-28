@@ -58,6 +58,8 @@ Server::~Server(void)
     delete m_istandard;
     for (auto itcp_protocol : m_itcp_protocols)
         delete itcp_protocol;
+    for (auto game : m_games)
+        delete game;
     delete m_iselect;
     delete m_timeout;
 }
@@ -133,6 +135,34 @@ void	Server::run(void)
                 it = m_itcp_protocols.erase(it);
             }
         }
+        for (auto game : m_games)
+        {
+            auto &itcp_protocols = game->m_itcp_protocols;
+            for (auto it = itcp_protocols.begin(); it != itcp_protocols.end();)
+            {
+                auto itcp_protocol = *it;
+                Client &client = *itcp_protocol->get_data();
+
+                try
+                {
+                    if (m_iselect->can_read(*client.get_itcp_client()))
+                        itcp_protocol->recv(*client.get_itcp_client());
+                    else
+                        timeout(*itcp_protocol);
+
+                    if (m_iselect->can_write(*client.get_itcp_client()))
+                        itcp_protocol->send(*client.get_itcp_client());
+
+                    it++;
+                }
+                catch (std::exception &e)
+                {
+                    std::cerr << e.what() << std::endl;
+                    delete itcp_protocol;
+                    it = itcp_protocols.erase(it);
+                }
+            }
+        }
     }
 }
 
@@ -191,7 +221,9 @@ void	Server::create_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pro
 {
     Game	*game = new Game(*this, game_info->name);
 
-    game->m_itcp_protocols.push_back(&itcp_protocol);
+    m_games.push_back(game);
+    delete game_info->owner;
+    delete game_info;
     throw Server_exception_client_transfer(game);
 }
 
