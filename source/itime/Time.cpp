@@ -5,7 +5,7 @@
 // Login   <bertra_l@epitech.net>
 //
 // Started on  Wed Oct 21 21:04:15 2015 Bertrand-Rapello Baptiste
-// Last update Fri Jan 29 23:58:54 2016 Antoine Plaskowski
+// Last update Sat Jan 30 00:19:18 2016 Antoine Plaskowski
 //
 
 #include "Time.hpp"
@@ -77,10 +77,6 @@ Time::Time(intmax_t second, intmax_t nano) :
 {
 }
 
-Time::~Time(void)
-{
-}
-
 intmax_t	Time::get_second(void) const
 {
     return (m_timespec.tv_sec);
@@ -130,6 +126,10 @@ ITime	*new_itime(void)
 }
 
 #endif // WIN32
+
+Time::~Time(void)
+{
+}
 
 ITime	&Time::clone(void) const
 {
