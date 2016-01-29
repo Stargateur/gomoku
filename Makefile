@@ -104,7 +104,7 @@ all		:	$(SERVER) $(CLIENT) lib
 
 
 lib		:
-			cd SFML; $(CMAKE) .
+			$(CMAKE) -G "MinGW Makefiles" -DSFML_ROOT="SFML" SFML
 			$(MAKE) -C SFML
 
 $(SERVER)	:	CXXFLAGS += -I include/server
