@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Fri Jan 29 19:34:05 2016 Antoine Plaskowski
+## Last update Fri Jan 29 19:38:10 2016 Antoine Plaskowski
 ##
 
 ifeq ($(OS), Windows_NT)
@@ -106,13 +106,15 @@ all		:	$(SERVER) $(CLIENT)
 ifeq ($(OS), Windows_NT)
 MAKEFILE_TYPE_SFML	=	"MinGW Makefiles"
 DIR_SFML	=	"SFML\build"
+DIR_INSTALL_SFML	=	"..\..\lib\sfml"
 else
 MAKEFILE_TYPE_SFML	=	"Unix Makefiles"
 DIR_SFML	=	"SFML/build"
+DIR_INSTALL_SFML	=	"../../lib/sfml"
 endif
 
 lib		:
-			mkdir -p $(DIR_SFML) && cd $(DIR_SFML) && $(CMAKE) -G $(MAKEFILE_TYPE_SFML) -DCMAKE_INSTALL_PREFIX="../../lib/sfml" ..
+			mkdir -p $(DIR_SFML) && cd $(DIR_SFML) && $(CMAKE) -G $(MAKEFILE_TYPE_SFML) -DCMAKE_INSTALL_PREFIX=$(DIR_INSTALL_SFML) ..
 			$(MAKE) -C $(DIR_SFML)
 
 lib_clean	:
@@ -144,7 +146,7 @@ else
 			$(RM) $(RM_FLAG) $(OBJ_CLIENT)
 			$(RM) $(RM_FLAG) $(DPD_CLIENT)
 endif
-			$(MAKE) -C lib/sfml clean
+			$(MAKE) -C $(DIR_SFML) clean
 
 fclean		:	clean
 ifeq ($(OS), Windows_NT)
@@ -154,7 +156,7 @@ ifeq ($(OS), Windows_NT)
 else
 			$(RM) $(RM_FLAG) $(SERVER)
 			$(RM) $(RM_FLAG) $(CLIENT)
-			$(RM) -rf build
+			$(RM) -rf $(DIR_SFML) $(DIR_INSTALL_SFML)
 endif
 
 re		:	fclean
