@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Fri Jan 29 17:34:54 2016 Antoine Plaskowski
+## Last update Fri Jan 29 19:34:05 2016 Antoine Plaskowski
 ##
 
 ifeq ($(OS), Windows_NT)
@@ -46,13 +46,14 @@ COLOR		?=	no
 LIB_SERVER	=
 
 ifeq ($(OS), Windows_NT)
-LIB_CLIENT	=	-L SFML/lib -lsfml-main -lsfml-graphics -lsfml-window -lsfml-system
+LIB_CLIENT	=	-L lib/SFML/lib -lsfml-main -lsfml-graphics -lsfml-window -lsfml-system
 else
 LIB_CLENT	=	$(shell pkg-config --libs sfml-graphics sfml-window sfml-system sfml-network)
 endif
 
 INCLUDE		=	-I include -I include/itime -I include/isocket -I include/iprotocol
 ifeq ($(OS), Windows_NT)
+INCLUDE		+=	-I lib/SFML/include
 else
 INCLUDE		+=	$(shell pkg-config --cflags sfml-graphics sfml-window sfml-system sfml-network)
 endif
@@ -100,19 +101,28 @@ OBJ_SERVER	=	$(SRC_SERVER:.cpp=.o)
 DPD_CLIENT	=	$(SRC_CLIENT:.cpp=.dpd)
 OBJ_CLIENT	=	$(SRC_CLIENT:.cpp=.o)
 
-all		:	$(SERVER) $(CLIENT) lib
+all		:	$(SERVER) $(CLIENT)
 
+ifeq ($(OS), Windows_NT)
+MAKEFILE_TYPE_SFML	=	"MinGW Makefiles"
+DIR_SFML	=	"SFML\build"
+else
+MAKEFILE_TYPE_SFML	=	"Unix Makefiles"
+DIR_SFML	=	"SFML/build"
+endif
 
 lib		:
-			$(CMAKE) -G "MinGW Makefiles" -DSFML_ROOT="SFML" SFML
-			$(MAKE) -C SFML
+			mkdir -p $(DIR_SFML) && cd $(DIR_SFML) && $(CMAKE) -G $(MAKEFILE_TYPE_SFML) -DCMAKE_INSTALL_PREFIX="../../lib/sfml" ..
+			$(MAKE) -C $(DIR_SFML)
+
+lib_clean	:
 
 $(SERVER)	:	CXXFLAGS += -I include/server
 $(SERVER)	:	$(OBJ) $(OBJ_SERVER)
 			$(CXX) $(OBJ) $(OBJ_SERVER) -o $(SERVER) $(LDFLAGS) $(LIB_SERVER)
 
 $(CLIENT)	:	CXXFLAGS += -I include/client
-$(CLIENT)	:	$(OBJ) $(OBJ_CLIENT)
+$(CLIENT)	:	$(OBJ) $(OBJ_CLIENT) lib
 			$(CXX) $(OBJ) $(OBJ_CLIENT) -o $(CLIENT) $(LDFLAGS) $(LIB_CLIENT)
 
 $(DPD_SERVER)	:	CXXFLAGS += -I include/server
@@ -134,14 +144,17 @@ else
 			$(RM) $(RM_FLAG) $(OBJ_CLIENT)
 			$(RM) $(RM_FLAG) $(DPD_CLIENT)
 endif
+			$(MAKE) -C lib/sfml clean
 
 fclean		:	clean
 ifeq ($(OS), Windows_NT)
 			$(RM) $(RM_FLAG) $(subst /,\,$(SERVER))
 			$(RM) $(RM_FLAG) $(subst /,\,$(CLIENT))
+			$(RM) /r /f build
 else
 			$(RM) $(RM_FLAG) $(SERVER)
 			$(RM) $(RM_FLAG) $(CLIENT)
+			$(RM) -rf build
 endif
 
 re		:	fclean
