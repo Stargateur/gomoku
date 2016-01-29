@@ -13,6 +13,7 @@
 
 # ifdef		_WIN32
 #  include	<Windows.h>
+#  include	<Winsock2.h>
 # else
 #  include	<sys/select.h>
 # endif

@@ -8,7 +8,10 @@ gomoku_client
 gomoku_server
 *.dpd
 *.autosave
+*.exe
 gui_client
 SFML
 gomoku.sublime-workspace
 lib
+*.layout
+*.depend

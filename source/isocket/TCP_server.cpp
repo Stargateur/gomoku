@@ -28,26 +28,42 @@ TCP_server::TCP_server(std::string const &port) : ASocket(bind(port))
 TCP_server::~TCP_server(void)
 {
 #ifdef	_WIN32
-    WSACleanup();
+//    WSACleanup();
+    closesocket(m_fd);
+#else
+    shutdown(m_fd, SHUT_RDWR);
 #endif
-    close(m_fd);
 }
 
 int	TCP_server::aux_bind(struct addrinfo const *rp)
 {
     if (rp == NULL)
-        throw TCP_server_exception(::strerror(errno));
+#ifdef	_WIN32
+		;
+#else
+        throw TCP_client_exception(strerror(errno));
+#endif
     int	fd = ::socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
     if (fd == -1)
         return (aux_bind(rp->ai_next));
     if (::bind(fd, rp->ai_addr, rp->ai_addrlen) != 0)
     {
-        ::close(fd);
+#ifdef	_WIN32
+//    WSACleanup();
+    closesocket(fd);
+#else
+    shutdown(fd, SHUT_RDWR);
+#endif
         return (aux_bind(rp->ai_next));
     }
     if (::listen(fd, 42) != 0)
     {
-        ::close(fd);
+#ifdef	_WIN32
+//    WSACleanup();
+    closesocket(fd);
+#else
+    shutdown(fd, SHUT_RDWR);
+#endif
         return (aux_bind(rp->ai_next));
     }
     return (fd);
@@ -67,12 +83,20 @@ int	TCP_server::bind(std::string const &port)
         NULL
     };
     struct addrinfo	*result;
+    #ifdef	_WIN32
+    WSADATA wsaData;
+    auto err = WSAStartup(MAKEWORD(2, 2), &wsaData);
+        if (err != 0) {
+        /* Tell the user that we could not find a usable */
+        /* Winsock DLL.                                  */
+        std::cerr << "WSAStartup failed with error: " << err << std::endl;
+        return 1;
+    }
+
+    #endif
     int	status = ::getaddrinfo(NULL, port.c_str(), &hints, &result);
     if (status != 0)
         throw TCP_server_exception(gai_strerror(status));
-#ifdef	_WIN32
-    WSAStartup(MAKEWORD(2, 2), NULL);
-#endif
     try
     {
         int	fd = aux_bind(result);

@@ -9,6 +9,7 @@
 //
 
 #include	<iostream>
+#include    <stdexcept>
 #include	"TCP_packet_recv.hpp"
 
 TCP_packet_recv::TCP_packet_recv(void) :

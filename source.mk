@@ -39,6 +39,7 @@ SRC		+=	$(DIR_IPROTOCOL)/TCP_packet_send.cpp
 
 SRC		+=	$(DIR_ITIME)/ITime.cpp
 SRC		+=	$(DIR_ITIME)/Time.cpp
+SRC		+=	$(DIR_ITIME)/Time_Windows.cpp
 
 
 SRC_SERVER	=	$(DIR_SERVER)/main.cpp

@@ -9,6 +9,7 @@
 //
 
 #include	<iostream>
+#include    <stdexcept>
 #include	"TCP_packet_send.hpp"
 
 TCP_packet_send::TCP_packet_send(void) :

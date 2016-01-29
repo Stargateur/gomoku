@@ -8,10 +8,14 @@
 // Last update Sun Dec 27 02:05:24 2015 Antoine Plaskowski
 //
 
+#ifdef  _WIN32
+
 #include <ctime>
 #include "Time_Windows.hpp"
 
-Time::Time(void)
+Time::Time(intmax_t second, intmax_t nano) :
+    m_second(second),
+    m_milli(nano / milli_by_nano)
 {
 }
 
@@ -73,3 +77,5 @@ ITime	*new_itime(void)
 {
     return (new Time());
 }
+
+#endif // WIN32

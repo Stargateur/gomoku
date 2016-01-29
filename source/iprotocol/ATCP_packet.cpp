@@ -8,6 +8,7 @@
 // Last update Tue Jan 26 13:08:33 2016 Antoine Plaskowski
 //
 
+#include    <stdexcept>>
 #include	"ATCP_packet.hpp"
 
 ATCP_packet::ATCP_packet(void) :

@@ -8,11 +8,17 @@
 // Last update Wed Jan 27 11:29:33 2016 Antoine Plaskowski
 //
 
+#include	<iostream>
+#include	<exception>
 #include	"Client.hpp"
 
-int	main(void)
+int	main(void) try
 {
     Client	client;
 
     client.run();
+}
+catch (std::exception &e)
+{
+	std::cerr << e.what() << std::endl;
 }

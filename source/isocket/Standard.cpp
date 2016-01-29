@@ -10,10 +10,8 @@
 
 #ifdef		_WIN32
 # include	<io.h>
-typedef int ssize_t;
-#else
-# include	<unistd.h>
 #endif
+#include	<unistd.h>
 #include	<exception>
 #include	<cstring>
 #include	<cerrno>

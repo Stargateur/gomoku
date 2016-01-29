@@ -14,15 +14,18 @@
 #include	"Standard.hpp"
 #include	"Server.hpp"
 #include	"Time.hpp"
+#include    "Time_Windows.hpp"
 
 Server::Server(void) :
     Server(new Standard(IStandard::In))
 {
+            std::cerr << "lol1" << std::endl;
 }
 
 Server::Server(IStandard *istandard) try :
     Server(istandard, new TCP_server("4242"))
 {
+            std::cerr << "lol2" << std::endl;
 }
 catch (...)
 {
@@ -32,7 +35,7 @@ catch (...)
 Server::Server(IStandard *istandard, ITCP_server *itcp_server) try :
     Server(istandard, itcp_server, new Select())
 {
-
+        std::cerr << "lol3" << std::endl;
 }
 catch (...)
 {
@@ -45,7 +48,7 @@ Server::Server(IStandard *istandard, ITCP_server *itcp_server, ISelect *iselect)
     m_iselect(iselect),
     m_timeout(new Time(5))
 {
-
+        std::cerr << "lol4" << std::endl;
 }
 catch (...)
 {
@@ -71,11 +74,10 @@ void	Server::run(void)
     while (g_keep_running == true)
     {
         m_iselect->reset();
-
+#ifndef	_WIN32
         m_iselect->want_read(*m_istandard);
-
+#endif
         m_iselect->want_read(*m_itcp_server);
-
         for (auto itcp_protocol : m_itcp_protocols)
         {
             Client &client = *itcp_protocol->get_data();
@@ -86,7 +88,6 @@ void	Server::run(void)
             if (itcp_protocol->want_send())
                 m_iselect->want_write(*client.get_itcp_client());
         }
-
         for (auto game : m_games)
         {
             for (auto *itcp_protocol : game->m_itcp_protocols)
@@ -103,6 +104,8 @@ void	Server::run(void)
 
         m_iselect->select();
 
+
+#ifndef	_WIN32
         if (m_iselect->can_read(*m_istandard))
         {
             m_iselect->reset_read(*m_istandard);
@@ -111,6 +114,7 @@ void	Server::run(void)
             if (m_istandard->read(buffer[0], 42) == 0)
                 g_keep_running = false;
         }
+#endif
 
         if (m_iselect->can_read(*m_itcp_server))
         {

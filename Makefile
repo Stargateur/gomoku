@@ -8,16 +8,14 @@
 ## Last update Tue Jan 26 13:40:39 2016 Antoine Plaskowski
 ##
 
-WINDOWS		?=	no
-
-ifeq ($(WINDOWS), yes)
+ifeq ($(OS), Windows_NT)
 CLIENT		=	gomoku_client.exe
 else
 CLIENT		=	gomoku_client
 endif
 
 
-ifeq ($(WINDOWS), yes)
+ifeq ($(OS), Windows_NT)
 SERVER		=	gomoku_server.exe
 else
 SERVER		=	gomoku_server
@@ -25,18 +23,18 @@ endif
 
 CXX		?=	g++
 
-ifeq ($(WINDOWS), yes)
+ifeq ($(OS), Windows_NT)
 RM		=	cmd /c del
 else
 RM		=	rm
 endif
 
-ifeq ($(WINDOWS), yes)
+ifeq ($(OS), Windows_NT)
 RM_FLAG		=	/f
 else
 RM_FLAG		=	-f
 endif
-MAKE		=	make
+MAKE		?=	make
 
 DEBUG		?=	yes
 
@@ -46,20 +44,25 @@ COLOR		?=	no
 
 LIB_SERVER	=
 
-ifeq ($(WINDOWS), yes)
-LIB_CLIENT	=	-L lib -lsfml-main -lsfml-graphics -lsfml-window -lsfml-system
+ifeq ($(OS), Windows_NT)
+LIB_CLIENT	=	-L lib -L SFML -L SFML/lib -L SFML/build/lib -L lib/lib -lsfml-main -lsfml-graphics -lsfml-window -lsfml-system
 else
 LIB_CLENT	=	$(shell pkg-config --libs sfml-graphics sfml-window sfml-system sfml-network)
 endif
 
 INCLUDE		=	-I include -I include/itime -I include/isocket -I include/iprotocol
-ifneq ($(WINDOWS), yes)
+ifeq ($(OS), Windows_NT)
+else
 INCLUDE		+=	$(shell pkg-config --cflags sfml-graphics sfml-window sfml-system sfml-network)
 endif
 
 CXXFLAGS	+=	-Wall -Wextra -Wno-unknown-pragmas
 CXXFLAGS	+=	-ansi -pedantic -std=c++11
 CXXFLAGS	+=	$(INCLUDE)
+
+ifeq ($(OS), Windows_NT)
+CXXFLAGS		+=	-D _WIN32
+endif
 
 ifeq ($(CXX), clang++)
 CXXFLAGS	+=	-Weverything -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic
@@ -75,7 +78,7 @@ ifneq ($(COLOR), no)
 CXXFLAGS	+=	-fdiagnostics-color
 endif
 
-ifeq ($(WINDOWS), yes)
+ifeq ($(OS), Windows_NT)
 LDFLAGS		= -l ws2_32
 else
 LDFLAGS		=
@@ -111,7 +114,7 @@ $(DPD_CLIENT)	:	CXXFLAGS += -I include/client
 
 
 clean		:
-ifeq ($(WINDOWS), yes)
+ifeq ($(OS), Windows_NT)
 			$(RM) $(RM_FLAG) $(subst /,\,$(OBJ))
 			$(RM) $(RM_FLAG) $(subst /,\,$(DPD))
 			$(RM) $(RM_FLAG) $(subst /,\,$(OBJ_SERVER))
@@ -128,7 +131,7 @@ else
 endif
 
 fclean		:	clean
-ifeq ($(WINDOWS), yes)
+ifeq ($(OS), Windows_NT)
 			$(RM) $(RM_FLAG) $(subst /,\,$(SERVER))
 			$(RM) $(RM_FLAG) $(subst /,\,$(CLIENT))
 else
@@ -137,6 +140,7 @@ else
 endif
 
 re		:	fclean
+			echo $(OS)
 			$(MAKE) -C .
 
 %.dpd		:	%.c

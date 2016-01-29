@@ -19,7 +19,7 @@ class	Time : public ITime
 public:
     uintmax_t const	milli_by_nano = 1000000;
 public:
-    Time(void);
+    Time(intmax_t second = 0, intmax_t nano = 0);
     intmax_t	get_second(void) const;
     void	set_second(intmax_t);
     intmax_t	get_nano(void) const;
