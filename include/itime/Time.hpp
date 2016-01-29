@@ -5,7 +5,7 @@
 // Login   <plasko_a@epitech.eu>
 //
 // Started on  Sun Dec 27 01:06:19 2015 Antoine Plaskowski
-// Last update Sat Jan 30 00:10:56 2016 Antoine Plaskowski
+// Last update Sat Jan 30 00:11:58 2016 Antoine Plaskowski
 //
 
 #ifndef TIME_HPP_
@@ -32,7 +32,7 @@ public:
     ITime	&clone(void) const;
 private:
 #ifdef _WIN32
-  static const m_milli_by_nano = 1000;
+  static const uintmax_t m_milli_by_nano = 1000;
     time_t	m_second;
     WORD	m_milli;
 #else
