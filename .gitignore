@@ -11,3 +11,4 @@ gomoku_server
 gui_client
 SFML
 gomoku.sublime-workspace
+lib
