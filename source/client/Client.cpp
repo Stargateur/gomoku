@@ -22,6 +22,7 @@ Client::Client(void) :
     std::string name("toto");
     ITCP_protocol<ITCP_client>::Game    game({&name, &name});
     m_itcp_protocol->send_create_game(game);
+    m_itcp_protocol->send_leave_game();
     m_itcp_protocol->send_disconnect();
 }
 

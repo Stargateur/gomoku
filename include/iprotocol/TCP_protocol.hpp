@@ -23,9 +23,9 @@ template<typename T>
 class	TCP_protocol : public ITCP_protocol<T>
 {
 public:
-    TCP_protocol(typename ITCP_protocol<T>::Callback *callback, T *data = nullptr) :
-        m_callback(callback),
-        m_data(data)
+    TCP_protocol(typename ITCP_protocol<T>::Callback *callback, T *data) :
+        m_data(data),
+        m_callback(callback)
     {
         if (callback == nullptr)
             throw std::logic_error("callback can't be nullptr");
@@ -60,6 +60,13 @@ public:
     }
 
 public:
+    void    set_data(T *data)
+    {
+        delete m_data;
+        m_data = data;
+    }
+
+public:
     T	*get_data(void)
     {
         return (m_data);
@@ -69,13 +76,6 @@ public:
     T const	*get_data(void) const
     {
         return (m_data);
-    }
-
-public:
-    void	set_data(T *data)
-    {
-        delete m_data;
-        m_data = data;
     }
 
 private:

@@ -101,7 +101,7 @@ public:
     virtual uint8_t	get_version(void) const = 0;
     virtual void	set_callback(Callback *callback) = 0;
     virtual Callback	*get_callback(void) const = 0;
-    virtual void	set_data(T *data) = 0;
+    virtual void    set_data(T *data) = 0;
     virtual T	*get_data(void) = 0;
     virtual T const	*get_data(void) const = 0;
     virtual bool	want_send(void) const = 0;

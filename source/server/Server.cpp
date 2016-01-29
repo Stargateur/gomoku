@@ -87,10 +87,25 @@ void	Server::run(void)
                 m_iselect->want_write(*client.get_itcp_client());
         }
 
+        for (auto game : m_games)
+        {
+            for (auto *itcp_protocol : game->m_itcp_protocols)
+            {
+                Client &client = *itcp_protocol->get_data();
+
+                if (itcp_protocol->want_recv())
+                    m_iselect->want_read(*client.get_itcp_client());
+
+                if (itcp_protocol->want_send())
+                    m_iselect->want_write(*client.get_itcp_client());
+            }
+        }
+
         m_iselect->select();
 
         if (m_iselect->can_read(*m_istandard))
         {
+            m_iselect->reset_read(*m_istandard);
             uint8_t       buffer[42];
 
             if (m_istandard->read(buffer[0], 42) == 0)
@@ -99,6 +114,7 @@ void	Server::run(void)
 
         if (m_iselect->can_read(*m_itcp_server))
         {
+            m_iselect->reset_read(*m_itcp_server);
             Client	*client = new Client(&m_itcp_server->accept(), nullptr, new Time(), false);
 #ifdef DEBUG
             std::cerr << "Un client s'est connecter" << std::endl;
@@ -113,20 +129,25 @@ void	Server::run(void)
             try
             {
                 if (m_iselect->can_read(*client.get_itcp_client()))
+                {
+                    m_iselect->reset_read(*client.get_itcp_client());
                     itcp_protocol->recv(*client.get_itcp_client());
+                }
                 else
                     timeout(*itcp_protocol);
 
                 if (m_iselect->can_write(*client.get_itcp_client()))
+                {
+                    m_iselect->reset_write(*client.get_itcp_client());
                     itcp_protocol->send(*client.get_itcp_client());
-
+                }
                 it++;
             }
             catch (Server_exception_client_transfer &e)
             {
+                it = m_itcp_protocols.erase(it);
                 e.m_game->m_itcp_protocols.push_back(itcp_protocol);
                 itcp_protocol->set_callback(e.m_game);
-                it = m_itcp_protocols.erase(it);
             }
             catch (std::exception &e)
             {
@@ -145,15 +166,28 @@ void	Server::run(void)
 
                 try
                 {
+                    std::cout << client.get_login() << std::endl;
                     if (m_iselect->can_read(*client.get_itcp_client()))
+                    {
+                        m_iselect->reset_read(*client.get_itcp_client());
                         itcp_protocol->recv(*client.get_itcp_client());
+                    }
                     else
                         timeout(*itcp_protocol);
 
                     if (m_iselect->can_write(*client.get_itcp_client()))
+                    {
+                        m_iselect->reset_write(*client.get_itcp_client());
                         itcp_protocol->send(*client.get_itcp_client());
+                    }
 
                     it++;
+                }
+                catch (Server_exception_client_transfer &e)
+                {
+                    it = m_itcp_protocols.erase(it);
+                    itcp_protocol->set_callback(this);
+                    m_itcp_protocols.push_back(itcp_protocol);
                 }
                 catch (std::exception &e)
                 {

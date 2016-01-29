@@ -24,11 +24,25 @@ Select::Select(void) :
 {
 }
 
-void	Select::reset(void)
+void    Select::reset(void)
 {
     FD_ZERO(&m_readfds);
     FD_ZERO(&m_writefds);
     m_nfds = -1;
+}
+
+void	Select::reset_read(ISocket const &socket)
+{
+    if (socket.get_fd() >= FD_SETSIZE)
+        throw Select_exception(strerror(EDOM));
+    return (FD_CLR(socket.get_fd(), &m_readfds));
+}
+
+void    Select::reset_write(ISocket const &socket)
+{
+    if (socket.get_fd() >= FD_SETSIZE)
+        throw Select_exception(strerror(EDOM));
+    return (FD_CLR(socket.get_fd(), &m_writefds));
 }
 
 bool    Select::can_read(ISocket const &socket) const

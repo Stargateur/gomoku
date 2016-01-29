@@ -19,7 +19,9 @@ class	ISelect
 public:
     virtual ~ISelect(void);
     virtual void	select(ITime const *timeout = nullptr) = 0;
-    virtual void	reset(void) = 0;
+    virtual void    reset(void) = 0;
+    virtual void    reset_read(ISocket const &socket) = 0;
+    virtual void    reset_write(ISocket const &socket) = 0;
     virtual bool	can_read(ISocket const &socket) const = 0;
     virtual bool	can_write(ISocket const &socket) const = 0;
     virtual void	want_read(ISocket const &socket) = 0;

@@ -8,7 +8,9 @@
 // Last update Thu Jan 28 10:46:40 2016 Antoine Plaskowski
 //
 
-#include	"Game.hpp"
+#include    <iostream>
+#include    "Game.hpp"
+#include    "Server.hpp"
 
 Game::Game(typename ITCP_protocol<Client>::Callback &callback, std::string *name) :
     ACallback(callback),
@@ -43,7 +45,8 @@ void	Game::join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protoco
 
 void	Game::leave_game(ITCP_protocol<Client> &itcp_protocol)
 {
-    throw std::logic_error("leave game");
+    std::cout << "laixickdk" << std::endl;
+    throw Server_exception_client_transfer(this);
 }
 
 void	Game::put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
