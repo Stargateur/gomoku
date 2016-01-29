@@ -5,13 +5,14 @@
 // Login   <bertra_l@epitech.net>
 //
 // Started on  Wed Oct 21 21:04:15 2015 Bertrand-Rapello Baptiste
-// Last update Fri Jan 29 22:44:42 2016 Antoine Plaskowski
+// Last update Fri Jan 29 23:58:54 2016 Antoine Plaskowski
 //
+
+#include "Time.hpp"
 
 #ifdef _WIN32
 
-#include <ctime>
-#include "Time_Windows.hpp"
+# include <ctime>
 
 Time::Time(intmax_t second, intmax_t nano) :
     m_second(second),
@@ -63,25 +64,13 @@ bool	Time::now(void)
     return (false);
 }
 
-ITime	&Time::clone(void) const
-{
-    return (*new Time());
-}
-
-Time::~Time(void)
-{
-}
-
 extern "C" __declspec(dllexport)
 ITime	*new_itime(void)
 {
     return (new Time());
 }
 
-#else
-
-#include	<stdio.h>
-#include	"Time.hpp"
+# else
 
 Time::Time(intmax_t second, intmax_t nano) :
     m_timespec({second, nano})
@@ -135,14 +124,14 @@ bool	Time::now(void)
     return false;
 }
 
-ITime	&Time::clone(void) const
-{
-    return (*new Time(get_second(), get_nano()));
-}
-
 ITime	*new_itime(void)
 {
     return (new Time());
 }
 
 #endif // WIN32
+
+ITime	&Time::clone(void) const
+{
+    return (*new Time(get_second(), get_nano()));
+}

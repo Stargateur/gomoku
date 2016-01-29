@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 //
 // Started on  Tue Jan 26 17:50:03 2016 Antoine Plaskowski
-// Last update Thu Jan 28 13:05:34 2016 Antoine Plaskowski
+// Last update Fri Jan 29 23:56:37 2016 Antoine Plaskowski
 //
 
 #include	"TCP_protocol.hpp"
@@ -13,7 +13,6 @@
 #include	"TCP_client.hpp"
 #include	"Server.hpp"
 #include	"Time.hpp"
-#include    "Time_Windows.hpp"
 
 Server::Server(void) try :
     Server(new TCP_server("4242"))
