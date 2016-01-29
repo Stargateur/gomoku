@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Fri Jan 29 19:49:13 2016 Antoine Plaskowski
+## Last update Fri Jan 29 21:43:33 2016 Antoine Plaskowski
 ##
 
 ifeq ($(OS), Windows_NT)
@@ -45,15 +45,17 @@ COLOR		?=	no
 
 LIB_SERVER	=
 
+DIR_SFML	=	build_sfml
+
 ifeq ($(OS), Windows_NT)
-LIB_CLIENT	=	-L lib/SFML/lib -lsfml-main -lsfml-graphics -lsfml-window -lsfml-system
+LIB_CLIENT	=	-L $(DIR_SFML)/lib -lsfml-main -lsfml-graphics -lsfml-window -lsfml-system
 else
 LIB_CLENT	=	$(shell pkg-config --libs sfml-graphics sfml-window sfml-system sfml-network)
 endif
 
 INCLUDE		=	-I include -I include/itime -I include/isocket -I include/iprotocol
 ifeq ($(OS), Windows_NT)
-INCLUDE		+=	-I lib/SFML/include
+INCLUDE		+=	-I $include
 else
 INCLUDE		+=	$(shell pkg-config --cflags sfml-graphics sfml-window sfml-system sfml-network)
 endif
@@ -81,7 +83,7 @@ CXXFLAGS	+=	-fdiagnostics-color
 endif
 
 ifeq ($(OS), Windows_NT)
-LDFLAGS		= -l ws2_32
+LDFLAGS		=	-l ws2_32
 else
 LDFLAGS		=
 endif
@@ -104,36 +106,27 @@ OBJ_CLIENT	=	$(SRC_CLIENT:.cpp=.o)
 all		:	$(SERVER) $(CLIENT)
 
 ifeq ($(OS), Windows_NT)
-MAKEFILE_TYPE_SFML	=	"MinGW Makefiles"
-DIR_SFML	=	"SFML\build"
-DIR_INSTALL_SFML	=	"..\..\lib\sfml"
+MAKEFILE_TYPE_SFML	=	MinGW Makefiles
 else
-MAKEFILE_TYPE_SFML	=	"Unix Makefiles"
-DIR_SFML	=	"SFML/build"
-DIR_INSTALL_SFML	=	"../../lib/sfml"
+MAKEFILE_TYPE_SFML	=	Unix Makefiles
 endif
 
-$(DIR_SFML)/makefile	:
-			mkdir -p $(DIR_SFML) && cd $(DIR_SFML) && $(CMAKE) -G $(MAKEFILE_TYPE_SFML) -DCMAKE_INSTALL_PREFIX=$(DIR_INSTALL_SFML) ..
-
-lib		:	$(DIR_SFML)/makefile
-			$(MAKE) -C $(DIR_SFML)
-			$(MAKE) -C $(DIR_SFML) install
-
-lib_clean	:
+$(DIR_SFML)/Makefile	:
+			mkdir -p "$(DIR_SFML)" && cd "$(DIR_SFML)" && $(CMAKE) -G "$(MAKEFILE_TYPE_SFML)" "../SFML"
 
 $(SERVER)	:	CXXFLAGS += -I include/server
 $(SERVER)	:	$(OBJ) $(OBJ_SERVER)
 			$(CXX) $(OBJ) $(OBJ_SERVER) -o $(SERVER) $(LDFLAGS) $(LIB_SERVER)
 
 $(CLIENT)	:	CXXFLAGS += -I include/client
-$(CLIENT)	:	$(OBJ) $(OBJ_CLIENT) lib
+$(CLIENT)	:	$(OBJ) $(OBJ_CLIENT) $(DIR_SFML)/Makefile
+			$(MAKE) -C $(DIR_SFML)
 			$(CXX) $(OBJ) $(OBJ_CLIENT) -o $(CLIENT) $(LDFLAGS) $(LIB_CLIENT)
 
 $(DPD_SERVER)	:	CXXFLAGS += -I include/server
 $(DPD_CLIENT)	:	CXXFLAGS += -I include/client
 
-clean		:	$(DIR_SFML)/makefile
+clean		:	$(DIR_SFML)/Makefile
 ifeq ($(OS), Windows_NT)
 			$(RM) $(RM_FLAG) $(subst /,\,$(OBJ))
 			$(RM) $(RM_FLAG) $(subst /,\,$(DPD))
@@ -177,7 +170,7 @@ re		:	fclean
 %.o		:	%.cpp
 			$(CXX) -c $(<) -o $(@) $(CXXFLAGS)
 
-.PHONY		:	all clean fclean re %.dpd %.o lib
+.PHONY		:	all clean fclean re %.dpd %.o
 
 .SUFFIXES	:	.o.c .dpd.c .o.cpp .dpd.cpp
 

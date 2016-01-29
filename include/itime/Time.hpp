@@ -5,15 +5,17 @@
 // Login   <plasko_a@epitech.eu>
 //
 // Started on  Sun Dec 27 01:06:19 2015 Antoine Plaskowski
-// Last update Wed Jan 27 18:34:38 2016 Antoine Plaskowski
+// Last update Fri Jan 29 21:49:11 2016 Antoine Plaskowski
 //
 
 #ifndef TIME_HPP_
 # define TIME_HPP_
 
-#ifndef _WIN32
-
-# include	<ctime>
+# ifdef _WIN32
+#  include	<windows.h>
+# else
+#  include	<ctime>
+# endif
 # include	<cstdint>
 # include	"ITime.hpp"
 
@@ -29,10 +31,14 @@ public:
     void	set_nano(intmax_t nano);
     bool	now(void);
     ITime	&clone(void) const;
+#ifdef _WIN32
+private:
+    time_t	m_second;
+    WORD	m_milli;
+#else
 private:
     struct timespec	m_timespec;
+#endif  
 };
 
 #endif // _WIN32
-
-#endif	/* !TIME_HPP_ */

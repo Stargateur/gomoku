@@ -5,10 +5,80 @@
 // Login   <bertra_l@epitech.net>
 //
 // Started on  Wed Oct 21 21:04:15 2015 Bertrand-Rapello Baptiste
-// Last update Wed Jan 27 00:38:54 2016 Antoine Plaskowski
+// Last update Fri Jan 29 22:44:42 2016 Antoine Plaskowski
 //
 
-#ifndef _WIN32
+#ifdef _WIN32
+
+#include <ctime>
+#include "Time_Windows.hpp"
+
+Time::Time(intmax_t second, intmax_t nano) :
+    m_second(second),
+    m_milli(nano / milli_by_nano)
+{
+}
+
+intmax_t	Time::get_second(void) const
+{
+    return (m_second);
+}
+
+void	Time::set_second(intmax_t second)
+{
+    m_second = second;
+}
+
+intmax_t	Time::get_nano(void) const
+{
+    return (m_milli * milli_by_nano);
+}
+
+void	Time::set_nano(intmax_t nano)
+{
+    m_milli = nano / milli_by_nano;
+    if (get_nano() >= ITime::nano_by_second)
+    {
+        if (get_second() >= 0)
+            set_second(get_second() + 1);
+        else
+            set_second(get_second() - 1);
+        set_nano(get_nano() - ITime::nano_by_second);
+    }
+    else if (get_nano() < 0)
+    {
+        if (get_second() >= 0)
+            set_second(get_second() - 1);
+        else        set_second(get_second() + 1);
+        set_nano(get_nano() + ITime::nano_by_second);
+    }
+}
+
+bool	Time::now(void)
+{
+    SYSTEMTIME SystemTime;
+    m_second = time(NULL);
+    GetSystemTime(&SystemTime);
+    m_milli = SystemTime.wMilliseconds;
+    return (false);
+}
+
+ITime	&Time::clone(void) const
+{
+    return (*new Time());
+}
+
+Time::~Time(void)
+{
+}
+
+extern "C" __declspec(dllexport)
+ITime	*new_itime(void)
+{
+    return (new Time());
+}
+
+#else
 
 #include	<stdio.h>
 #include	"Time.hpp"
