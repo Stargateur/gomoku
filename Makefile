@@ -140,7 +140,6 @@ else
 endif
 
 re		:	fclean
-			echo $(OS)
 			$(MAKE) -C .
 
 %.dpd		:	%.c
