@@ -31,6 +31,8 @@ bool	TCP_packet_send::send(ITCP_client const &socket)
 #ifdef DEBUG
     std::cerr << "Nombre d'octect envoyé " << ret << std::endl;
 #endif
+    if (ret > m_size_header + get_size() - m_send)
+        throw std::exception();
     if (ret == 0)
         throw std::logic_error("Client disconnected");
     m_send += ret;

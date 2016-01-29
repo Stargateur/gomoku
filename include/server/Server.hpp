@@ -15,7 +15,6 @@
 # include	<string>
 # include	"ITCP_server.hpp"
 # include	"ITCP_protocol.hpp"
-# include	"IStandard.hpp"
 # include	"Select.hpp"
 # include	"Client.hpp"
 # include	"Game.hpp"
@@ -26,9 +25,8 @@ class	Server : public ITCP_protocol<Client>::Callback
 public:
     Server(void);
 private:
-    Server(IStandard *);
-    Server(IStandard *, ITCP_server *);
-    Server(IStandard *, ITCP_server *, ISelect *);
+    Server(ITCP_server *);
+    Server(ITCP_server *, ISelect *);
 public:
     ~Server(void);
     void	run(void);
@@ -55,7 +53,6 @@ public:
     void	result_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_result *game_result);
     void	message(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Message *message);
 private:
-    IStandard   *m_istandard;
     ITCP_server const   *m_itcp_server;
     ISelect	*m_iselect;
     ITime	*m_timeout;

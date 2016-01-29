@@ -43,9 +43,15 @@ void	Client::run(void)
             m_iselect->want_write(*m_itcp_protocol->get_data());
         m_iselect->select();
         if (m_iselect->can_read(*m_itcp_protocol->get_data()) == true)
+		{
+			m_iselect->reset_read(*m_itcp_protocol->get_data());
             m_itcp_protocol->recv(*m_itcp_protocol->get_data());
+		}
         if (m_iselect->can_write(*m_itcp_protocol->get_data()) == true)
+		{
+			m_iselect->reset_write(*m_itcp_protocol->get_data());
             m_itcp_protocol->send(*m_itcp_protocol->get_data());
+		}
     }
 }
 

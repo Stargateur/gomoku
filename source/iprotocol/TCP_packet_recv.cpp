@@ -28,9 +28,17 @@ bool	TCP_packet_recv::recv(ITCP_client const &socket)
         throw std::exception();
     uintmax_t	ret;
     if (m_recv < m_size_header)
+	{
         ret = socket.recv(m_buffer[m_recv], m_size_header - m_recv);
+		    if (ret > m_size_header - m_recv)
+        throw std::exception();
+	}
     else
+	{
         ret = socket.recv(m_buffer[m_recv], m_size_header + get_size() - m_recv);
+    if (ret > m_size_header + get_size() - m_recv)
+        throw std::exception();
+	}
 #ifdef DEBUG
     std::cerr << "Nombre d'octect lu " << ret << std::endl;
 #endif

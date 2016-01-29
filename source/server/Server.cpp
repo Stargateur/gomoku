@@ -11,44 +11,32 @@
 #include	"TCP_protocol.hpp"
 #include	"TCP_server.hpp"
 #include	"TCP_client.hpp"
-#include	"Standard.hpp"
 #include	"Server.hpp"
 #include	"Time.hpp"
 #include    "Time_Windows.hpp"
 
-Server::Server(void) :
-    Server(new Standard(IStandard::In))
+Server::Server(void) try :
+    Server(new TCP_server("4242"))
 {
-            std::cerr << "lol1" << std::endl;
-}
-
-Server::Server(IStandard *istandard) try :
-    Server(istandard, new TCP_server("4242"))
-{
-            std::cerr << "lol2" << std::endl;
 }
 catch (...)
 {
-    delete istandard;
 }
 
-Server::Server(IStandard *istandard, ITCP_server *itcp_server) try :
-    Server(istandard, itcp_server, new Select())
+Server::Server(ITCP_server *itcp_server) try :
+    Server(itcp_server, new Select())
 {
-        std::cerr << "lol3" << std::endl;
 }
 catch (...)
 {
     delete itcp_server;
 }
 
-Server::Server(IStandard *istandard, ITCP_server *itcp_server, ISelect *iselect) try :
-    m_istandard(istandard),
+Server::Server(ITCP_server *itcp_server, ISelect *iselect) try :
     m_itcp_server(itcp_server),
     m_iselect(iselect),
     m_timeout(new Time(5))
 {
-        std::cerr << "lol4" << std::endl;
 }
 catch (...)
 {
@@ -58,7 +46,6 @@ catch (...)
 Server::~Server(void)
 {
     delete m_itcp_server;
-    delete m_istandard;
     for (auto itcp_protocol : m_itcp_protocols)
         delete itcp_protocol;
     for (auto game : m_games)
@@ -73,10 +60,9 @@ void	Server::run(void)
 
     while (g_keep_running == true)
     {
+		std::cout << "test" << std::endl;
         m_iselect->reset();
-#ifndef	_WIN32
-        m_iselect->want_read(*m_istandard);
-#endif
+
         m_iselect->want_read(*m_itcp_server);
         for (auto itcp_protocol : m_itcp_protocols)
         {
@@ -103,18 +89,6 @@ void	Server::run(void)
         }
 
         m_iselect->select();
-
-
-#ifndef	_WIN32
-        if (m_iselect->can_read(*m_istandard))
-        {
-            m_iselect->reset_read(*m_istandard);
-            uint8_t       buffer[42];
-
-            if (m_istandard->read(buffer[0], 42) == 0)
-                g_keep_running = false;
-        }
-#endif
 
         if (m_iselect->can_read(*m_itcp_server))
         {
