@@ -35,14 +35,14 @@ void	Select::reset_read(ISocket const &socket)
 {
     if (socket.get_fd() >= FD_SETSIZE)
         throw Select_exception(strerror(EDOM));
-    return (FD_CLR(socket.get_fd(), &m_readfds));
+    FD_CLR(socket.get_fd(), &m_readfds);
 }
 
 void    Select::reset_write(ISocket const &socket)
 {
     if (socket.get_fd() >= FD_SETSIZE)
         throw Select_exception(strerror(EDOM));
-    return (FD_CLR(socket.get_fd(), &m_writefds));
+    FD_CLR(socket.get_fd(), &m_writefds);
 }
 
 bool    Select::can_read(ISocket const &socket) const
