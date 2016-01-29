@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Fri Jan 29 19:38:10 2016 Antoine Plaskowski
+## Last update Fri Jan 29 19:46:37 2016 Antoine Plaskowski
 ##
 
 ifeq ($(OS), Windows_NT)
@@ -113,8 +113,10 @@ DIR_SFML	=	"SFML/build"
 DIR_INSTALL_SFML	=	"../../lib/sfml"
 endif
 
-lib		:
+$(DIR_SFML)/makefile	:
 			mkdir -p $(DIR_SFML) && cd $(DIR_SFML) && $(CMAKE) -G $(MAKEFILE_TYPE_SFML) -DCMAKE_INSTALL_PREFIX=$(DIR_INSTALL_SFML) ..
+
+lib		:	$(DIR_SFML)/makefile
 			$(MAKE) -C $(DIR_SFML)
 
 lib_clean	:
@@ -130,7 +132,7 @@ $(CLIENT)	:	$(OBJ) $(OBJ_CLIENT) lib
 $(DPD_SERVER)	:	CXXFLAGS += -I include/server
 $(DPD_CLIENT)	:	CXXFLAGS += -I include/client
 
-clean		:
+clean		:	$(DIR_SFML)/makefile
 ifeq ($(OS), Windows_NT)
 			$(RM) $(RM_FLAG) $(subst /,\,$(OBJ))
 			$(RM) $(RM_FLAG) $(subst /,\,$(DPD))
@@ -178,4 +180,4 @@ re		:	fclean
 
 .SUFFIXES	:	.o.c .dpd.c .o.cpp .dpd.cpp
 
-include			$(DPD) $(DPD_SERVER) $(DPD_CLIENT)
+-include		$(DPD) $(DPD_SERVER) $(DPD_CLIENT)
