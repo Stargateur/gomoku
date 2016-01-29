@@ -5,11 +5,12 @@
 // Login   <plasko_a@epitech.eu>
 //
 // Started on  Sun Dec 27 01:01:39 2015 Antoine Plaskowski
-// Last update Sun Dec 27 02:07:25 2015 Antoine Plaskowski
+// Last update Fri Jan 29 17:01:59 2016 Antoine Plaskowski
 //
 
 #ifndef	TIME_WINDOWS_HPP_
 # define	TIME_WINDOWS_HPP
+# ifdef _WIN32
 
 # include	<windows.h>
 # include	"ITime.hpp"
@@ -31,5 +32,7 @@ private:
     time_t	m_second;
     WORD	m_milli;
 };
+
+#endif
 
 #endif	/* !TIME_WINDOWS_HPP */

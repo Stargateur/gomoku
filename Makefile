@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Tue Jan 26 13:40:39 2016 Antoine Plaskowski
+## Last update Fri Jan 29 17:34:54 2016 Antoine Plaskowski
 ##
 
 ifeq ($(OS), Windows_NT)
@@ -35,6 +35,7 @@ else
 RM_FLAG		=	-f
 endif
 MAKE		?=	make
+CMAKE		?=	cmake
 
 DEBUG		?=	yes
 
@@ -45,7 +46,7 @@ COLOR		?=	no
 LIB_SERVER	=
 
 ifeq ($(OS), Windows_NT)
-LIB_CLIENT	=	-L lib -L SFML -L SFML/lib -L SFML/build/lib -L lib/lib -lsfml-main -lsfml-graphics -lsfml-window -lsfml-system
+LIB_CLIENT	=	-L SFML/lib -lsfml-main -lsfml-graphics -lsfml-window -lsfml-system
 else
 LIB_CLENT	=	$(shell pkg-config --libs sfml-graphics sfml-window sfml-system sfml-network)
 endif
@@ -99,7 +100,12 @@ OBJ_SERVER	=	$(SRC_SERVER:.cpp=.o)
 DPD_CLIENT	=	$(SRC_CLIENT:.cpp=.dpd)
 OBJ_CLIENT	=	$(SRC_CLIENT:.cpp=.o)
 
-all		:	$(SERVER) $(CLIENT)
+all		:	$(SERVER) $(CLIENT) lib
+
+
+lib		:
+			cd SFML; $(CMAKE) .
+			$(MAKE) -C SFML
 
 $(SERVER)	:	CXXFLAGS += -I include/server
 $(SERVER)	:	$(OBJ) $(OBJ_SERVER)
@@ -111,7 +117,6 @@ $(CLIENT)	:	$(OBJ) $(OBJ_CLIENT)
 
 $(DPD_SERVER)	:	CXXFLAGS += -I include/server
 $(DPD_CLIENT)	:	CXXFLAGS += -I include/client
-
 
 clean		:
 ifeq ($(OS), Windows_NT)
@@ -154,7 +159,7 @@ re		:	fclean
 %.o		:	%.cpp
 			$(CXX) -c $(<) -o $(@) $(CXXFLAGS)
 
-.PHONY		:	all clean fclean re %.dpd %.o
+.PHONY		:	all clean fclean re %.dpd %.o lib
 
 .SUFFIXES	:	.o.c .dpd.c .o.cpp .dpd.cpp
 

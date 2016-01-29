@@ -7,16 +7,16 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<MakeCommands>
-			<Build command="$make -f $makefile WINDOWS=yes" />
-			<CompileFile command="$make -f $makefile $file  WINDOWS=yes" />
-			<Clean command="$make -f $makefile fclean WINDOWS=yes" />
+			<Build command="$make -f $makefile" />
+			<CompileFile command="$make -f $makefile $file" />
+			<Clean command="$make -f $makefile fclean" />
 			<DistClean command="$make -f $makefile distclean$target" />
-			<AskRebuildNeeded command="$make -q -f $makefile  WINDOWS=yes" />
-			<SilentBuild command="$make -f $makefile WINDOWS=yes &gt; $(CMD_NULL)" />
+			<AskRebuildNeeded command="$make -q -f $makefile" />
+			<SilentBuild command="$make -f $makefile &gt; $(CMD_NULL)" />
 		</MakeCommands>
 		<Build>
 			<Target title="Debug">
-				<Option output="gomoku_client" prefix_auto="1" extension_auto="1" />
+				<Option output="gomoku_client" prefix_auto="1" extension_auto="0" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -25,12 +25,12 @@
 					<Add option="-g" />
 				</Compiler>
 				<MakeCommands>
-					<Build command="$make -f $makefile WINDOWS=yes" />
-					<CompileFile command="$make -f $makefile $file  WINDOWS=yes" />
-					<Clean command="$make -f $makefile fclean WINDOWS=yes" />
+					<Build command="$make -f $makefile" />
+					<CompileFile command="$make -f $makefile $file" />
+					<Clean command="$make -f $makefile fclean" />
 					<DistClean command="$make -f $makefile distclean$target" />
-					<AskRebuildNeeded command="$make -q -f $makefile  WINDOWS=yes" />
-					<SilentBuild command="$make -f $makefile WINDOWS=yes &gt; $(CMD_NULL)" />
+					<AskRebuildNeeded command="$make -q -f $makefile" />
+					<SilentBuild command="$make -f $makefile &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="Release">
