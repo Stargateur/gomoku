@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Fri Jan 29 19:46:37 2016 Antoine Plaskowski
+## Last update Fri Jan 29 19:49:13 2016 Antoine Plaskowski
 ##
 
 ifeq ($(OS), Windows_NT)
@@ -118,6 +118,7 @@ $(DIR_SFML)/makefile	:
 
 lib		:	$(DIR_SFML)/makefile
 			$(MAKE) -C $(DIR_SFML)
+			$(MAKE) -C $(DIR_SFML) install
 
 lib_clean	:
 
