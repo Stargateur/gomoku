@@ -33,7 +33,7 @@ class	TCP_server_exception : public ITCP_server_exception
 {
 public:
     TCP_server_exception(char const *what);
-    ~TCP_server_exception(void);
+    ~TCP_server_exception(void) noexcept;
     char const	*what(void) const noexcept;
 private:
     char const	*m_what;

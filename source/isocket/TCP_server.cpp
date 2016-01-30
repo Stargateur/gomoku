@@ -120,7 +120,7 @@ TCP_server_exception::TCP_server_exception(char const *what) :
 {
 }
 
-TCP_server_exception::~TCP_server_exception(void)
+TCP_server_exception::~TCP_server_exception(void) noexcept
 {
 }
 

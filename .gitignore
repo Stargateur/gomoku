@@ -15,3 +15,4 @@ gomoku.sublime-workspace
 lib
 *.layout
 *.depend
+build_sfml

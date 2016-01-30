@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Sat Jan 30 11:11:59 2016 Antoine Plaskowski
+## Last update Sat Jan 30 11:15:20 2016 Antoine Plaskowski
 ##
 
 ifeq ($(OS), Windows_NT)
@@ -112,7 +112,8 @@ MAKEFILE_TYPE_SFML	=	Unix Makefiles
 endif
 
 $(DIR_SFML)/Makefile	:
-			mkdir -p "$(DIR_SFML)" && cd "$(DIR_SFML)" && $(CMAKE) -G "$(MAKEFILE_TYPE_SFML)" "../SFML"
+			-mkdir $(DIR_SFML)
+			cd "$(DIR_SFML)" && $(CMAKE) -G "$(MAKEFILE_TYPE_SFML)" "../SFML"
 
 $(SERVER)	:	CXXFLAGS += -I include/server
 $(SERVER)	:	$(OBJ) $(OBJ_SERVER)
@@ -148,11 +149,11 @@ fclean		:	clean
 ifeq ($(OS), Windows_NT)
 			$(RM) $(RM_FLAG) $(subst /,\,$(SERVER))
 			$(RM) $(RM_FLAG) $(subst /,\,$(CLIENT))
-			$(RM) /r /f build
+			$(RM) /q /f build
 else
 			$(RM) $(RM_FLAG) $(SERVER)
 			$(RM) $(RM_FLAG) $(CLIENT)
-			$(RM) -rf $(DIR_SFML) $(DIR_INSTALL_SFML)
+			$(RM) -rf $(DIR_SFML)
 endif
 
 re		:	fclean
