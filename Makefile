@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Fri Jan 29 21:43:33 2016 Antoine Plaskowski
+## Last update Sat Jan 30 11:11:59 2016 Antoine Plaskowski
 ##
 
 ifeq ($(OS), Windows_NT)
@@ -47,11 +47,11 @@ LIB_SERVER	=
 
 DIR_SFML	=	build_sfml
 
-ifeq ($(OS), Windows_NT)
-LIB_CLIENT	=	-L $(DIR_SFML)/lib -lsfml-main -lsfml-graphics -lsfml-window -lsfml-system
-else
-LIB_CLENT	=	$(shell pkg-config --libs sfml-graphics sfml-window sfml-system sfml-network)
-endif
+#ifeq ($(OS), Windows_NT)
+LIB_CLIENT	=	-L $(DIR_SFML)/lib -lsfml-system -lsfml-graphics -lsfml-window -lsfml-system
+#else
+#LIB_CLIENT	=	$(shell pkg-config --libs sfml-graphics sfml-window sfml-system sfml-network)
+#endif
 
 INCLUDE		=	-I include -I include/itime -I include/isocket -I include/iprotocol
 ifeq ($(OS), Windows_NT)
