@@ -50,7 +50,7 @@ DIR_SFML	=	build_sfml
 ifeq ($(OS), Windows_NT)
 LIB_CLIENT	=	-L $(DIR_SFML)/lib -lsfml-main -lsfml-graphics -lsfml-window -lsfml-system
 else
-LIB_CLENT	=	$(shell pkg-config --libs sfml-graphics sfml-window sfml-system sfml-network)
+LIB_CLIENT	=	$(shell pkg-config --libs sfml-graphics sfml-window sfml-system sfml-network)
 endif
 
 INCLUDE		=	-I include -I include/itime -I include/isocket -I include/iprotocol
