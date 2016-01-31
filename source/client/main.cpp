@@ -15,6 +15,13 @@
 
 int	main(void) try
 {
+	try
+	{
+		Client	client;
+		client.run();
+	}
+	catch (...)
+	{ }
 	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
 	sf::CircleShape shape(100.f);
 	shape.setFillColor(sf::Color::Green);
@@ -32,10 +39,6 @@ int	main(void) try
 		window.draw(shape);
 		window.display();
 	}
-
-    Client	client;
-
-    client.run();
 }
 catch (std::exception &e)
 {

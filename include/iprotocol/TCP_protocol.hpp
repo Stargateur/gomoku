@@ -84,7 +84,7 @@ private:
         TCP_packet_send	*to_send = new TCP_packet_send();
         to_send->set_opcode(opcode);
 #ifdef	DEBUG
-        std::cerr << "je prépare un packet " << to_send->get_opcode() << " " << to_send << std::endl;
+        std::cerr << "je prépare un packet " << to_send->get_opcode() << " ";
 #endif	/* !DEBUG */
         m_to_send.push_back(to_send);
         return (*to_send);
@@ -109,7 +109,7 @@ public:
             throw std::logic_error("il n'y a rien a envoyé");
         TCP_packet_send	*to_send = m_to_send.front();
 #ifdef	DEBUG
-        std::cerr << "j'envoie sur une socket client tcp " << to_send->get_opcode() << " " << to_send << std::endl;
+        std::cerr << "j'envoie sur une socket client tcp " << to_send->get_opcode() << " " << std::endl;
 #endif	/* !DEBUG */
         m_to_send.pop_front();
         if (to_send->send(socket))

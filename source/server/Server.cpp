@@ -142,7 +142,6 @@ void	Server::run(void)
 
                 try
                 {
-                    std::cout << client.get_login() << std::endl;
                     if (m_iselect->can_read(*client.get_itcp_client()))
                     {
                         m_iselect->reset_read(*client.get_itcp_client());

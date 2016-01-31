@@ -45,7 +45,6 @@ void	Game::join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protoco
 
 void	Game::leave_game(ITCP_protocol<Client> &itcp_protocol)
 {
-    std::cout << "laixickdk" << std::endl;
     throw Server_exception_client_transfer(this);
 }
 
