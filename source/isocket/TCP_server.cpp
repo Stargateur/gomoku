@@ -40,7 +40,7 @@ int	TCP_server::aux_bind(struct addrinfo const *rp)
 {
     if (rp == NULL)
 #ifdef	_WIN32
-		throw TCP_server_exception(to_string(GetLastError()));
+		throw TCP_server_exception(std::to_string(GetLastError()));
 #else
         throw TCP_server_exception(strerror(errno));
 #endif
@@ -85,7 +85,7 @@ int	TCP_server::bind(std::string const &port)
 #ifdef	_WIN32
     WSADATA wsaData;
     int err = WSAStartup(MAKEWORD(2, 2), &wsaData);
-    throw TCP_server_exception(to_string(err));
+    throw TCP_server_exception(std::to_string(err));
 #endif
     int	status = ::getaddrinfo(NULL, port.c_str(), &hints, &result);
     if (status != 0)

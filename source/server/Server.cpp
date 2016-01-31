@@ -59,7 +59,6 @@ void	Server::run(void)
 
     while (g_keep_running == true)
     {
-		std::cout << "test" << std::endl;
         m_iselect->reset();
 
         m_iselect->want_read(*m_itcp_server);
