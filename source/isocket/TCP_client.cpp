@@ -10,6 +10,7 @@
 
 #include	<iostream>
 #include	<cstring>
+#include    <string>
 #include	<utility>
 #ifdef		_WIN32
 # define _WIN32_WINNT 0xA000
@@ -36,7 +37,7 @@ TCP_client::TCP_client(ITCP_server const &server) :
 TCP_client::~TCP_client(void)
 {
 #ifdef	_WIN32
-//    WSACleanup();
+    WSACleanup();
     closesocket(m_fd);
 #else
     shutdown(m_fd, SHUT_RDWR);
@@ -70,7 +71,6 @@ int	TCP_client::aux_connect(struct addrinfo const *rp)
     if (::connect(fd, rp->ai_addr, rp->ai_addrlen) != 0)
     {
 #ifdef	_WIN32
-//    WSACleanup();
     closesocket(fd);
 #else
     shutdown(fd, SHUT_RDWR);
@@ -94,9 +94,10 @@ int	TCP_client::connect(std::string const &host, std::string const &port)
         NULL
     };
     struct addrinfo	*result;
-#ifdef	_WIN32
-	WSADATA wsaData;
-    WSAStartup(MAKEWORD(2, 2), &wsaData);
+#ifdef  _WIN32
+    WSADATA wsaData;
+    int err = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    throw TCP_server_exception(to_string(err));
 #endif
     int   status = ::getaddrinfo(host.c_str(), port.c_str(), &hints, &result);
     if (status != 0)
@@ -107,8 +108,11 @@ int	TCP_client::connect(std::string const &host, std::string const &port)
         ::freeaddrinfo(result);
         return (fd);
     }
-    catch (TCP_client_exception &e)
+    catch (...)
     {
+#ifdef  _WIN32
+        WSACleanup();
+#endif
         ::freeaddrinfo(result);
         throw;
     }
