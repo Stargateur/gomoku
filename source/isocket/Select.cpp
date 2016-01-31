@@ -19,6 +19,19 @@ Select::Select(void) :
     m_writefds(),
     m_nfds(-1)
 {
+#ifdef	_WIN32
+	WSADATA wsaData;
+	int err = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (err != 0)
+		throw std::logic_error("fuck");
+#endif
+}
+
+Select::~Select(void)
+{
+#ifdef	_WIN32
+	WSACleanup();
+#endif
 }
 
 void    Select::reset(void)

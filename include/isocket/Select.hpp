@@ -12,8 +12,8 @@
 # define	SELECT_HPP_
 
 # ifdef		_WIN32
-#  include	<Windows.h>
 #  include	<Winsock2.h>
+#  include	<Windows.h>
 # else
 #  include	<sys/select.h>
 # endif
@@ -23,6 +23,7 @@ class	Select : public ISelect
 {
 public:
     Select(void);
+	~Select(void);
     void	select(ITime const *timeout = nullptr);
     void    reset(void);
     void    reset_read(ISocket const &socket);

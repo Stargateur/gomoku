@@ -17,3 +17,10 @@ lib
 *.depend
 build_sfml
 .idea
+.vs
+Debug
+gomoku.VC.opendb
+*.sdf
+*.cd
+*.filters
+*.user

@@ -13,7 +13,7 @@
 
 # include	<ctime>
 # ifdef _WIN32
-#  include	<windows.h>
+#  include	<Windows.h>
 # endif /* !_WIN32 */
 # include	<cstdint>
 # include	"ITime.hpp"

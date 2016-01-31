@@ -12,7 +12,14 @@
 # define	TCP_SERVER_HPP_
 
 # include	<string>
-# ifndef	_WIN32
+# ifdef	_WIN32
+#define _WIN32_WINNT 0xA000
+#define WIN32_LEAN_AND_MEAN
+#include <WinSock2.h>
+#include <WS2tcpip.h>
+#pragma comment(lib,"ws2_32")
+# else
+#  include	<unistd.h>
 #  include	<sys/socket.h>
 #  include	<netdb.h>
 # endif

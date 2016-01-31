@@ -12,33 +12,35 @@
 #include	<cstring>
 #include    <string>
 #include	<utility>
-#ifdef		_WIN32
-# define _WIN32_WINNT 0xA000
-# include	<WinSock2.h>
-# include   <WS2tcpip.h>
-# include   <io.h>
-#else
-# include	<unistd.h>
-# include	<arpa/inet.h>
-#endif
-#include	<unistd.h>
 #include	"TCP_client.hpp"
 
-TCP_client::TCP_client(std::string const &host, std::string const &port) :
+TCP_client::TCP_client(std::string const &host, std::string const &port) try :
     ASocket(connect(host, port))
 {
 }
+catch (...)
+{
+#ifdef	_WIN32
+	WSACleanup();
+#endif
+}
 
-TCP_client::TCP_client(ITCP_server const &server) :
+TCP_client::TCP_client(ITCP_server const &server) try :
     ASocket(accept(server))
 {
+}
+catch (...)
+{
+#ifdef	_WIN32
+	WSACleanup();
+#endif
 }
 
 TCP_client::~TCP_client(void)
 {
 #ifdef	_WIN32
-    WSACleanup();
     closesocket(m_fd);
+	WSACleanup();
 #else
     shutdown(m_fd, SHUT_RDWR);
 #endif
@@ -46,12 +48,18 @@ TCP_client::~TCP_client(void)
 
 int	TCP_client::accept(ITCP_server const &server)
 {
+#ifdef  _WIN32
+	WSADATA wsaData;
+	int err = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (err != 0)
+		throw TCP_client_exception(std::to_string(err));
+#endif
     int fd = ::accept(server.get_fd(), NULL, NULL);
-    if (fd == -1)
+	if (fd == -1)
 #ifdef	_WIN32
 		throw TCP_client_exception(std::to_string(GetLastError()));
 #else
-        throw TCP_client_exception(strerror(errno));
+		throw TCP_client_exception(strerror(errno));
 #endif
     return (fd);
 }
@@ -71,9 +79,9 @@ int	TCP_client::aux_connect(struct addrinfo const *rp)
     if (::connect(fd, rp->ai_addr, rp->ai_addrlen) != 0)
     {
 #ifdef	_WIN32
-    closesocket(fd);
+		closesocket(fd);
 #else
-    shutdown(fd, SHUT_RDWR);
+		shutdown(fd, SHUT_RDWR);
 #endif
         return (aux_connect(rp->ai_next));
     }
@@ -97,7 +105,8 @@ int	TCP_client::connect(std::string const &host, std::string const &port)
 #ifdef  _WIN32
     WSADATA wsaData;
     int err = WSAStartup(MAKEWORD(2, 2), &wsaData);
-    throw TCP_server_exception(std::to_string(err));
+	if (err != 0)
+		throw TCP_client_exception(std::to_string(err));
 #endif
     int   status = ::getaddrinfo(host.c_str(), port.c_str(), &hints, &result);
     if (status != 0)
@@ -110,9 +119,6 @@ int	TCP_client::connect(std::string const &host, std::string const &port)
     }
     catch (...)
     {
-#ifdef  _WIN32
-        WSACleanup();
-#endif
         ::freeaddrinfo(result);
         throw;
     }
@@ -120,7 +126,7 @@ int	TCP_client::connect(std::string const &host, std::string const &port)
 
 uintmax_t	TCP_client::recv(uint8_t &data, uintmax_t size) const
 {
-    ssize_t	ret = ::recv(m_fd, reinterpret_cast<char *>(&data), size, 0);
+    auto	ret = ::recv(m_fd, reinterpret_cast<char *>(&data), size, 0);
     if (ret == -1)
 #ifdef  _WIN32
         throw TCP_client_exception(std::to_string(GetLastError()));
@@ -132,7 +138,7 @@ uintmax_t	TCP_client::recv(uint8_t &data, uintmax_t size) const
 
 uintmax_t	TCP_client::send(uint8_t const &data, uintmax_t size) const
 {
-    ssize_t	ret = ::send(m_fd, reinterpret_cast<const char *>(&data), size, 0);
+    auto	ret = ::send(m_fd, reinterpret_cast<const char *>(&data), size, 0);
     if (ret == -1)
 #ifdef  _WIN32
         throw TCP_client_exception(std::to_string(GetLastError()));

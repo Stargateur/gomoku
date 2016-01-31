@@ -9,14 +9,6 @@
 //
 
 #include	<iostream>
-#ifdef		_WIN32
-#define _WIN32_WINNT 0xA000
-# include <io.h>
-# include <WinSock2.h>
-# include <WS2tcpip.h>
-#else
-# include	<unistd.h>
-#endif
 #include	<cstring>
 #include    <string>
 #include	"TCP_server.hpp"
@@ -29,8 +21,8 @@ TCP_server::TCP_server(std::string const &port) : ASocket(bind(port))
 TCP_server::~TCP_server(void)
 {
 #ifdef	_WIN32
-    WSACleanup();
     closesocket(m_fd);
+	WSACleanup();
 #else
     shutdown(m_fd, SHUT_RDWR);
 #endif
@@ -85,7 +77,8 @@ int	TCP_server::bind(std::string const &port)
 #ifdef	_WIN32
     WSADATA wsaData;
     int err = WSAStartup(MAKEWORD(2, 2), &wsaData);
-    throw TCP_server_exception(std::to_string(err));
+	if (err != 0)
+	  throw TCP_server_exception(std::to_string(err));
 #endif
     int	status = ::getaddrinfo(NULL, port.c_str(), &hints, &result);
     if (status != 0)

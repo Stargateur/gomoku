@@ -19,5 +19,5 @@ int	main(void) try
 }
 catch (std::exception &e)
 {
-	std::cerr << e.what() << std::endl;
+	std::cerr << "bonjour " << e.what() << std::endl;
 }
