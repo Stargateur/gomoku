@@ -48,11 +48,10 @@ int	TCP_client::accept(ITCP_server const &server)
     int fd = ::accept(server.get_fd(), NULL, NULL);
     if (fd == -1)
 #ifdef	_WIN32
-		throw TCP_client_exception("a faire pour windows");
+		throw TCP_client_exception(to_string(GetLastError()));
 #else
         throw TCP_client_exception(strerror(errno));
 #endif
-
     return (fd);
 }
 
@@ -61,7 +60,11 @@ int	TCP_client::aux_connect(struct addrinfo const *rp)
     int   fd;
 
     if (rp == NULL)
+#ifdef  _WIN32
+        throw TCP_client_exception(to_string(GetLastError()));
+#else
         throw TCP_client_exception(strerror(errno));
+#endif
     if ((fd = ::socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol)) == -1)
         return (aux_connect(rp->ai_next));
     if (::connect(fd, rp->ai_addr, rp->ai_addrlen) != 0)
@@ -98,16 +101,28 @@ int	TCP_client::connect(std::string const &host, std::string const &port)
     int   status = ::getaddrinfo(host.c_str(), port.c_str(), &hints, &result);
     if (status != 0)
         throw TCP_client_exception(gai_strerror(status));
-    int fd = aux_connect(result);
-    ::freeaddrinfo(result);
-    return (fd);
+    try
+    {
+        int fd = aux_connect(result);
+        ::freeaddrinfo(result);
+        return (fd);
+    }
+    catch (TCP_client_exception &e)
+    {
+        ::freeaddrinfo(result);
+        throw;
+    }
 }
 
 uintmax_t	TCP_client::recv(uint8_t &data, uintmax_t size) const
 {
     ssize_t	ret = ::recv(m_fd, reinterpret_cast<char *>(&data), size, 0);
     if (ret == -1)
+#ifdef  _WIN32
+        throw TCP_client_exception(to_string(GetLastError()));
+#else
         throw TCP_client_exception(strerror(errno));
+#endif
     return (static_cast<uintmax_t>(ret));
 }
 
@@ -115,16 +130,26 @@ uintmax_t	TCP_client::send(uint8_t const &data, uintmax_t size) const
 {
     ssize_t	ret = ::send(m_fd, reinterpret_cast<const char *>(&data), size, 0);
     if (ret == -1)
+#ifdef  _WIN32
+        throw TCP_client_exception(to_string(GetLastError()));
+#else
         throw TCP_client_exception(strerror(errno));
+#endif
     return (static_cast<uintmax_t>(ret));
 }
 
-TCP_client_exception::TCP_client_exception(char const *what) :
+TCP_client_exception::TCP_client_exception(char const *what) noexcept :
+    m_what(what)
+{
+}
+
+
+TCP_client_exception::TCP_client_exception(std::string const &&what) noexcept:
     m_what(what)
 {
 }
 
 char const	*TCP_client_exception::what(void) const noexcept
 {
-    return (m_what);
+    return (m_what.c_str());
 }

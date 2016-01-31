@@ -25,16 +25,16 @@ TCP_packet_send::~TCP_packet_send(void)
 bool	TCP_packet_send::send(ITCP_client const &socket)
 {
     if (m_send >= sizeof(m_buffer))
-        throw std::exception();
+        throw ATCP_packet_exception();
     uintmax_t	ret = socket.send(m_buffer[m_send], m_size_header + get_size() - m_send);
 
 #ifdef DEBUG
     std::cerr << "Nombre d'octect envoyé " << ret << std::endl;
 #endif
     if (ret > m_size_header + get_size() - m_send)
-        throw std::exception();
+        throw ATCP_packet_exception();
     if (ret == 0)
-        throw std::logic_error("Client disconnected");
+        throw ATCP_packet_exception();
     m_send += ret;
     if (m_send < m_size_header + get_size())
         return (false);

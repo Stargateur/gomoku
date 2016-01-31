@@ -68,6 +68,16 @@ public:
     static const	uintmax_t	m_size_header = sizeof(s_packet) - (sizeof(uint8_t) * (UINT16_MAX + 1));
 };
 
+class ATCP_packet_exception : public std::exception
+{
+public:
+    ATCP_packet_exception(void) noexcept;
+    ATCP_packet_exception(ATCP_packet_exception const &) noexcept; 
+    ~ATCP_packet_exception(void) noexcept;
+    ATCP_packet_exception   &operator=(ATCP_packet_exception const &) noexcept;
+    char const  *what(void) const noexcept;
+};
+
 std::ostream    &operator<<(std::ostream &os, ATCP_packet::Opcode opcode);
 
 #endif		/* !ATCP_PACKET_HPP_ */

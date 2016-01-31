@@ -147,6 +147,16 @@ public:
     }
 };
 
+class ITCP_protocol_exception : public std::exception
+{
+public:
+    ITCP_protocol_exception(void) noexcept;
+    ITCP_protocol_exception(ITCP_protocol_exception const &) noexcept; 
+    ~ITCP_protocol_exception(void) noexcept;
+    ITCP_protocol_exception   &operator=(ITCP_protocol_exception const &) noexcept;
+    char const  *what(void) const noexcept;
+};
+
 template<typename T>
 std::ostream    &operator<<(std::ostream &os, typename ITCP_protocol<T>::Error error)
 {

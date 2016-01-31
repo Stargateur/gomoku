@@ -25,25 +25,25 @@ TCP_packet_recv::~TCP_packet_recv(void)
 bool	TCP_packet_recv::recv(ITCP_client const &socket)
 {
     if (m_recv >= sizeof(m_buffer))
-        throw std::exception();
+        throw ATCP_packet_exception();
     uintmax_t	ret;
     if (m_recv < m_size_header)
 	{
         ret = socket.recv(m_buffer[m_recv], m_size_header - m_recv);
 		    if (ret > m_size_header - m_recv)
-        throw std::exception();
+        throw ATCP_packet_exception();
 	}
     else
 	{
         ret = socket.recv(m_buffer[m_recv], m_size_header + get_size() - m_recv);
     if (ret > m_size_header + get_size() - m_recv)
-        throw std::exception();
+        throw ATCP_packet_exception();
 	}
 #ifdef DEBUG
     std::cerr << "Nombre d'octect lu " << ret << std::endl;
 #endif
     if (ret == 0)
-        throw std::logic_error("client disconnected");
+        throw ATCP_packet_exception();
     m_recv += ret;
     if (m_recv < m_size_header)
         return (false);

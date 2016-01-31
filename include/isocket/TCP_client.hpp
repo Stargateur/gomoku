@@ -37,10 +37,11 @@ private:
 class	TCP_client_exception : public ITCP_client_exception
 {
 public:
-    TCP_client_exception(char const *what);
+    TCP_client_exception(char const *what) noexcept;
+    TCP_client_exception(std::string const &&what) noexcept;
     char const	*what(void) const noexcept;
 private:
-    char const	*m_what;
+    std::string const m_what;
 };
 
 #endif		/* !TCP_CLIENT_HPP_ */

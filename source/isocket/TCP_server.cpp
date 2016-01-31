@@ -39,9 +39,9 @@ int	TCP_server::aux_bind(struct addrinfo const *rp)
 {
     if (rp == NULL)
 #ifdef	_WIN32
-		;
+		throw TCP_server_exception(to_string(GetLastError()));
 #else
-        throw TCP_client_exception(strerror(errno));
+        throw TCP_server_exception(strerror(errno));
 #endif
     int	fd = ::socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
     if (fd == -1)
@@ -120,11 +120,16 @@ TCP_server_exception::TCP_server_exception(char const *what) :
 {
 }
 
+TCP_server_exception::TCP_server_exception(std::string const &&what) noexcept:
+    m_what(what)
+{
+}
+
 TCP_server_exception::~TCP_server_exception(void) noexcept
 {
 }
 
 char const	*TCP_server_exception::what(void) const noexcept
 {
-    return (m_what);
+    return (m_what.c_str());
 }

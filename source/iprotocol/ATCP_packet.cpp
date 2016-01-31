@@ -94,3 +94,25 @@ std::ostream	&operator<<(std::ostream &os, ATCP_packet::Opcode opcode)
 {
     return (os << ATCP_packet::get_str_opcode(opcode));
 }
+
+ATCP_packet_exception::~ATCP_packet_exception(void) noexcept
+{
+}
+
+ATCP_packet_exception::ATCP_packet_exception(void) noexcept
+{
+}
+
+ATCP_packet_exception::ATCP_packet_exception(ATCP_packet_exception const &) noexcept
+{
+}
+
+ATCP_packet_exception   &ATCP_packet_exception::operator=(ATCP_packet_exception const &) noexcept
+{
+    return (*this);
+}
+
+char const  *ATCP_packet_exception::what(void) const noexcept
+{
+    return ("ATCP_packet_exception");
+}
