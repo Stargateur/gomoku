@@ -13,9 +13,9 @@
 
 int	main(void) try
 {
-	    Server	server;
+	Server	server;
 
-    	server.run();
+	server.run();
 }
 catch (std::exception &e)
 {
