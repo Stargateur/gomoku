@@ -16,7 +16,6 @@
 # ifdef	_WIN32
 # define _WIN32_WINNT 0xA000
 #define WIN32_LEAN_AND_MEAN
-#pragma comment(lib,"ws2_32")
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 # include   <io.h>
