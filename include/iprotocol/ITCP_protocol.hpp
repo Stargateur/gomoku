@@ -55,6 +55,12 @@ public:
         std::string	*value;
     };
 
+    struct  Game_player_param
+    {
+        std::string *name;
+        std::string *value;
+    };
+
     struct	Game_stone
     {
         uint8_t	x;
@@ -82,11 +88,13 @@ public:
         virtual void	join_game(ITCP_protocol &itcp_protocol, Game *game) = 0;
         virtual void	leave_game(ITCP_protocol &itcp_protocol) = 0;
         virtual void	put_stone_game(ITCP_protocol &itcp_protocol, Game_stone *stone) = 0;
-        virtual void	change_param_game(ITCP_protocol &itcp_protocol, Game_param *param) = 0;
+        virtual void    change_param_player_game(ITCP_protocol &itcp_protocol, Game_player_param *param) = 0;
+        virtual void    change_param_game(ITCP_protocol &itcp_protocol, Game_param *param) = 0;
         virtual void	list_param_game(ITCP_protocol &itcp_protocol, std::list<Game_param *> *params) = 0;
         virtual void	game_created(ITCP_protocol &itcp_protocol, Game *game) = 0;
         virtual void	game_player_joined(ITCP_protocol &itcp_protocol, std::string *name) = 0;
         virtual void	game_player_left(ITCP_protocol &itcp_protocol, std::string *name) = 0;
+        virtual void    game_player_param_changed(ITCP_protocol &itcp_protocol, Game_player_param *param) = 0;
         virtual void	game_param_changed(ITCP_protocol &itcp_protocol, Game_param *param) = 0;
         virtual void	game_stone_put(ITCP_protocol &itcp_protocol, Game_stone *stone) = 0;
         virtual void	game_deleted(ITCP_protocol &itcp_protocol, Game *game) = 0;
@@ -118,11 +126,13 @@ public:
     virtual void	send_join_game(Game const &game) = 0;
     virtual void	send_leave_game(void) = 0;
     virtual void	send_put_stone_game(Game_stone const &stone) = 0;
-    virtual void	send_change_param_game(Game_param const &param) = 0;
+    virtual void    send_change_param_game(Game_param const &param) = 0;
+    virtual void	send_change_param_player_game(Game_player_param const &param) = 0;
     virtual void	send_list_param_game(std::list<Game_param *> const &params) = 0;
     virtual void	send_game_created(Game const &game) = 0;
     virtual void	send_game_player_joined(std::string const &name) = 0;
     virtual void	send_game_player_left(std::string const &name) = 0;
+    virtual void    send_game_player_param_changed(Game_player_param const &param) = 0;
     virtual void	send_game_param_changed(Game_param const &param) = 0;
     virtual void	send_game_stone_put(Game_stone const &stone) = 0;
     virtual void	send_game_deleted(Game const &game) = 0;

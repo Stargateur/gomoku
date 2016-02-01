@@ -57,7 +57,7 @@ int	TCP_client::accept(ITCP_server const &server)
     int fd = ::accept(server.get_fd(), NULL, NULL);
 	if (fd == -1)
 #ifdef	_WIN32
-		throw TCP_client_exception(std::to_string(GetLastError()));
+		throw TCP_client_exception("WSA error numero : " + std::to_string(GetLastError()));
 #else
 		throw TCP_client_exception(strerror(errno));
 #endif
@@ -70,7 +70,7 @@ int	TCP_client::aux_connect(struct addrinfo const *rp)
 
     if (rp == NULL)
 #ifdef  _WIN32
-        throw TCP_client_exception(std::to_string(GetLastError()));
+        throw TCP_client_exception("WSA error numero : " + std::to_string(GetLastError()));
 #else
         throw TCP_client_exception(strerror(errno));
 #endif
@@ -129,7 +129,7 @@ uintmax_t	TCP_client::recv(uint8_t &data, uintmax_t size) const
     auto	ret = ::recv(m_fd, reinterpret_cast<char *>(&data), size, 0);
     if (ret == -1)
 #ifdef  _WIN32
-        throw TCP_client_exception(std::to_string(GetLastError()));
+        throw TCP_client_exception("WSA error numero : " + std::to_string(GetLastError()));
 #else
         throw TCP_client_exception(strerror(errno));
 #endif
@@ -141,7 +141,7 @@ uintmax_t	TCP_client::send(uint8_t const &data, uintmax_t size) const
     auto	ret = ::send(m_fd, reinterpret_cast<const char *>(&data), size, 0);
     if (ret == -1)
 #ifdef  _WIN32
-        throw TCP_client_exception(std::to_string(GetLastError()));
+        throw TCP_client_exception("WSA error numero : " + std::to_string(GetLastError()));
 #else
         throw TCP_client_exception(strerror(errno));
 #endif
