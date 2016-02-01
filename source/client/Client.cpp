@@ -93,7 +93,11 @@ void	Client::put_stone_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename 
 {
 }
 
-void	Client::change_param_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_param *param)
+void	Client::change_param_player_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_player_param *param)
+{
+}
+
+void    Client::change_param_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_param *param)
 {
 }
 
@@ -110,6 +114,10 @@ void	Client::game_player_joined(ITCP_protocol<ITCP_client> &itcp_protocol, std::
 }
 
 void	Client::game_player_left(ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
+{
+}
+
+void    Client::game_player_param_changed(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_player_param *param)
 {
 }
 

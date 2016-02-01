@@ -259,6 +259,11 @@ void	Server::change_param_game(ITCP_protocol<Client> &itcp_protocol, typename IT
     throw AServer_exception();
 }
 
+void    Server::change_param_player_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_player_param *param)
+{
+    throw AServer_exception();
+}
+
 void	Server::list_param_game(ITCP_protocol<Client> &itcp_protocol, std::list<typename ITCP_protocol<Client>::Game_param *> *params)
 {
     throw AServer_exception();
@@ -275,6 +280,11 @@ void	Server::game_player_joined(ITCP_protocol<Client> &itcp_protocol, std::strin
 }
 
 void	Server::game_player_left(ITCP_protocol<Client> &itcp_protocol, std::string *name)
+{
+    throw AServer_exception();
+}
+
+void    Server::game_player_param_changed(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_player_param *param)
 {
     throw AServer_exception();
 }

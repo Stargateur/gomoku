@@ -62,6 +62,8 @@ char const	*ATCP_packet::get_str_opcode(ATCP_packet::Opcode opcode)
         return ("Leave_game");
     case ATCP_packet::Put_stone_game:
         return ("Put_stone_game");
+    case ATCP_packet::Change_param_player_game:
+        return ("Change_param_player_game");
     case ATCP_packet::Change_param_game:
         return ("Change_param_game");
     case ATCP_packet::List_param_game:
@@ -72,6 +74,8 @@ char const	*ATCP_packet::get_str_opcode(ATCP_packet::Opcode opcode)
         return ("Game_player_joined");
     case ATCP_packet::Game_player_left:
         return ("Game_player_left");
+    case ATCP_packet::Game_player_param_changed:
+        return ("Game_player_param_changed");
     case ATCP_packet::Game_param_changed:
         return ("Game_param_changed");
     case ATCP_packet::Game_stone_put:

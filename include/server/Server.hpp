@@ -40,11 +40,13 @@ public:
     void	join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game);
     void	leave_game(ITCP_protocol<Client> &itcp_protocol);
     void	put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone);
+    void    change_param_player_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_player_param *param);
     void	change_param_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param);
     void	list_param_game(ITCP_protocol<Client> &itcp_protocol, std::list<typename ITCP_protocol<Client>::Game_param *> *params);
     void	game_created(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game);
     void	game_player_joined(ITCP_protocol<Client> &itcp_protocol, std::string *name);
     void	game_player_left(ITCP_protocol<Client> &itcp_protocol, std::string *name);
+    void    game_player_param_changed(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_player_param *param);
     void	game_param_changed(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param);
     void	game_stone_put(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone);
     void	game_deleted(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game);

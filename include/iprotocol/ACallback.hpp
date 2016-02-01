@@ -70,6 +70,11 @@ public:
         m_callback.put_stone_game(itcp_protocol, stone);
     }
 
+    virtual void    change_param_player_game(ITCP_protocol<T> &itcp_protocol, typename ITCP_protocol<T>::Game_player_param *param)
+    {
+        m_callback.change_param_player_game(itcp_protocol, param);
+    }
+
     virtual void	change_param_game(ITCP_protocol<T> &itcp_protocol, typename ITCP_protocol<T>::Game_param *param)
     {
         m_callback.change_param_game(itcp_protocol, param);
@@ -93,6 +98,11 @@ public:
     virtual void	game_player_left(ITCP_protocol<T> &itcp_protocol, std::string *name)
     {
         m_callback.game_player_left(itcp_protocol, name);
+    }
+
+    virtual void    game_player_param_changed(ITCP_protocol<T> &itcp_protocol, typename ITCP_protocol<T>::Game_player_param *param)
+    {
+        m_callback.game_player_param_changed(itcp_protocol, param);
     }
 
     virtual void	game_param_changed(ITCP_protocol<T> &itcp_protocol, typename ITCP_protocol<T>::Game_param *param)

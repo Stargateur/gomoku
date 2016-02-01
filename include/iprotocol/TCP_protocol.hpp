@@ -159,34 +159,55 @@ public:
             recv_create_game();
             return;
         case ATCP_packet::Join_game:
+            recv_join_game();
             return;
         case ATCP_packet::Leave_game:
+            recv_leave_game();
             return;
         case ATCP_packet::Put_stone_game:
+            recv_put_stone_game();
+            return;
+        case ATCP_packet::Change_param_player_game:
+            recv_change_param_player_game();
             return;
         case ATCP_packet::Change_param_game:
+            recv_change_param_game();
             return;
         case ATCP_packet::List_param_game:
+            recv_list_param_game();
             return;
         case ATCP_packet::Game_created:
+            recv_game_created();
             return;
         case ATCP_packet::Game_player_joined:
+            recv_game_player_joined();
             return;
         case ATCP_packet::Game_player_left:
+            recv_game_player_left();
+            return;
+        case ATCP_packet::Game_player_param_changed:
+            recv_game_player_param_changed();
             return;
         case ATCP_packet::Game_param_changed:
+            recv_game_param_changed();
             return;
         case ATCP_packet::Game_stone_put:
+            recv_game_stone_put();
             return;
         case ATCP_packet::Game_deleted:
+            recv_game_deleted();
             return;
         case ATCP_packet::Start_game:
+            recv_start_game();
             return;
         case ATCP_packet::Ready_game:
+            recv_ready_game();
             return;
         case ATCP_packet::Result_game:
+            recv_result_game();
             return;
         case ATCP_packet::Message:
+            recv_message();
             return;
         }
         throw std::logic_error("recv a Unknow opcode");
@@ -219,9 +240,9 @@ public:
 private:
     void	recv_connect(void)
     {
+        uint8_t version;
         std::string	*login = new std::string();
         std::string	*password = new std::string();
-        uint8_t	version;
 
         m_to_recv.get(version);
         m_to_recv.get(*login);
@@ -324,6 +345,22 @@ private:
     }
 
 public:
+    void    send_change_param_player_game(typename ITCP_protocol<T>::Game_player_param const &param)
+    {
+        set_rec(get_to_send(ATCP_packet::Change_param_player_game), *param.name, *param.value);
+    }
+
+private:
+    void    recv_change_param_player_game(void)
+    {
+        typename ITCP_protocol<T>::Game_player_param *param = new typename ITCP_protocol<T>::Game_player_param;
+        param->name = new std::string();
+        param->value = new std::string();
+        get_rec(m_to_recv, *param->name, *param->value);
+        m_callback->change_param_player_game(*this, param);
+    }
+
+public:
     void	send_change_param_game(typename ITCP_protocol<T>::Game_param const &param)
     {
         set_rec(get_to_send(ATCP_packet::Change_param_game), *param.name, *param.value);
@@ -335,7 +372,7 @@ private:
         typename ITCP_protocol<T>::Game_param *param = new typename ITCP_protocol<T>::Game_param();
         param->name = new std::string();
         param->value = new std::string();
-        get_rec(m_to_recv, *param->name, *param->owner);
+        get_rec(m_to_recv, *param->name, *param->value);
         m_callback->change_param_game(*this, param);
     }
 
@@ -368,8 +405,8 @@ private:
     {
         typename ITCP_protocol<T>::Game *game = new typename ITCP_protocol<T>::Game();
         game->name = new std::string();
-        game->value = new std::string();
-        get_rec(m_to_recv, *game->name, *game->value);
+        game->owner = new std::string();
+        get_rec(m_to_recv, *game->name, *game->owner);
         m_callback->game_created(*this, game);
     }
 
@@ -401,6 +438,23 @@ private:
         std::string *name = new std::string();
         get_rec(m_to_recv, name);
         m_callback->game_player_left(*this, name);
+    }
+
+public:
+    void    send_game_player_param_changed(typename ITCP_protocol<T>::Game_player_param const &param)
+    {
+        TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_player_param_changed);
+        set_rec(to_send, *param.name, *param.value);
+    }
+
+private:
+    void    recv_game_player_param_changed(void)
+    {
+        typename ITCP_protocol<T>::Game_player_param *param = new typename ITCP_protocol<T>::Game_player_param;
+        param->name = new std::string();
+        param->value = new std::string();
+        get_rec(m_to_recv, *param->name, *param->value);
+        m_callback->game_player_param_changed(*this, param);
     }
 
 public:
@@ -445,7 +499,7 @@ public:
 private:
     void	recv_game_deleted(void)
     {
-        typename ITCP_protocol<T>::Game *game = new typename ITCP_protocol<T>::Game_game();
+        typename ITCP_protocol<T>::Game *game = new typename ITCP_protocol<T>::Game();
         game->name = new std::string();
         game->owner = new std::string();
         get_rec(m_to_recv, game->name, game->owner);
@@ -509,8 +563,8 @@ private:
     {
         typename ITCP_protocol<T>::Message *message = new typename ITCP_protocol<T>::Message();
         message->name = new std::string();
-        message->owner = new std::string();
-        get_rec(m_to_recv, *message->name, *message->owner);
+        message->message = new std::string();
+        get_rec(m_to_recv, *message->name, *message->message);
         m_callback->message(*this, message);
     }
 

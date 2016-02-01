@@ -32,7 +32,7 @@ int	TCP_server::aux_bind(struct addrinfo const *rp)
 {
     if (rp == NULL)
 #ifdef	_WIN32
-		throw TCP_server_exception(std::to_string(GetLastError()));
+		throw TCP_server_exception("WSA error numero : " + std::to_string(GetLastError()));
 #else
         throw TCP_server_exception(strerror(errno));
 #endif
