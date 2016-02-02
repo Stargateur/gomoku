@@ -42,81 +42,93 @@ void    Select::reset(void)
 }
 
 void	Select::reset_read(ISocket const &socket)
-{/*
+{
+#ifndef _WIN32
     if (socket.get_fd() >= FD_SETSIZE)
-        throw Select_exception(strerror(EDOM));*/
+        throw Select_exception(strerror(EDOM));
+#endif
     FD_CLR(socket.get_fd(), &m_readfds);
 }
 
 void    Select::reset_write(ISocket const &socket)
-{/*
+{
+#ifndef _WIN32
     if (socket.get_fd() >= FD_SETSIZE)
-        throw Select_exception(strerror(EDOM));*/
+        throw Select_exception(strerror(EDOM));
+#endif
     FD_CLR(socket.get_fd(), &m_writefds);
 }
 
 bool    Select::can_read(ISocket const &socket) const
-{/*
+{
+#ifndef _WIN32
     if (socket.get_fd() >= FD_SETSIZE)
-        throw Select_exception(strerror(EDOM));*/
+        throw Select_exception(strerror(EDOM));
+#endif
     return (FD_ISSET(socket.get_fd(), &m_readfds));
 }
 
 bool    Select::can_write(ISocket const &socket) const
-{/*
+{
+#ifndef _WIN32
     if (socket.get_fd() >= FD_SETSIZE)
-        throw Select_exception(strerror(EDOM));*/
+        throw Select_exception(strerror(EDOM));
+#endif
     return (FD_ISSET(socket.get_fd(), &m_writefds));
 }
 
 void    Select::want_read(ISocket const &socket)
-{/*
+{
+#ifndef _WIN32
     if (socket.get_fd() >= FD_SETSIZE)
-        throw Select_exception(strerror(EDOM));*/
+        throw Select_exception(strerror(EDOM));
+#endif
     FD_SET(socket.get_fd(), &m_readfds);
     m_nfds = std::max<int>(m_nfds, socket.get_fd());
 }
 
 void    Select::want_write(ISocket const &socket)
-{/*
+{
+#ifndef _WIN32
     if (socket.get_fd() >= FD_SETSIZE)
-        throw Select_exception(strerror(EDOM));*/
+        throw Select_exception(strerror(EDOM));
+#endif
     FD_SET(socket.get_fd(), &m_writefds);
     m_nfds = std::max<int>(m_nfds, socket.get_fd());
 }
 
-void    Select::select(ITime const *timeout)
+void    Select::select(void)
 {
-    int   ret;
-
-    if (timeout == nullptr)
-	{
-#ifdef		_WIN32
-        ret = ::select(m_nfds + 1, &m_readfds, &m_writefds, NULL, NULL);
-#else
-        ret = pselect(m_nfds + 1, &m_readfds, &m_writefds, NULL, NULL, NULL);
-
-#endif
-	}
-    else
-    {
-#ifdef		_WIN32
-        struct timeval   time = { static_cast<long>(timeout->get_second()), static_cast<long>(timeout->get_nano()) / 1000};
-        ret = ::select(m_nfds + 1, &m_readfds, &m_writefds, NULL, &time);
-#else
-        struct timespec   time = {timeout->get_second(), timeout->get_nano()};
-        ret = pselect(m_nfds + 1, &m_readfds, &m_writefds, NULL, &time, NULL);
-#endif
-    }
+#ifdef	_WIN32
+    int ret = ::select(m_nfds + 1, &m_readfds, &m_writefds, NULL, NULL);
     if (ret == -1)
-	{
-        #ifdef		_WIN32
+    {
         std::cerr << GetLastError() << std::endl;
         throw Select_exception("nique sa mère windows");
-        #else
+    }
+#else
+    int ret = pselect(m_nfds + 1, &m_readfds, &m_writefds, NULL, NULL, NULL);
+    if (ret == -1)
         throw Select_exception(strerror(errno));
-	#endif
-	}
+#endif
+}
+
+void    Select::select(ITime const &timeout)
+{
+#ifdef      _WIN32
+    struct timeval   time = { static_cast<long>(timeout.get_second()), static_cast<long>(timeout.get_nano()) / 1000};
+    int ret = ::select(m_nfds + 1, &m_readfds, &m_writefds, NULL, &time);
+    if (ret == -1)
+    {
+        std::cerr << GetLastError() << std::endl;
+        throw Select_exception("nique sa mère windows");
+    }
+#else
+    struct timespec   time = {timeout.get_second(), timeout.get_nano()};
+    int ret = pselect(m_nfds + 1, &m_readfds, &m_writefds, NULL, &time, NULL);
+    if (ret == -1)
+        throw Select_exception(strerror(errno));
+#endif /* !_WIN32 */
 }
 
 Select_exception::Select_exception(char const *what) :

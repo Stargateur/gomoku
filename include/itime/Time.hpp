@@ -28,7 +28,7 @@ public:
     void	set_second(intmax_t second);
     intmax_t	get_nano(void) const;
     void	set_nano(intmax_t nano);
-    bool	now(void);
+    void	now(void);
     ITime	&clone(void) const;
 private:
 #ifdef _WIN32

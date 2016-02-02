@@ -24,7 +24,8 @@ class	Select : public ISelect
 public:
     Select(void);
 	~Select(void);
-    void	select(ITime const *timeout = nullptr);
+    void    select(void);
+    void    select(ITime const &timeout);
     void    reset(void);
     void    reset_read(ISocket const &socket);
     void    reset_write(ISocket const &socket);

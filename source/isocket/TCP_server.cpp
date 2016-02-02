@@ -14,8 +14,14 @@
 #include	"TCP_server.hpp"
 #include	"TCP_client.hpp"
 
-TCP_server::TCP_server(std::string const &port) : ASocket(bind(port))
+TCP_server::TCP_server(std::string const &port) try : ASocket(bind(port))
 {
+}
+catch (...)
+{
+#ifdef  _WIN32
+    WSACleanup();
+#endif
 }
 
 TCP_server::~TCP_server(void)
@@ -39,16 +45,8 @@ int	TCP_server::aux_bind(struct addrinfo const *rp)
     int	fd = ::socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
     if (fd == -1)
         return (aux_bind(rp->ai_next));
-    if (::bind(fd, rp->ai_addr, rp->ai_addrlen) != 0)
-    {
-#ifdef	_WIN32
-    closesocket(fd);
-#else
-    shutdown(fd, SHUT_RDWR);
-#endif
-        return (aux_bind(rp->ai_next));
-    }
-    if (::listen(fd, 42) != 0)
+    if (::bind(fd, rp->ai_addr, rp->ai_addrlen) != 0
+        || ::listen(fd, 42) != 0)
     {
 #ifdef	_WIN32
     closesocket(fd);
@@ -82,12 +80,7 @@ int	TCP_server::bind(std::string const &port)
 #endif
     int	status = ::getaddrinfo(NULL, port.c_str(), &hints, &result);
     if (status != 0)
-    {
-#ifdef  _WIN32
-        WSACleanup();
-#endif
         throw TCP_server_exception(gai_strerror(status));
-    }
     try
     {
         int	fd = aux_bind(result);
@@ -96,9 +89,6 @@ int	TCP_server::bind(std::string const &port)
     }
     catch (...)
     {
-#ifdef  _WIN32
-        WSACleanup();
-#endif
         ::freeaddrinfo(result);
         throw;
     }
