@@ -15,13 +15,11 @@
 Game::Game(typename ITCP_protocol<Client>::Callback &callback, std::string *name) :
     ACallback(callback),
     m_is_start(false),
-    m_turn(&m_black),
     m_name(name),
     m_white(*this),
     m_black(*this),
     m_timeout(new Time(5))
 {
-    m_board.fill(ITCP_protocol<Client>::Game_stone::None);
 }
 
 Game::~Game(void)
@@ -46,6 +44,8 @@ void    Game::pre_run(ISelect &iselect)
 
 void    Game::run(ISelect &iselect, ITime &time)
 {
+    if (m_itcp_protocols.size() == 0)
+        throw AGame_exception();
     auto it = m_itcp_protocols.begin();
     while (it != m_itcp_protocols.end())
     {
@@ -142,16 +142,7 @@ void	Game::leave_game(ITCP_protocol<Client> &itcp_protocol)
 
 void	Game::put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
 {
-    if (m_is_start == false)
-        ;
-    if (stone->x >= m_size || stone->y >= m_size)
-        ;
-    if (m_board[stone->y * m_size + stone->x] != ITCP_protocol<Client>::Game_stone::None)
-        ;
-    if (m_turn != itcp_protocol.get_callback())
-        ;
-    m_board[stone->y * m_size + stone->x] = stone->color;
-    throw std::logic_error("Satan is here");
+//    if (itcp_protocol.get_callback() == &)
     for (auto it : m_itcp_protocols)
         it->send_game_stone_put(*stone);
 }

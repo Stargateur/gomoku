@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Tue Feb  2 01:18:25 2016 Antoine Plaskowski
+## Last update Tue Feb  2 12:58:31 2016 Antoine Plaskowski
 ##
 
 CLIENT		=	gomoku_client
@@ -36,7 +36,7 @@ CXXFLAGS	+=	-ansi -pedantic -std=c++11
 CXXFLAGS	+=	$(INCLUDE)
 
 ifeq ($(CXX), clang++)
-CXXFLAGS	+=	-Weverything -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic
+CXXFLAGS	+=	-Weverything -Wno-c++98-compat -Wno-padded -Wno-c++98-compat-pedantic -Wno-unused-parameter -Wno-newline-eof
 endif
 
 ifneq ($(DEBUG), no)

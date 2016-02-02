@@ -24,8 +24,8 @@ class	TCP_protocol : public ITCP_protocol<T>
 {
 public:
     TCP_protocol(typename ITCP_protocol<T>::Callback *callback, T *data) :
-        m_data(data),
-        m_callback(callback)
+        m_callback(callback),
+        m_data(data)
     {
         if (callback == nullptr)
             throw std::logic_error("callback can't be nullptr");
@@ -391,6 +391,15 @@ private:
         std::list<typename ITCP_protocol<T>::Game_param *> *params = new std::list<typename ITCP_protocol<T>::Game_param *>();
         uint8_t	size;
         m_to_recv.get(size);
+        for (uintmax_t i = 0; i < size; i++)
+        {
+            typename ITCP_protocol<T>::Game_param *param = new typename ITCP_protocol<T>::Game_param();
+            param->name = new std::string();
+            param->value = new std::string();
+            get_rec(m_to_recv, *param->name, *param->value);
+            params->push_back(param);
+        }
+        m_callback->list_param_game(*this, params);
     }
 
 public:
