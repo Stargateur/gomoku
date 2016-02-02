@@ -14,26 +14,26 @@
 
 static sig_atomic_t g_keep_running = true;
 
-void    sigint(int)
+static void    sigint(int)
 {
-    g_keep_running = false;
     std::signal(SIGINT, &sigint);
+    g_keep_running = false;
 }
 
-int	main(void) try
+int	main(void)
 {
 	Server	server;
 
-    std::signal(SIGINT, &sigint);
+    std::signal(SIGINT, sigint);
     while (g_keep_running == true)
+    try
     {
         server.pre_run();
         server.run();
     }
-    std::cout << "ok" << std::endl;
+    catch (std::exception &e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
     return 0;
-}
-catch (std::exception &e)
-{
-	std::cerr << "bonjour " << e.what() << std::endl;
 }

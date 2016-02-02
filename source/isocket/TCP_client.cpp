@@ -59,7 +59,7 @@ int	TCP_client::accept(ITCP_server const &server)
 #ifdef	_WIN32
 		throw TCP_client_exception("WSA error numero : " + std::to_string(GetLastError()));
 #else
-		throw TCP_client_exception(strerror(errno));
+        throw TCP_client_exception(strerror(errno));
 #endif
     return (fd);
 }
@@ -81,7 +81,7 @@ int	TCP_client::aux_connect(struct addrinfo const *rp)
 #ifdef	_WIN32
 		closesocket(fd);
 #else
-		shutdown(fd, SHUT_RDWR);
+		close(fd);
 #endif
         return (aux_connect(rp->ai_next));
     }

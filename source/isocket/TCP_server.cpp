@@ -51,7 +51,7 @@ int	TCP_server::aux_bind(struct addrinfo const *rp)
 #ifdef	_WIN32
     closesocket(fd);
 #else
-    shutdown(fd, SHUT_RDWR);
+    close(fd);
 #endif
         return (aux_bind(rp->ai_next));
     }
@@ -106,10 +106,6 @@ TCP_server_exception::TCP_server_exception(char const *what) :
 
 TCP_server_exception::TCP_server_exception(std::string const &&what) noexcept:
     m_what(what)
-{
-}
-
-TCP_server_exception::~TCP_server_exception(void) noexcept
 {
 }
 

@@ -39,10 +39,7 @@ public:
     void	ready_game(ITCP_protocol<Client> &itcp_protocol, bool ready);
 private:
     bool	m_is_start;
-    bool    m_is_running;
-    ITCP_protocol<Client>::Callback	*m_turn;
-    static uintmax_t const	m_size = 19;
-    std::array<ITCP_protocol<Client>::Game_stone::Color, m_size * m_size>	m_board;
+//    std::array<ITCP_protocol<Client>::Game_stone::Color, m_size * m_size>	m_board;
     std::string	*m_name;
     Black	m_black;
     White   m_white;
