@@ -23,7 +23,7 @@ Client::Client(void) :
     ITCP_protocol<ITCP_client>::Game    game = {&name, &name};
     m_itcp_protocol->send_create_game(game);
     m_itcp_protocol->send_leave_game();
-    m_itcp_protocol->send_disconnect();
+    m_itcp_protocol->send_create_game(game);
 }
 
 Client::~Client(void)
