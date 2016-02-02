@@ -29,6 +29,7 @@ private:
     Server(ITCP_server *, ISelect *);
 public:
     ~Server(void);
+    void    pre_run(void) const;
     void	run(void);
     void	timeout(ITCP_protocol<Client> &itcp_protocol) const;
     void	result(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Error error);

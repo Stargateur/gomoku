@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Sun Jan 31 17:11:56 2016 Antoine Plaskowski
+## Last update Tue Feb  2 01:18:25 2016 Antoine Plaskowski
 ##
 
 CLIENT		=	gomoku_client
@@ -24,7 +24,7 @@ LEVEL		?=	3
 
 COLOR		?=	no
 
-LIB_SERVER	=
+LIB_SERVER	=	-l pthread
 
 LIB_CLIENT	=	-lsfml-system -lsfml-graphics -lsfml-window -lsfml-system
 

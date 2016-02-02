@@ -84,7 +84,7 @@ private:
         TCP_packet_send	*to_send = new TCP_packet_send();
         to_send->set_opcode(opcode);
 #ifdef	DEBUG
-        std::cerr << "je prépare un packet " << to_send->get_opcode() << " ";
+        std::cerr << "je prépare un packet " << to_send->get_opcode() << std::endl;
 #endif	/* !DEBUG */
         m_to_send.push_back(to_send);
         return (*to_send);
