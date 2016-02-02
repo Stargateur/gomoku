@@ -18,7 +18,7 @@ public:
     virtual void	set_second(intmax_t) = 0;
     virtual intmax_t	get_nano(void) const = 0;
     virtual void	set_nano(intmax_t) = 0;
-    virtual bool	now(void) = 0;
+    virtual void	now(void) = 0;
     virtual ITime	&clone(void) const = 0;
 };
 
