@@ -58,9 +58,6 @@
     <ClCompile Include="..\source\client\GView.cpp">
       <Filter>client</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\client\GVOButton.cpp">
-	  <Filter>client</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\client\GomokuGraphics.cpp">
       <Filter>client</Filter>
     </ClCompile>
@@ -130,7 +127,7 @@
       <Filter>client</Filter>
     </ClInclude>
     <ClInclude Include="..\include\client\GVOButton.hpp">
-	  <Filter>client</Filter>
+      <Filter>client</Filter>
     </ClInclude>
     <ClInclude Include="..\include\client\GomokuGraphics.hpp">
       <Filter>client</Filter>
