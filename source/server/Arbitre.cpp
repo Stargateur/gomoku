@@ -29,6 +29,95 @@ Arbitre::Arbitre(const Arbitre & copy) :
 Arbitre::~Arbitre(void)
 {}
 
+bool Arbitre::check_coord(int x, int y) const
+{
+	if (x < 0 || x >= Arbitre::board_size)
+		return false;
+	if (y < 0 || y >= Arbitre::board_size)
+		return false;
+	return true;
+}
+
+bool Arbitre::check_stone_libre(int x, int y) const
+{
+	int tab[8][2] = {
+		{ 1, 0 },
+		{ 0, 1 },
+		{ -1, 0 },
+		{ 0, -1 },
+		{ 1, 1 },
+		{ -1, -1 },
+		{ 1, -1 },
+		{ -1, 1 }
+	};
+
+	for (int i = 0; i < 8; i++)
+	{
+		if (check_coord(x + tab[i][0], y + tab[i][1]) == false)
+			continue;
+		if ((*this)(x + tab[i][0], y + tab[i][1]) != prot::Game_stone::Color::None)
+			continue;
+		if (check_coord(x - tab[i][0], y - tab[i][1]) == false)
+			continue;
+		if ((*this)(x + tab[i][0], y + tab[i][1]) != (*this)(x, y))
+			continue;
+		if (check_coord(x - tab[i][0] * 2, y - tab[i][1] * 2) == false)
+			continue;
+		if ((*this)(x + tab[i][0], y + tab[i][1]) != prot::Game_stone::notColor((*this)(x, y)))
+			continue;
+		return (false);
+	}
+	return (true);
+}
+
+void Arbitre::check_vertical_victory(prot::Game_stone *stone) const
+{
+	int tab[4][2] =
+	{
+		{ 0, 1 },
+		{ 1, 0 },
+		{ 1, 1 },
+		{ 1, -1 },
+	};
+	int i = 0;
+	int j = 0;
+	int	nb = 0;
+	int x = static_cast<int>(stone->x);
+	int y = static_cast<int>(stone->y);
+	for (int k = 0; k < 4; k++)
+	{
+		while (check_coord(x + i, y + j) && (*this)(x + i, y + j) == stone->color)
+		{
+			if (check_stone_libre(x + i, y + j) == false)
+				break;
+			i += tab[k][0];
+			j += tab[k][1];
+			nb++;
+		}
+		i = tab[k][0];
+		j = tab[k][1];
+		while (check_coord(x - i, y - j) > 0 && (*this)(x - i, y - j) == stone->color)
+		{
+			if (check_stone_libre(x - i, y) == false)
+				break;
+			i += tab[k][0];
+			j += tab[k][1];
+			nb++;
+		}
+		if (nb >= 5)
+			throw std::logic_error("La game est finie.");
+	}
+}
+
+void Arbitre::check_victory(prot::Game_stone * stone) const
+{
+	if (m_black_loose >= 10)
+		throw std::logic_error("La game est finie. Blanc a gagne");
+	if (m_white_loose >= 10)
+		throw std::logic_error("La game est finie. Noir a gagne");
+	check_vertical_victory(stone);
+}
+
 void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
 {
 	int capture[8][4] = {
@@ -62,10 +151,14 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 			mess.y = capture[i][3];
 			itcp_protocol.send_game_stone_put(mess);
 			(*this)(stone->x, stone->y) = prot::Game_stone::Color::None;
+			if (stone->color = prot::Game_stone::Color::Black)
+				m_white_loose += 2;
+			else
+				m_black_loose += 2;
 			i++;
 		}
 	}
-	//Verif victoire
+	check_victory(stone);
 }
 
 bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
