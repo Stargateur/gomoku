@@ -1,4 +1,6 @@
 #include	"GomokuGraphics.hpp"
+#include	"GVOButton.hpp"
+#include	"IGVObject.hpp"
 
 GomokuGraphics::GomokuGraphics()
 {
@@ -18,13 +20,10 @@ void GomokuGraphics::init()
 	{std::cerr << "Cant load the texture" << std::endl;}
 	//set sprites
 	//Background
-	mBackground.setTexture(mTextureBackground);
-	mBackground.setPosition(sf::Vector2f(WIN_X / 3, 0));
-	mBackground.setScale(sf::Vector2f(1, 1));
-	//TopMenu
-	mTopMenu.setTexture(mTopTexture);
-	mTopMenu.setPosition(sf::Vector2f(0, 0));
-	mTopMenu.setScale(sf::Vector2f(1, 1));
+	//mBackground.setTexture(mTextureBackground);
+	//mBackground.setPosition(sf::Vector2f(WIN_X / 3, 0));
+	//mBackground.setScale(sf::Vector2f(1, 1));
+	mView.mObjects.push_back(new GVOButton(sf::Vector2f(WIN_X / 3, 0), mTextureBackground, sf::Vector2f(1, 1)));
 }
 
 void GomokuGraphics::run()
@@ -44,8 +43,11 @@ void GomokuGraphics::run()
 		//clear
 		mWindow->clear();
 		//draw all Sprites
-		mWindow->draw(mBackground);
-		mWindow->draw(mTopMenu);
+		std::list<sf::Sprite *> mylist = mView.getSprites();
+		for (sf::Sprite *aff : mylist)
+		{
+			mWindow->draw(*aff);
+		}
 		//aff display
 		mWindow->display();
 	}
