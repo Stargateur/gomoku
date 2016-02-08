@@ -35,7 +35,7 @@ catch (...)
 Server::Server(ITCP_server *itcp_server, ISelect *iselect) try :
     m_itcp_server(itcp_server),
     m_iselect(iselect),
-    m_timeout(new Time(5))
+    m_timeout(new Time(500000000))
 {
 }
 catch (...)

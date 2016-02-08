@@ -19,7 +19,7 @@ Game::Game(typename ITCP_protocol<Client>::Callback &callback, std::string *name
     m_arbitre(*this),
     m_black(m_arbitre),
     m_white(m_arbitre),
-    m_timeout(new Time(5))
+    m_timeout(new Time(500000000))
 {
     ITCP_protocol<Client>::Game_param *game_param = new ITCP_protocol<Client>::Game_param;
     game_param->name = new std::string("name");
