@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\source\iprotocol\ATCP_packet.cpp" />
@@ -20,9 +20,9 @@
     <ClCompile Include="..\source\server\main.cpp" />
     <ClCompile Include="..\source\server\Server.cpp" />
     <ClCompile Include="..\source\server\White.cpp" />
-    <ClCompile Include="..\source\server\Utils.cpp" />
     <ClCompile Include="..\source\server\Arbitre.cpp" />
     <ClCompile Include="..\source\server\Black.cpp" />
+    <ClCompile Include="..\source\server\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iprotocol\ATCP_packet.hpp" />
