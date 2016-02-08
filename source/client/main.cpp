@@ -18,14 +18,6 @@
 
 void start_tcpclient()
 {
-	std::this_thread::sleep_for(std::chrono::seconds(5));
-	PlayerInfo::getInstance().lock();
-	PlayerInfo::getInstance().mWantConnect = true;
-	PlayerInfo::getInstance().unlock();
-}
-
-void start_ui()
-{
 	bool	keepRunning = true;
 	bool	wantConnect = false;
 
@@ -58,6 +50,14 @@ void start_ui()
 		keepRunning = !PlayerInfo::getInstance().mWantQuit;
 		PlayerInfo::getInstance().unlock();
 	}
+}
+
+void start_ui()
+{
+	std::this_thread::sleep_for(std::chrono::seconds(5));
+	PlayerInfo::getInstance().lock();
+	PlayerInfo::getInstance().mWantConnect = true;
+	PlayerInfo::getInstance().unlock();
 }
 
 int				main(void) try
