@@ -21,10 +21,6 @@ Client::Client(void) :
     m_itcp_protocol->send_connect("plasko_a", "plasko_a");
     std::string name("toto");
     ITCP_protocol<ITCP_client>::Game    game = {&name, &name};
-    m_itcp_protocol->send_create_game(game);
-    m_itcp_protocol->send_leave_game();
-    m_itcp_protocol->send_create_game(game);
-    m_itcp_protocol->send_disconnect();
 }
 
 Client::~Client(void)
