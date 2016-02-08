@@ -51,4 +51,6 @@ SRC_CLIENT	=	$(DIR_CLIENT)/main.cpp
 SRC_CLIENT	+=	$(DIR_CLIENT)/Client.cpp
 SRC_CLIENT	+=	$(DIR_CLIENT)/PlayerInfo.cpp
 SRC_CLIENT	+=	$(DIR_CLIENT)/GameInfo.cpp
+SRC_CLIENT	+=	$(DIR_CLIENT)/GView.cpp
+SRC_CLIENT	+=	$(DIR_CLIENT)/GVOButton.cpp
 SRC_CLIENT	+=	$(DIR_CLIENT)/GomokuGraphics.cpp

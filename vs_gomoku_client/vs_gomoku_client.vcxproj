@@ -138,6 +138,9 @@
   <ItemGroup>
     <ClInclude Include="..\include\client\Client.hpp" />
     <ClInclude Include="..\include\client\GameInfo.hpp" />
+    <ClInclude Include="..\include\client\GView.hpp" />
+    <ClInclude Include="..\include\client\GVOButton.hpp" />
+    <ClInclude Include="..\include\client\IGVObject.hpp" />
     <ClInclude Include="..\include\client\GomokuGraphics.hpp" />
     <ClInclude Include="..\include\client\PlayerInfo.hpp" />
     <ClInclude Include="..\include\iprotocol\ACallback.hpp" />
@@ -160,6 +163,8 @@
   <ItemGroup>
     <ClCompile Include="..\source\client\Client.cpp" />
     <ClCompile Include="..\source\client\GameInfo.cpp" />
+    <ClCompile Include="..\source\client\GView.cpp" />
+    <ClCompile Include="..\source\client\GVOButton.cpp" />
     <ClCompile Include="..\source\client\GomokuGraphics.cpp" />
     <ClCompile Include="..\source\client\main.cpp" />
     <ClCompile Include="..\source\client\PlayerInfo.cpp" />
