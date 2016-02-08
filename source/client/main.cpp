@@ -89,6 +89,8 @@ catch (std::exception &e)
 #include	"TCP_client.hpp"
 #include	"Select.hpp"
 
+std::string color;
+
 class lol : public ITCP_protocol<ITCP_client>::Callback
 {
 private:
@@ -112,21 +114,7 @@ lol(void) :
     param.name = &ptdr;
     param.value = &color;
     m_itcp_protocol->send_change_param_player_game(param);
-    while (42)
-    {
-    	std::string x;
-    	std::string y;
-    	std::cout << "x puis y puis color" << std::endl;
-    	std::cin >> x >> y >> color;
-    	ITCP_protocol<ITCP_client>::Game_stone stone;
-    	stone.x = stoull(x);
-    	stone.y = stoull(y);
-    	if (color == "white")
-	    	stone.color = ITCP_protocol<ITCP_client>::Game_stone::White;
-	    else
-	    	stone.color = ITCP_protocol<ITCP_client>::Game_stone::Black;
-	    m_itcp_protocol->send_put_stone_game(stone);	    	
-    }
+    std::cin >> color;
 }
 
 ~lol(void)
@@ -143,9 +131,21 @@ void	run(void)
         if (m_itcp_protocol->want_recv() == true)
             m_iselect->want_read(*m_itcp_protocol->get_data());
         if (m_itcp_protocol->want_send() == true)
-            m_iselect->want_write(*m_itcp_protocol->get_data());
+            m_iselect->want_write(*m_itcp_protocol->get_data());	    	
         m_iselect->select();
-        if (m_iselect->can_read(*m_itcp_protocol->get_data()) == true)
+    	std::string x;
+    	std::string y;
+    	std::cout << "x puis y" << std::endl;
+    	std::cin >> x >> y;
+    	ITCP_protocol<ITCP_client>::Game_stone stone;
+    	stone.x = stoull(x);
+    	stone.y = stoull(y);
+    	if (color == "white")
+	    	stone.color = ITCP_protocol<ITCP_client>::Game_stone::White;
+	    else
+	    	stone.color = ITCP_protocol<ITCP_client>::Game_stone::Black;
+	    m_itcp_protocol->send_put_stone_game(stone);
+	            if (m_iselect->can_read(*m_itcp_protocol->get_data()) == true)
 		{
 			m_iselect->reset_read(*m_itcp_protocol->get_data());
             m_itcp_protocol->recv(*m_itcp_protocol->get_data());
