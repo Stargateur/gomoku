@@ -55,14 +55,13 @@
     <ClCompile Include="..\source\client\PlayerInfo.cpp">
       <Filter>client</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="..\source\client\GView.cpp">
       <Filter>client</Filter>
     </ClCompile>
     <ClCompile Include="..\source\client\GVOButton.cpp">
-=======
+	  <Filter>client</Filter>
+    </ClCompile>
     <ClCompile Include="..\source\client\GomokuGraphics.cpp">
->>>>>>> e45cf4cd5c10a094e80a23b77ac87b4107d146da
       <Filter>client</Filter>
     </ClCompile>
   </ItemGroup>
@@ -124,7 +123,6 @@
     <ClInclude Include="..\include\client\PlayerInfo.hpp">
       <Filter>client</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="..\include\client\GView.hpp">
       <Filter>client</Filter>
     </ClInclude>
@@ -132,9 +130,9 @@
       <Filter>client</Filter>
     </ClInclude>
     <ClInclude Include="..\include\client\GVOButton.hpp">
-=======
+	  <Filter>client</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\client\GomokuGraphics.hpp">
->>>>>>> e45cf4cd5c10a094e80a23b77ac87b4107d146da
       <Filter>client</Filter>
     </ClInclude>
   </ItemGroup>
