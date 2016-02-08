@@ -90,7 +90,7 @@ catch (std::exception &e)
 #include	"Select.hpp"
 #include	"Time.hpp"
 
-std::string color;
+std::string color = "";
 
 class lol : public ITCP_protocol<ITCP_client>::Callback
 {
@@ -108,8 +108,7 @@ lol(void) :
     std::cin >> name;
     ITCP_protocol<ITCP_client>::Game    game = {&name};
     m_itcp_protocol->send_create_game(game);
-    std::string color;
-    std::cin >> color;
+	std::cin >> color;
     ITCP_protocol<ITCP_client>::Game_player_param	param;
     std::string ptdr("color");
     param.name = &ptdr;
@@ -145,8 +144,11 @@ void	run(void)
     		ITCP_protocol<ITCP_client>::Game_stone stone;
     		stone.x = stoull(x);
     		stone.y = stoull(y);
+    			std::cout << color << std::endl;
     		if (color == "white")
+    		{
 	    		stone.color = ITCP_protocol<ITCP_client>::Game_stone::White;
+	    	}
 	    	else
 	    		stone.color = ITCP_protocol<ITCP_client>::Game_stone::Black;
 	    	m_itcp_protocol->send_put_stone_game(stone);
