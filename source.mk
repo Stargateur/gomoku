@@ -49,3 +49,4 @@ SRC_SERVER	+=	$(DIR_SERVER)/Black.cpp
 
 SRC_CLIENT	=	$(DIR_CLIENT)/main.cpp
 SRC_CLIENT	+=	$(DIR_CLIENT)/Client.cpp
+SRC_CLIENT	+=	$(DIR_CLIENT)/PlayerInfo.cpp
