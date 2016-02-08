@@ -138,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\client\Client.hpp" />
     <ClInclude Include="..\include\client\GameInfo.hpp" />
+    <ClInclude Include="..\include\client\GomokuGraphics.hpp" />
     <ClInclude Include="..\include\client\PlayerInfo.hpp" />
     <ClInclude Include="..\include\iprotocol\ACallback.hpp" />
     <ClInclude Include="..\include\iprotocol\ATCP_packet.hpp" />
@@ -159,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="..\source\client\Client.cpp" />
     <ClCompile Include="..\source\client\GameInfo.cpp" />
+    <ClCompile Include="..\source\client\GomokuGraphics.cpp" />
     <ClCompile Include="..\source\client\main.cpp" />
     <ClCompile Include="..\source\client\PlayerInfo.cpp" />
     <ClCompile Include="..\source\iprotocol\ATCP_packet.cpp" />
