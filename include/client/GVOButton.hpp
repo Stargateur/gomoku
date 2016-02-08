@@ -44,9 +44,9 @@ public:
 	}
 	void	mouseClick(sf::Vector2f pos)
 	{
-		if (pos.x >= mPos.x && pos.x <= mPos.x + mTexture.getSize().x)
+		if (pos.x >= mPos.x && pos.x <= mPos.x + mTexture.getSize().x && pos.y >= mPos.y && pos.y <= mPos.y + mTexture.getSize().y)
 		{
-			if (pos.y >= mPos.y && pos.y <= mPos.y + mTexture.getSize().y)
+			if (mCallback != NULL)
 				(*mCallback)(mCallbackParam);
 		}
 	}
