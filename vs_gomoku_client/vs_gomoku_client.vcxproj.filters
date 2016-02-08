@@ -49,6 +49,9 @@
     <ClCompile Include="..\source\client\main.cpp">
       <Filter>client</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\client\PlayerInfo.cpp">
+      <Filter>client</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iprotocol\ATCP_packet.hpp">
@@ -101,6 +104,9 @@
     </ClInclude>
     <ClInclude Include="..\include\iprotocol\ACallback.hpp">
       <Filter>iprotocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\PlayerInfo.hpp">
+      <Filter>client</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,33 +10,18 @@
 
 #include	<iostream>
 #include	<exception>
-#include <SFML/Graphics.hpp>
+#include	<SFML/Graphics.hpp>
 #include	"Client.hpp"
+#include	"PlayerInfo.hpp"
 
-int	main(void) try
+void init_graph()
 {
-	try
-	{
-		Client	client;
-		client.run();
-	}
-	catch (...)
-	{ }
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
 
-	while (window.isOpen())
-	{
-		sf::Event event;
-		window.waitEvent(event);
-		if (event.type == sf::Event::Closed)
-			window.close();
+}
 
-		window.clear();
-		window.draw(shape);
-		window.display();
-	}
+int				main(void) try
+{
+	PlayerInfo	info();
 }
 catch (std::exception &e)
 {
