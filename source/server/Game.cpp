@@ -175,15 +175,12 @@ void	Game::leave_game(ITCP_protocol<Client> &itcp_protocol)
 
 void	Game::put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
 {
-	if (itcp_protocol.get_callback() != &m_white || itcp_protocol.get_callback() != &m_black)
+	if (itcp_protocol.get_callback() != &m_white && itcp_protocol.get_callback() != &m_black)
 	{
 		throw std::logic_error("you are you ?");
 	}
 	for (auto it : m_itcp_protocols)
-	{
-		it->send_game_stone_put(*stone);
 		std::cout << *(it->get_data()->get_login()) << std::endl;
-	}
 }
 
 void    Game::change_param_player_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_player_param *param)
