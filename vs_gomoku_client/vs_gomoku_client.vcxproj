@@ -164,7 +164,6 @@
     <ClCompile Include="..\source\client\Client.cpp" />
     <ClCompile Include="..\source\client\GameInfo.cpp" />
     <ClCompile Include="..\source\client\GView.cpp" />
-    <ClCompile Include="..\source\client\GVOButton.cpp" />
     <ClCompile Include="..\source\client\GomokuGraphics.cpp" />
     <ClCompile Include="..\source\client\main.cpp" />
     <ClCompile Include="..\source\client\PlayerInfo.cpp" />

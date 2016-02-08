@@ -10,22 +10,24 @@ template<typename T>
 class GVOButton : public IGVObject
 {
 public:
-	GVOButton(sf::Vector2f pos, sf::Texture texture, sf::Vector2f scale, sf::Texture hoverTexture = NULL, sf::Vector2f hoverScale = NULL) : mPos(pos), mTexture(texture), mHoverTexture(hoverTexture)
+	GVOButton(sf::Vector2f pos, sf::Texture texture, sf::Vector2f scale) : mPos(pos), mTexture(texture), mHoverTexture(texture)
 	{
 		mMainSprite.setTexture(mTexture);
 		mMainSprite.setPosition(mPos);
 		mMainSprite.setScale(scale);
 		mCurView = &mMainSprite;
-		if (mHoverTexture == NULL)
-		{
-			mHoverTexture = texture;
-			mHoverSprite.setScale(scale);
-		}
-		else
-		{
-			mHoverSprite.setTexture(mHoverTexture);
-			mHoverSprite.setScale(hoverScale);
-		}
+		mHoverSprite.setScale(scale);
+		mHoverSprite.setTexture(mHoverTexture);
+		mHoverSprite.setPosition(mPos);
+	}
+	GVOButton(sf::Vector2f pos, sf::Texture texture, sf::Vector2f scale, sf::Texture hoverTexture, sf::Vector2f hoverScale) : mPos(pos), mTexture(texture), mHoverTexture(hoverTexture)
+	{
+		mMainSprite.setTexture(mTexture);
+		mMainSprite.setPosition(mPos);
+		mMainSprite.setScale(scale);
+		mCurView = &mMainSprite;
+		mHoverSprite.setScale(hoverScale);
+		mHoverSprite.setTexture(mHoverTexture);
 		mHoverSprite.setPosition(mPos);
 	}
 	virtual ~GVOButton() {}
