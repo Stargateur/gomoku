@@ -52,6 +52,9 @@
     <ClCompile Include="..\source\client\GameInfo.cpp">
       <Filter>client</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\client\PlayerInfo.cpp">
+      <Filter>client</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iprotocol\ATCP_packet.hpp">
@@ -106,6 +109,9 @@
       <Filter>iprotocol</Filter>
     </ClInclude>
     <ClInclude Include="..\include\client\GameInfo.hpp">
+      <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\PlayerInfo.hpp">
       <Filter>client</Filter>
     </ClInclude>
   </ItemGroup>

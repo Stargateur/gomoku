@@ -48,6 +48,7 @@ public:
 private:
     ITCP_protocol<ITCP_client>	*m_itcp_protocol;
     ISelect	*m_iselect;
+	std::list<ITCP_protocol<ITCP_client>::Game *> mRoomlist;
 };
 
 #endif		/* !CLIENT_HPP_ */

@@ -11,30 +11,67 @@
 #include	<iostream>
 #include	<exception>
 #include	<thread>
-#include	<mutex>
 #include	<SFML/Graphics.hpp>
 #include	"Client.hpp"
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
 
-std::mutex	PlayerInfoMutex;
-std::mutex	GameInfoMutex;
-
-void init_graph()
+void start_tcpclient()
 {
 	std::this_thread::sleep_for(std::chrono::seconds(5));
+	PlayerInfo::getInstance().lock();
+	PlayerInfo::getInstance().mWantConnect = true;
+	PlayerInfo::getInstance().unlock();
+}
+
+void start_ui()
+{
+	bool	keepRunning = true;
+	bool	wantConnect = false;
+
+	while (keepRunning == true)
+	{
+		PlayerInfo::getInstance().lock();
+		wantConnect = PlayerInfo::getInstance().mWantConnect;
+		PlayerInfo::getInstance().unlock();
+		if (wantConnect == true)
+		{
+			try {
+				Client		client;
+				client.run();
+			}
+			catch (std::exception &e) {
+				PlayerInfo::getInstance().lock();
+				PlayerInfo::getInstance().mHasFailed = true;
+				PlayerInfo::getInstance().mErrorMessage = "Connection failed !";
+				PlayerInfo::getInstance().unlock();
+				std::cout << "Error de connexion" << std::endl;
+			}
+		}
+		else
+		{
+			std::cout << "Wainting client" << std::endl;
+			std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		}
+
+		PlayerInfo::getInstance().lock();
+		keepRunning = !PlayerInfo::getInstance().mWantQuit;
+		PlayerInfo::getInstance().unlock();
+	}
 }
 
 int				main(void) try
 {
 	// Initing memory
 	PlayerInfo::getInstance();
+	GameInfo::getInstance();
 
 	// Launching main tasks
-	std::thread	graph(init_graph);
+	std::thread	tcpclient(start_tcpclient);
+	start_ui();
 
 	// Waiting for all threads
-	graph.join();
+	tcpclient.join();
 
 	// end of program
 	return (0);

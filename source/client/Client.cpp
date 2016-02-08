@@ -19,8 +19,6 @@ Client::Client(void) :
     m_iselect(new Select)
 {
     m_itcp_protocol->send_connect("plasko_a", "plasko_a");
-    std::string name("toto");
-    ITCP_protocol<ITCP_client>::Game    game = {&name, &name};
 }
 
 Client::~Client(void)
@@ -108,6 +106,7 @@ void    Client::list_param_player_game(ITCP_protocol<ITCP_client> &itcp_protocol
 
 void	Client::game_created(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game *game)
 {
+	mRoomlist.push_back(game);
 }
 
 void	Client::game_player_joined(ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
@@ -132,6 +131,7 @@ void	Client::game_stone_put(ITCP_protocol<ITCP_client> &itcp_protocol, typename 
 
 void	Client::game_deleted(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game *game)
 {
+	mRoomlist.remove(game);
 }
 
 void	Client::start_game(ITCP_protocol<ITCP_client> &itcp_protocol)
