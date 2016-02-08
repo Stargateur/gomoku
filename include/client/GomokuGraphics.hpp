@@ -7,8 +7,8 @@
 #include	<iostream>
 #include	"GView.hpp"
 
-#define		WIN_X (1920)
-#define		WIN_Y (1080)
+#define		WIN_X (1080)
+#define		WIN_Y (720)
 
 class GomokuGraphics
 {
@@ -24,7 +24,9 @@ private:
 	sf::Sprite			mBackground;
 	sf::Texture			mTopTexture;
 	sf::Sprite			mTopMenu;
-	GView				mView;
+	GView				*mCurrentView;
+	GView				mGameView;
+	GView				mConnectView;
 };
 
 #endif // !GOMOKU_GRAPHICS_HPP_
