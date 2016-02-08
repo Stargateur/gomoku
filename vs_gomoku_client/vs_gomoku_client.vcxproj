@@ -148,8 +148,6 @@
     <ClInclude Include="..\include\isocket\ISocket.hpp" />
     <ClInclude Include="..\include\isocket\ITCP_client.hpp" />
     <ClInclude Include="..\include\isocket\ITCP_server.hpp" />
-    <ClInclude Include="..\include\isocket\IUDP_client.hpp" />
-    <ClInclude Include="..\include\isocket\IUDP_server.hpp" />
     <ClInclude Include="..\include\isocket\Select.hpp" />
     <ClInclude Include="..\include\isocket\TCP_client.hpp" />
     <ClInclude Include="..\include\isocket\TCP_server.hpp" />
