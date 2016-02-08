@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\client\Client.hpp" />
+    <ClInclude Include="..\include\client\PlayerInfo.hpp" />
     <ClInclude Include="..\include\iprotocol\ACallback.hpp" />
     <ClInclude Include="..\include\iprotocol\ATCP_packet.hpp" />
     <ClInclude Include="..\include\iprotocol\ITCP_protocol.hpp" />
@@ -157,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="..\source\client\Client.cpp" />
     <ClCompile Include="..\source\client\main.cpp" />
+    <ClCompile Include="..\source\client\PlayerInfo.cpp" />
     <ClCompile Include="..\source\iprotocol\ATCP_packet.cpp" />
     <ClCompile Include="..\source\iprotocol\ITCP_protocol.cpp" />
     <ClCompile Include="..\source\iprotocol\TCP_packet_recv.cpp" />
