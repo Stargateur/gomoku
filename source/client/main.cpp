@@ -27,9 +27,16 @@ void init_graph()
 
 int				main(void) try
 {
+	// Initing memory
+	PlayerInfo::getInstance();
+
+	// Launching main tasks
 	std::thread	graph(init_graph);
 
+	// Waiting for all threads
 	graph.join();
+
+	// end of program
 	return (0);
 }
 catch (std::exception &e)
