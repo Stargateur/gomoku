@@ -55,6 +55,12 @@
     <ClCompile Include="..\source\client\PlayerInfo.cpp">
       <Filter>client</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\client\GView.cpp">
+      <Filter>client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\client\GVOButton.cpp">
+      <Filter>client</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iprotocol\ATCP_packet.hpp">
@@ -112,6 +118,15 @@
       <Filter>client</Filter>
     </ClInclude>
     <ClInclude Include="..\include\client\PlayerInfo.hpp">
+      <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\GView.hpp">
+      <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\IGVObject.hpp">
+      <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\GVOButton.hpp">
       <Filter>client</Filter>
     </ClInclude>
   </ItemGroup>

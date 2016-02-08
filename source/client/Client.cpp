@@ -59,6 +59,7 @@ void	Client::result(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_pro
 
 void	Client::connect(ITCP_protocol<ITCP_client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)
 {
+	m_itcp_protocol->send_disconnect();
 }
 
 void	Client::disconnect(ITCP_protocol<ITCP_client> &itcp_protocol)
