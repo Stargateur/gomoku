@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\source\iprotocol\ATCP_packet.cpp" />
+    <ClCompile Include="..\source\iprotocol\ITCP_protocol.cpp" />
+    <ClCompile Include="..\source\iprotocol\TCP_packet_recv.cpp" />
+    <ClCompile Include="..\source\iprotocol\TCP_packet_send.cpp" />
+    <ClCompile Include="..\source\isocket\ASocket.cpp" />
+    <ClCompile Include="..\source\isocket\ISelect.cpp" />
+    <ClCompile Include="..\source\isocket\ISocket.cpp" />
+    <ClCompile Include="..\source\isocket\ITCP_client.cpp" />
+    <ClCompile Include="..\source\isocket\ITCP_server.cpp" />
+    <ClCompile Include="..\source\isocket\Select.cpp" />
+    <ClCompile Include="..\source\isocket\TCP_client.cpp" />
+    <ClCompile Include="..\source\isocket\TCP_server.cpp" />
+    <ClCompile Include="..\source\itime\ITime.cpp" />
+    <ClCompile Include="..\source\itime\Time.cpp" />
+    <ClCompile Include="..\source\server\Client.cpp" />
+    <ClCompile Include="..\source\server\Game.cpp" />
+    <ClCompile Include="..\source\server\main.cpp" />
+    <ClCompile Include="..\source\server\Server.cpp" />
+    <ClCompile Include="..\source\server\White.cpp" />
+    <ClCompile Include="..\source\server\Arbitre.cpp" />
+    <ClCompile Include="..\source\server\Black.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\iprotocol\ATCP_packet.hpp" />
+    <ClInclude Include="..\include\iprotocol\ITCP_protocol.hpp" />
+    <ClInclude Include="..\include\iprotocol\TCP_packet_recv.hpp" />
+    <ClInclude Include="..\include\iprotocol\TCP_packet_send.hpp" />
+    <ClInclude Include="..\include\iprotocol\TCP_protocol.hpp" />
+    <ClInclude Include="..\include\isocket\ASocket.hpp" />
+    <ClInclude Include="..\include\isocket\ISelect.hpp" />
+    <ClInclude Include="..\include\isocket\ISocket.hpp" />
+    <ClInclude Include="..\include\isocket\ITCP_client.hpp" />
+    <ClInclude Include="..\include\isocket\ITCP_server.hpp" />
+    <ClInclude Include="..\include\isocket\IUDP_client.hpp" />
+    <ClInclude Include="..\include\isocket\IUDP_server.hpp" />
+    <ClInclude Include="..\include\isocket\Select.hpp" />
+    <ClInclude Include="..\include\isocket\TCP_client.hpp" />
+    <ClInclude Include="..\include\isocket\TCP_server.hpp" />
+    <ClInclude Include="..\include\itime\ITime.hpp" />
+    <ClInclude Include="..\include\itime\Time.hpp" />
+    <ClInclude Include="..\include\server\Client.hpp" />
+    <ClInclude Include="..\include\server\Game.hpp" />
+    <ClInclude Include="..\include\server\Server.hpp" />
+    <ClInclude Include="..\include\server\White.hpp" />
+    <ClInclude Include="..\include\iprotocol\ACallback.hpp" />
+    <ClInclude Include="..\include\server\Arbitre.hpp" />
+    <ClInclude Include="..\include\server\Black.hpp" />
+  </ItemGroup>
+</Project>

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Arbitre.hpp"
 
 using prot = ITCP_protocol<Client>;
@@ -96,7 +97,7 @@ void Arbitre::check_vertical_victory(prot::Game_stone *stone) const
 		}
 		i = tab[k][0];
 		j = tab[k][1];
-		while (check_coord(x - i, y - j) > 0 && (*this)(x - i, y - j) == stone->color)
+		while (check_coord(x - i, y - j) && (*this)(x - i, y - j) == stone->color)
 		{
 			if (check_stone_libre(x - i, y) == false)
 				break;
@@ -131,27 +132,32 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 		{ -1, -1, -1, -1 }
 	};
 
+	std::cout << "put_stone (DEBUG : illo)" << std::endl;
 	if (can_put_stone(stone))
 	{
-		itcp_protocol.send_game_stone_put(*stone);
+		std::cout << "can put_stone (DEBUG : illo)" << std::endl;
+		m_callback.put_stone_game(itcp_protocol, stone);
 		(*this)(stone->x, stone->y) = stone->color;
+		m_is_black_turn = !m_is_black_turn;
 	}
 	if (can_capture(stone, capture))
 	{
-		prot::Game_stone mess;
-		mess.color = prot::Game_stone::Color::None;
 		int i = 0;
 		while (capture[i][0] != -1)
 		{
-			mess.x = capture[i][0];
-			mess.y = capture[i][1];
-			itcp_protocol.send_game_stone_put(mess);
+			prot::Game_stone *mess = new prot::Game_stone();
+			mess->color = prot::Game_stone::Color::None;
+			mess->x = capture[i][0];
+			mess->y = capture[i][1];
+			m_callback.put_stone_game(itcp_protocol, mess);
 			(*this)(stone->x, stone->y) = prot::Game_stone::Color::None;
-			mess.x = capture[i][2];
-			mess.y = capture[i][3];
-			itcp_protocol.send_game_stone_put(mess);
+			mess = new prot::Game_stone();
+			mess->color = prot::Game_stone::Color::None;
+			mess->x = capture[i][2];
+			mess->y = capture[i][3];
+			m_callback.put_stone_game(itcp_protocol, mess);
 			(*this)(stone->x, stone->y) = prot::Game_stone::Color::None;
-			if (stone->color = prot::Game_stone::Color::Black)
+			if (stone->color == prot::Game_stone::Color::Black)
 				m_white_loose += 2;
 			else
 				m_black_loose += 2;
