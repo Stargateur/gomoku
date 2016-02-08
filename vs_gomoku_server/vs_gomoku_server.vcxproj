@@ -150,6 +150,7 @@
     <ClInclude Include="..\include\isocket\TCP_server.hpp" />
     <ClInclude Include="..\include\itime\ITime.hpp" />
     <ClInclude Include="..\include\itime\Time.hpp" />
+    <ClInclude Include="..\include\server\Arbitre.hpp" />
     <ClInclude Include="..\include\server\Black.hpp" />
     <ClInclude Include="..\include\server\Client.hpp" />
     <ClInclude Include="..\include\server\Game.hpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="..\source\isocket\TCP_server.cpp" />
     <ClCompile Include="..\source\itime\ITime.cpp" />
     <ClCompile Include="..\source\itime\Time.cpp" />
+    <ClCompile Include="..\source\server\Arbitre.cpp" />
     <ClCompile Include="..\source\server\Black.cpp" />
     <ClCompile Include="..\source\server\Client.cpp" />
     <ClCompile Include="..\source\server\Game.cpp" />
