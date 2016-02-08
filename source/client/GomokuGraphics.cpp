@@ -21,7 +21,7 @@ void GomokuGraphics::init()
 	{std::cerr << "Cant load the texture" << std::endl;}
 	//set sprites
 	//Background
-	mGameView.pushObject(new GVOButton<sf::Vector2f>(sf::Vector2f(WIN_X / 4.5, 0), mTextureBackground, sf::Vector2f(0.8, 0.8)));
+	mGameView.pushObject(new GVOButton<sf::Vector2f>(sf::Vector2f(WIN_X / 4.8, 81.6), mTextureBackground, sf::Vector2f(0.8, 0.8)));
 }
 
 void GomokuGraphics::run()
