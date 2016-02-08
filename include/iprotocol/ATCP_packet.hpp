@@ -31,6 +31,7 @@ public:
         Put_stone_game,
         Change_param_player_game,
         Change_param_game,
+        List_param_player_game,
         List_param_game,
         Game_created,
         Game_player_joined,

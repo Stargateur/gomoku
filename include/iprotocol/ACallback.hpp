@@ -80,6 +80,11 @@ public:
         m_callback.change_param_game(itcp_protocol, param);
     }
 
+    virtual void    list_param_player_game(ITCP_protocol<T> &itcp_protocol, std::list<typename ITCP_protocol<T>::Game_player_param *> *params)
+    {
+        m_callback.list_param_player_game(itcp_protocol, params);
+    }
+
     virtual void	list_param_game(ITCP_protocol<T> &itcp_protocol, std::list<typename ITCP_protocol<T>::Game_param *> *params)
     {
         m_callback.list_param_game(itcp_protocol, params);

@@ -173,6 +173,9 @@ public:
         case ATCP_packet::Change_param_game:
             recv_change_param_game();
             return;
+        case ATCP_packet::List_param_player_game:
+            recv_list_param_player_game();
+            return;
         case ATCP_packet::List_param_game:
             recv_list_param_game();
             return;
@@ -374,6 +377,32 @@ private:
         param->value = new std::string();
         get_rec(m_to_recv, *param->name, *param->value);
         m_callback->change_param_game(*this, param);
+    }
+
+public:
+    void    send_list_param_player_game(std::list<typename ITCP_protocol<T>::Game_player_param *> const &params)
+    {
+        TCP_packet_send &to_send = get_to_send(ATCP_packet::List_param_player_game);
+        to_send.put(static_cast<uint8_t>(params.size()));
+        for (auto param : params)
+            set_rec(to_send, *param->name, *param->value);
+    }
+
+private:
+    void    recv_list_param_player_game(void)
+    {
+        std::list<typename ITCP_protocol<T>::Game_player_param *> *params = new std::list<typename ITCP_protocol<T>::Game_player_param *>();
+        uint8_t size;
+        m_to_recv.get(size);
+        for (uintmax_t i = 0; i < size; i++)
+        {
+            typename ITCP_protocol<T>::Game_player_param *param = new typename ITCP_protocol<T>::Game_player_param();
+            param->name = new std::string();
+            param->value = new std::string();
+            get_rec(m_to_recv, *param->name, *param->value);
+            params->push_back(param);
+        }
+        m_callback->list_param_player_game(*this, params);
     }
 
 public:
