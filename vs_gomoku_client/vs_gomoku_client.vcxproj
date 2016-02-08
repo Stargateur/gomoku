@@ -137,7 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\client\Client.hpp" />
-    <ClInclude Include="..\include\client\PlayerInfo.hpp" />
+    <ClInclude Include="..\include\client\GameInfo.hpp" />
     <ClInclude Include="..\include\iprotocol\ACallback.hpp" />
     <ClInclude Include="..\include\iprotocol\ATCP_packet.hpp" />
     <ClInclude Include="..\include\iprotocol\ITCP_protocol.hpp" />
@@ -154,12 +154,11 @@
     <ClInclude Include="..\include\isocket\TCP_server.hpp" />
     <ClInclude Include="..\include\itime\ITime.hpp" />
     <ClInclude Include="..\include\itime\Time.hpp" />
-    <ClInclude Include="GameInfo.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\client\Client.cpp" />
+    <ClCompile Include="..\source\client\GameInfo.cpp" />
     <ClCompile Include="..\source\client\main.cpp" />
-    <ClCompile Include="..\source\client\PlayerInfo.cpp" />
     <ClCompile Include="..\source\iprotocol\ATCP_packet.cpp" />
     <ClCompile Include="..\source\iprotocol\ITCP_protocol.cpp" />
     <ClCompile Include="..\source\iprotocol\TCP_packet_recv.cpp" />
