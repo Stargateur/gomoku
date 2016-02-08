@@ -15,6 +15,7 @@
 #include	"Client.hpp"
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
+#include	"GomokuGraphics.hpp"
 
 void start_tcpclient()
 {
@@ -54,10 +55,10 @@ void start_tcpclient()
 
 void start_ui()
 {
-	std::this_thread::sleep_for(std::chrono::seconds(5));
-	PlayerInfo::getInstance().lock();
-	PlayerInfo::getInstance().mWantConnect = true;
-	PlayerInfo::getInstance().unlock();
+	GomokuGraphics gui;
+
+	gui.init();
+	gui.run();
 }
 
 int				main(void) try
