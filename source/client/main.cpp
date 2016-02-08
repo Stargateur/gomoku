@@ -10,18 +10,27 @@
 
 #include	<iostream>
 #include	<exception>
+#include	<thread>
+#include	<mutex>
 #include	<SFML/Graphics.hpp>
 #include	"Client.hpp"
 #include	"PlayerInfo.hpp"
 
+std::mutex	PlayerInfoMutex;
+std::mutex	GameInfoMutex;
+
 void init_graph()
 {
-
+	std::this_thread::sleep_for(std::chrono::seconds(5));
 }
 
 int				main(void) try
 {
 	PlayerInfo	info();
+	std::thread	graph(init_graph);
+
+	graph.join();
+	return (0);
 }
 catch (std::exception &e)
 {
