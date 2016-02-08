@@ -22,6 +22,5 @@ Debug
 gomoku.VC.opendb
 *.sdf
 *.cd
-*.filters
 *.user
 x64
