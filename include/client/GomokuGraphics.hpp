@@ -19,6 +19,9 @@ public:
 	void run();
 
 private:
+	void	checkClientUpdates(void);
+
+private:
 	sf::RenderWindow	*mWindow;
 	sf::Texture			mTextureBackground;
 	sf::Sprite			mBackground;
