@@ -35,7 +35,7 @@ catch (...)
 Server::Server(ITCP_server *itcp_server, ISelect *iselect) try :
     m_itcp_server(itcp_server),
     m_iselect(iselect),
-    m_timeout(new Time(500000000))
+    m_timeout(new Time(5))
 {
 }
 catch (...)
@@ -56,7 +56,7 @@ Server::~Server(void)
 
 void    Server::pre_run(void) const
 {
-        m_iselect->reset();
+    m_iselect->reset();
 
     m_iselect->want_read(*m_itcp_server);
     for (auto itcp_protocol : m_itcp_protocols)
@@ -169,7 +169,10 @@ void	Server::timeout(ITCP_protocol<Client> &itcp_protocol) const
             throw std::logic_error("timeout");
         client.set_wait_pong(true);
         itcp_protocol.send_ping();
+        return;
     }
+    last.set_second(second);
+    last.set_nano(nano);
 }
 
 void	Server::result(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Error error)

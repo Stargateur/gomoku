@@ -30,6 +30,7 @@ public:
     void    add_player(ITCP_protocol<Client>  *player);
 private:
     void    delete_player(std::list<ITCP_protocol<Client> *>::iterator &it);
+    void    set_name(std::string *name);
 public:
     std::list<ITCP_protocol<Client> *> const    &get_players(void) const;
     std::string const	&get_name(void) const;
