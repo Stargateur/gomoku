@@ -46,9 +46,12 @@ public:
     void	result_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_result *game_result);
     void	message(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Message *message);
 private:
-    ITCP_protocol<ITCP_client>	*m_itcp_protocol;
-    ISelect	*m_iselect;
-	std::list<ITCP_protocol<ITCP_client>::Game *> mRoomlist;
+    ITCP_protocol<ITCP_client>						*m_itcp_protocol;
+    ISelect											*m_iselect;
+	std::list<ITCP_protocol<ITCP_client>::Game *>	mRoomlist;
+
+private:
+	void	checkUserInputs(void);
 };
 
 #endif		/* !CLIENT_HPP_ */

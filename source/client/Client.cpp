@@ -13,6 +13,8 @@
 #include	"TCP_protocol.hpp"
 #include	"TCP_client.hpp"
 #include	"Select.hpp"
+#include	"PlayerInfo.hpp"
+#include	"GameInfo.hpp"
 
 Client::Client(void) :
     m_itcp_protocol(new TCP_protocol<ITCP_client>(this, new TCP_client("localhost", "4242"))),
@@ -61,6 +63,7 @@ void	Client::connect(ITCP_protocol<ITCP_client> &itcp_protocol, uint8_t version,
 
 void	Client::disconnect(ITCP_protocol<ITCP_client> &itcp_protocol)
 {
+	m_itcp_protocol->send_disconnect();
 }
 
 void	Client::ping(ITCP_protocol<ITCP_client> &itcp_protocol)
@@ -148,4 +151,15 @@ void	Client::result_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITC
 
 void	Client::message(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Message *message)
 {
+}
+
+void Client::checkUserInputs(void)
+{
+	bool	tmp;
+
+	PlayerInfo::getInstance().lock();
+	tmp = PlayerInfo::getInstance().mWantDisconnect;
+	PlayerInfo::getInstance().unlock();
+	if (tmp)
+		m_itcp_protocol->send_disconnect();
 }
