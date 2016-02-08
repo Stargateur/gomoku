@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ##
 ## Started on  Mon Jan 25 18:21:00 2016 Antoine Plaskowski
-## Last update Tue Feb  2 12:58:31 2016 Antoine Plaskowski
+## Last update Mon Feb  8 16:04:38 2016 Antoine Plaskowski
 ##
 
 CLIENT		=	gomoku_client
@@ -26,7 +26,8 @@ COLOR		?=	no
 
 LIB_SERVER	=	-l pthread
 
-LIB_CLIENT	=	-lsfml-system -lsfml-graphics -lsfml-window -lsfml-system
+LIB_CLIENT	=	$(shell pkg-config --libs sfml-graphics sfml-window sfml-system sfml-network)
+LIB_CLIENT	+=	-l pthread
 
 INCLUDE		=	-I include/itime -I include/isocket -I include/iprotocol
 INCLUDE		+=	$(shell pkg-config --cflags sfml-graphics sfml-window sfml-system sfml-network)
