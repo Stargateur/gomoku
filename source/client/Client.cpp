@@ -13,14 +13,14 @@
 #include	"TCP_protocol.hpp"
 #include	"TCP_client.hpp"
 #include	"Select.hpp"
+#include	"PlayerInfo.hpp"
+#include	"GameInfo.hpp"
 
 Client::Client(void) :
     m_itcp_protocol(new TCP_protocol<ITCP_client>(this, new TCP_client("localhost", "4242"))),
     m_iselect(new Select)
 {
     m_itcp_protocol->send_connect("plasko_a", "plasko_a");
-    std::string name("toto");
-    ITCP_protocol<ITCP_client>::Game    game = {&name};
 }
 
 Client::~Client(void)
@@ -63,6 +63,7 @@ void	Client::connect(ITCP_protocol<ITCP_client> &itcp_protocol, uint8_t version,
 
 void	Client::disconnect(ITCP_protocol<ITCP_client> &itcp_protocol)
 {
+	m_itcp_protocol->send_disconnect();
 }
 
 void	Client::ping(ITCP_protocol<ITCP_client> &itcp_protocol)
@@ -108,6 +109,7 @@ void    Client::list_param_player_game(ITCP_protocol<ITCP_client> &itcp_protocol
 
 void	Client::game_created(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game *game)
 {
+	mRoomlist.push_back(game);
 }
 
 void	Client::game_player_joined(ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
@@ -132,6 +134,7 @@ void	Client::game_stone_put(ITCP_protocol<ITCP_client> &itcp_protocol, typename 
 
 void	Client::game_deleted(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game *game)
 {
+	mRoomlist.remove(game);
 }
 
 void	Client::start_game(ITCP_protocol<ITCP_client> &itcp_protocol)
@@ -148,4 +151,15 @@ void	Client::result_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITC
 
 void	Client::message(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Message *message)
 {
+}
+
+void Client::checkUserInputs(void)
+{
+	bool	tmp;
+
+	PlayerInfo::getInstance().lock();
+	tmp = PlayerInfo::getInstance().mWantDisconnect;
+	PlayerInfo::getInstance().unlock();
+	if (tmp)
+		m_itcp_protocol->send_disconnect();
 }

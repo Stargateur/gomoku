@@ -25,3 +25,13 @@ GameInfo & GameInfo::getInstance(void)
 	static GameInfo instance;
 	return instance;
 }
+
+void GameInfo::lock(void)
+{
+	mMutex.lock();
+}
+
+void GameInfo::unlock(void)
+{
+	mMutex.unlock();
+}
