@@ -15,8 +15,6 @@ public:
 
 public:
 	std::list<sf::Sprite *>	getSprites();
-
-private:
 	std::list<IGVObject *>	mObjects;
 };
 
