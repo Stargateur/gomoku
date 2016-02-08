@@ -35,6 +35,7 @@ void GomokuGraphics::run()
 				mWindow->close();
 			if (event.type == sf::Event::MouseButtonReleased)
 			{
+				mCurrentView->mouseClick(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
 				std::cout << "clik" << std::endl;
 			}
 		}
