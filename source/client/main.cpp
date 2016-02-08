@@ -107,7 +107,16 @@ lol(void) :
 
     std::cin >> name;
     ITCP_protocol<ITCP_client>::Game    game = {&name};
-    m_itcp_protocol->send_create_game(game);
+	std::string s = "";
+	while (s != "j" && s != "c")
+	{
+		std::cout << "connexion(j/c)" << std::endl;
+		std::cin >> s;
+	}
+	if (s == "c")
+		m_itcp_protocol->send_create_game(game);
+	else
+		m_itcp_protocol->send_join_game(game);
 	std::cin >> color;
     ITCP_protocol<ITCP_client>::Game_player_param	param;
     std::string ptdr("color");
