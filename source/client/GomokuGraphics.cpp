@@ -4,6 +4,7 @@
 
 GomokuGraphics::GomokuGraphics()
 {
+	mCurrentView = &mGameView;
 }
 
 GomokuGraphics::~GomokuGraphics()
@@ -20,10 +21,7 @@ void GomokuGraphics::init()
 	{std::cerr << "Cant load the texture" << std::endl;}
 	//set sprites
 	//Background
-	//mBackground.setTexture(mTextureBackground);
-	//mBackground.setPosition(sf::Vector2f(WIN_X / 3, 0));
-	//mBackground.setScale(sf::Vector2f(1, 1));
-	mView.mObjects.push_back(new GVOButton(sf::Vector2f(WIN_X / 3, 0), mTextureBackground, sf::Vector2f(1, 1)));
+	mGameView.mObjects.push_back(new GVOButton(sf::Vector2f(WIN_X / 3, 0), mTextureBackground, sf::Vector2f(0.8, 0.8)));
 }
 
 void GomokuGraphics::run()
@@ -43,7 +41,7 @@ void GomokuGraphics::run()
 		//clear
 		mWindow->clear();
 		//draw all Sprites
-		std::list<sf::Sprite *> mylist = mView.getSprites();
+		std::list<sf::Sprite *> mylist = mCurrentView->getSprites();
 		for (sf::Sprite *aff : mylist)
 		{
 			mWindow->draw(*aff);
