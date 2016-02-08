@@ -7,3 +7,9 @@ PlayerInfo::PlayerInfo() : mWantQuit(false), mWantDisconnect(false), mWantConnec
 PlayerInfo::~PlayerInfo()
 {
 }
+
+PlayerInfo & PlayerInfo::getInstance(void)
+{
+	static PlayerInfo instance;
+	return instance;
+}

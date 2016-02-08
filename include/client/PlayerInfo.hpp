@@ -6,11 +6,16 @@
 #include <string>
 #include "ITCP_protocol.hpp"
 
-struct PlayerInfo
+class PlayerInfo
 {
+private:
 	PlayerInfo();
 	~PlayerInfo();
 
+public:
+	static PlayerInfo &getInstance(void);
+
+public:
 	std::string								mPseudo;
 	std::string								mHost;
 	bool									mWantQuit;
