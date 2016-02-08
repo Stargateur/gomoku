@@ -1,4 +1,4 @@
-#include	"GVOBUtton.hpp"
+#include	"GVOButton.hpp"
 
 GVOButton::GVOButton(sf::Vector2f pos, sf::Texture texture, sf::Vector2f scale) : mPos(pos), mTexture(texture), mScale(scale)
 {
