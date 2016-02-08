@@ -40,7 +40,7 @@ public:
 	void	setAction(void(*callback)(T param), T callbackParam)
 	{
 		mCallback = callback;
-		callbackParam = callbackParam;
+		mCallbackParam = callbackParam;
 	}
 	void	mouseClick(sf::Vector2f pos)
 	{
