@@ -19,3 +19,9 @@ void GameInfo::reset()
 	mGameEnd = false;
 	mConnected = false;
 }
+
+GameInfo & GameInfo::getInstance(void)
+{
+	static GameInfo instance;
+	return instance;
+}

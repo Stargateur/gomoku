@@ -8,10 +8,13 @@
 
 class GameInfo
 {
-public:
+private:
 	GameInfo();
 	~GameInfo();
+
+public:
 	void reset();
+	static GameInfo &getInstance(void);
 
 public:
 	std::list<ITCP_protocol<GameInfo>::Game_stone>	mHisto;
