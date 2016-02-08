@@ -14,6 +14,8 @@ public:
 
 	void	put_stone_game(ITCP_protocol<Client> &itcp_protocol, ITCP_protocol<Client>::Game_stone *stone);
 
+	bool	can_capture(ITCP_protocol<Client>::Game_stone * stone, int coord[8][4]) const;
+
 	bool	can_put_stone(ITCP_protocol<Client>::Game_stone *stone) const;
 
 	bool	is_double_three(ITCP_protocol<Client>::Game_stone *stone) const;
