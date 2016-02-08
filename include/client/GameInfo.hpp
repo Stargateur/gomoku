@@ -4,6 +4,7 @@
 # define GAMEINFO_HPP_
 
 #include <list>
+#include <mutex>
 #include "ITCP_protocol.hpp"
 
 class GameInfo
@@ -11,10 +12,13 @@ class GameInfo
 private:
 	GameInfo();
 	~GameInfo();
+	std::mutex	mMutex;
 
 public:
-	void reset();
-	static GameInfo &getInstance(void);
+	void			reset();
+	static GameInfo	&getInstance(void);
+	void			lock(void);
+	void			unlock(void);
 
 public:
 	std::list<ITCP_protocol<GameInfo>::Game_stone>	mHisto;
