@@ -153,6 +153,7 @@
     <ClInclude Include="..\include\isocket\TCP_server.hpp" />
     <ClInclude Include="..\include\itime\ITime.hpp" />
     <ClInclude Include="..\include\itime\Time.hpp" />
+    <ClInclude Include="GameInfo.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\client\Client.cpp" />
