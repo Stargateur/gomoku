@@ -15,6 +15,7 @@
 #include	<SFML/Graphics.hpp>
 #include	"Client.hpp"
 #include	"PlayerInfo.hpp"
+#include	"GameInfo.hpp"
 
 std::mutex	PlayerInfoMutex;
 std::mutex	GameInfoMutex;
@@ -26,7 +27,6 @@ void init_graph()
 
 int				main(void) try
 {
-	PlayerInfo	info();
 	std::thread	graph(init_graph);
 
 	graph.join();
