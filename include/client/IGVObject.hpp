@@ -10,6 +10,7 @@ class IGVObject
 public:
 	virtual				~IGVObject(void) {}
 	virtual sf::Sprite*	getSprite(void) = 0;
+	virtual void		mouseClick(sf::Vector2f pos) = 0;
 };
 
 #endif // !IGVOBJECT_HPP__
