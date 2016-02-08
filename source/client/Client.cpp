@@ -21,10 +21,6 @@ Client::Client(void) :
     m_itcp_protocol->send_connect("plasko_a", "plasko_a");
     std::string name("toto");
     ITCP_protocol<ITCP_client>::Game    game = {&name, &name};
-    m_itcp_protocol->send_create_game(game);
-    m_itcp_protocol->send_leave_game();
-    m_itcp_protocol->send_create_game(game);
-    m_itcp_protocol->send_disconnect();
 }
 
 Client::~Client(void)
@@ -102,7 +98,11 @@ void    Client::change_param_game(ITCP_protocol<ITCP_client> &itcp_protocol, typ
 {
 }
 
-void	Client::list_param_game(ITCP_protocol<ITCP_client> &itcp_protocol, std::list<typename ITCP_protocol<ITCP_client>::Game_param *> *params)
+void    Client::list_param_game(ITCP_protocol<ITCP_client> &itcp_protocol, std::list<typename ITCP_protocol<ITCP_client>::Game_param *> *params)
+{
+}
+
+void    Client::list_param_player_game(ITCP_protocol<ITCP_client> &itcp_protocol, std::list<typename ITCP_protocol<ITCP_client>::Game_player_param *> *params)
 {
 }
 

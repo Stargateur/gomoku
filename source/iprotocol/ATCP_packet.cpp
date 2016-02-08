@@ -66,6 +66,8 @@ char const	*ATCP_packet::get_str_opcode(ATCP_packet::Opcode opcode)
         return ("Change_param_player_game");
     case ATCP_packet::Change_param_game:
         return ("Change_param_game");
+    case ATCP_packet::List_param_player_game:
+        return ("List_Param_player_game");
     case ATCP_packet::List_param_game:
         return ("List_Param_game");
     case ATCP_packet::Game_created:

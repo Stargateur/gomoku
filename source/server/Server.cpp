@@ -284,7 +284,19 @@ void    Server::change_param_player_game(ITCP_protocol<Client> &itcp_protocol, t
     throw AServer_exception();
 }
 
-void	Server::list_param_game(ITCP_protocol<Client> &itcp_protocol, std::list<typename ITCP_protocol<Client>::Game_param *> *params)
+void    Server::list_param_player_game(ITCP_protocol<Client> &itcp_protocol, std::list<typename ITCP_protocol<Client>::Game_player_param *> *params)
+{
+    for (auto param : *params)
+    {
+        delete param->name;
+        delete param->value;
+        delete param;
+    }
+    delete params;
+    throw AServer_exception();
+}
+
+void    Server::list_param_game(ITCP_protocol<Client> &itcp_protocol, std::list<typename ITCP_protocol<Client>::Game_param *> *params)
 {
     for (auto param : *params)
     {

@@ -10,33 +10,34 @@
 
 #include	<iostream>
 #include	<exception>
-#include <SFML/Graphics.hpp>
+#include	<thread>
+#include	<mutex>
+#include	<SFML/Graphics.hpp>
 #include	"Client.hpp"
+#include	"PlayerInfo.hpp"
+#include	"GameInfo.hpp"
 
-int	main(void) try
+std::mutex	PlayerInfoMutex;
+std::mutex	GameInfoMutex;
+
+void init_graph()
 {
-	try
-	{
-		Client	client;
-		client.run();
-	}
-	catch (...)
-	{ }
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
+	std::this_thread::sleep_for(std::chrono::seconds(5));
+}
 
-	while (window.isOpen())
-	{
-		sf::Event event;
-		window.waitEvent(event);
-		if (event.type == sf::Event::Closed)
-			window.close();
+int				main(void) try
+{
+	// Initing memory
+	PlayerInfo::getInstance();
 
-		window.clear();
-		window.draw(shape);
-		window.display();
-	}
+	// Launching main tasks
+	std::thread	graph(init_graph);
+
+	// Waiting for all threads
+	graph.join();
+
+	// end of program
+	return (0);
 }
 catch (std::exception &e)
 {
