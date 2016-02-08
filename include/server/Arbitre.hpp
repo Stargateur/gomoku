@@ -18,9 +18,21 @@ public:
 
 	bool	is_double_three(ITCP_protocol<Client>::Game_stone *stone) const;
 
-	bool	check_three(int coord[4], ITCP_protocol<Client>::Game_stone *stone) const;
+	bool	check_horizontal_three(int coord[4], ITCP_protocol<Client>::Game_stone *stone) const;
+
+	bool check_vertical_three(int coord[4], ITCP_protocol<Client>::Game_stone * stone) const;
+
+	bool check_diag_iso_three(int coord[4], ITCP_protocol<Client>::Game_stone * stone) const;
+
+	bool check_diag_no_iso_three(int coord[4], ITCP_protocol<Client>::Game_stone * stone) const;
 
 	bool	is_horizontal_three(int coord[4], ITCP_protocol<Client>::Game_stone *stone) const;
+
+	bool is_vertical_three(int coord[4], ITCP_protocol<Client>::Game_stone * stone) const;
+
+	bool is_diag_iso_three(int coord[4], ITCP_protocol<Client>::Game_stone * stone) const;
+
+	bool is_diag_no_iso_three(int coord[4], ITCP_protocol<Client>::Game_stone * stone) const;
 
 	const ITCP_protocol<Client>::Game_stone::Color& operator()(int x, int y) const;
 

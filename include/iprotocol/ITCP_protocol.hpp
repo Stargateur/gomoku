@@ -71,6 +71,15 @@ public:
             Black,
             None
         }		color;
+		static Color notColor(Color c)
+		{
+			if (c == ITCP_protocol<T>::Game_stone::Color::Black)
+				return ITCP_protocol<T>::Game_stone::Color::White;
+			if (c == ITCP_protocol<T>::Game_stone::Color::White)
+				return ITCP_protocol<T>::Game_stone::Color::Black;
+			return ITCP_protocol<T>::Game_stone::Color::None;
+		}
+
     };
 
     class	Callback
