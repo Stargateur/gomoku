@@ -14,6 +14,7 @@
 #include	"TCP_client.hpp"
 #include	"Server.hpp"
 #include	"Time.hpp"
+#include    "Utils.hpp"
 
 Server::Server(void) try :
     Server(new TCP_server("4242"))
@@ -35,7 +36,7 @@ catch (...)
 Server::Server(ITCP_server *itcp_server, ISelect *iselect) try :
     m_itcp_server(itcp_server),
     m_iselect(iselect),
-    m_timeout(new Time(500000000))
+    m_timeout(new Time(5))
 {
 }
 catch (...)
@@ -56,7 +57,7 @@ Server::~Server(void)
 
 void    Server::pre_run(void) const
 {
-        m_iselect->reset();
+    m_iselect->reset();
 
     m_iselect->want_read(*m_itcp_server);
     for (auto itcp_protocol : m_itcp_protocols)
@@ -84,9 +85,9 @@ void	Server::run(void)
     {
         m_iselect->reset_read(*m_itcp_server);
         Client	*client = new Client(&m_itcp_server->accept(), nullptr, new Time(), false);
-#ifdef DEBUG
+        #ifdef DEBUG
         std::cerr << "Un client s'est connecter" << std::endl;
-#endif
+        #endif
         m_itcp_protocols.push_back(new TCP_protocol<Client>(this, client));
     }
     for (auto it = m_itcp_protocols.begin(); it != m_itcp_protocols.end();)
@@ -98,11 +99,12 @@ void	Server::run(void)
         {
             if (m_iselect->can_read(*client.get_itcp_client()))
             {
+                itcp_protocol->get_data()->get_last()->now();
                 m_iselect->reset_read(*client.get_itcp_client());
                 itcp_protocol->recv(*client.get_itcp_client());
             }
             else
-                timeout(*itcp_protocol);
+                Utils::timeout(*itcp_protocol, *m_timeout);
 
             if (m_iselect->can_write(*client.get_itcp_client()))
             {
@@ -150,25 +152,6 @@ void	Server::run(void)
                 for (auto game_player_it : game_it->get_players())
                     game_it->send_game_deleted(*game_player_it);
         }
-    }
-}
-
-void	Server::timeout(ITCP_protocol<Client> &itcp_protocol) const
-{
-    Client	&client = *itcp_protocol.get_data();
-    ITime		&last = *client.get_last();
-    intmax_t      second = last.get_second();
-    intmax_t      nano = last.get_nano();
-
-    last.now();
-    if (last.get_second() - second > m_timeout->get_second()
-        || (last.get_second() - second == m_timeout->get_second()
-            && last.get_nano() - nano > m_timeout->get_nano()))
-    {
-        if (client.get_wait_pong() == true)
-            throw std::logic_error("timeout");
-        client.set_wait_pong(true);
-        itcp_protocol.send_ping();
     }
 }
 

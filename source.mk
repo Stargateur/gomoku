@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ## 
 ## Started on  Mon Jan 25 18:27:08 2016 Antoine Plaskowski
-## Last update Mon Feb  8 16:56:35 2016 Antoine Plaskowski
+## Last update Tue Feb  9 00:13:12 2016 Antoine Plaskowski
 ##
 
 DIR		=	source
@@ -46,6 +46,7 @@ SRC_SERVER	+=	$(DIR_SERVER)/Game.cpp
 SRC_SERVER	+=	$(DIR_SERVER)/Arbitre.cpp
 SRC_SERVER	+=	$(DIR_SERVER)/White.cpp
 SRC_SERVER	+=	$(DIR_SERVER)/Black.cpp
+SRC_SERVER	+=	$(DIR_SERVER)/Utils.cpp
 
 SRC_CLIENT	=	$(DIR_CLIENT)/main.cpp
 SRC_CLIENT	+=	$(DIR_CLIENT)/Client.cpp

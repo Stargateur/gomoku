@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -155,6 +155,7 @@
     <ClInclude Include="..\include\server\Client.hpp" />
     <ClInclude Include="..\include\server\Game.hpp" />
     <ClInclude Include="..\include\server\Server.hpp" />
+    <ClInclude Include="..\include\server\Utils.hpp" />
     <ClInclude Include="..\include\server\White.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +179,7 @@
     <ClCompile Include="..\source\server\Game.cpp" />
     <ClCompile Include="..\source\server\main.cpp" />
     <ClCompile Include="..\source\server\Server.cpp" />
+    <ClInclude Include="..\source\server\Utils.cpp" />
     <ClCompile Include="..\source\server\White.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
