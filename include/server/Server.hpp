@@ -31,7 +31,6 @@ public:
     ~Server(void);
     void    pre_run(void) const;
     void	run(void);
-    void	timeout(ITCP_protocol<Client> &itcp_protocol) const;
     void	result(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Error error);
     void	connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std::string *login, std::string *password);
     void	disconnect(ITCP_protocol<Client> &itcp_protocol);
