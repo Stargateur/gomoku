@@ -3,7 +3,7 @@
 #ifndef GOMOKU_GRAPHICS_HPP_
 #define	GOMOKU_GRAPHICS_HPP_
 
-#include	<SFML\Graphics.hpp>
+#include	<SFML/Graphics.hpp>
 #include	<iostream>
 
 #define		WIN_X (1920)
