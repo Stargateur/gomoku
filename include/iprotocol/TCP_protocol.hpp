@@ -292,7 +292,7 @@ private:
 public:
     void	send_create_game(typename ITCP_protocol<T>::Game const &game)
     {
-        set_rec(get_to_send(ATCP_packet::Create_game), *game.name, *game.owner);
+        set_rec(get_to_send(ATCP_packet::Create_game), *game.name);
     }
 
 private:
@@ -300,15 +300,14 @@ private:
     {
         typename ITCP_protocol<T>::Game	*game = new typename ITCP_protocol<T>::Game();
         game->name = new std::string();
-        game->owner = new std::string();
-        get_rec(m_to_recv, *game->name, *game->owner);
+        get_rec(m_to_recv, *game->name);
         m_callback->create_game(*this, game);
     }
 
 public:
     void	send_join_game(typename ITCP_protocol<T>::Game const &game)
     {
-        set_rec(get_to_send(ATCP_packet::Join_game), *game.name, *game.owner);
+        set_rec(get_to_send(ATCP_packet::Join_game), *game.name);
     }
 
 private:
@@ -316,8 +315,7 @@ private:
     {
         typename ITCP_protocol<T>::Game	*game = new typename ITCP_protocol<T>::Game();
         game->name = new std::string();
-        game->owner = new std::string();
-        get_rec(m_to_recv, *game->name, *game->owner);
+        get_rec(m_to_recv, *game->name);
         m_callback->join_game(*this, game);
     }
 
@@ -435,7 +433,7 @@ public:
     void	send_game_created(typename ITCP_protocol<T>::Game const &game)
     {
         TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_created);
-        set_rec(to_send, *game.name, *game.owner);
+        set_rec(to_send, *game.name);
     }
 
 private:
@@ -443,8 +441,7 @@ private:
     {
         typename ITCP_protocol<T>::Game *game = new typename ITCP_protocol<T>::Game();
         game->name = new std::string();
-        game->owner = new std::string();
-        get_rec(m_to_recv, *game->name, *game->owner);
+        get_rec(m_to_recv, *game->name);
         m_callback->game_created(*this, game);
     }
 
@@ -531,7 +528,7 @@ public:
     void	send_game_deleted(typename ITCP_protocol<T>::Game const &game)
     {
         TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_deleted);
-        set_rec(to_send, game.name, game.owner);
+        set_rec(to_send, game.name);
     }
 
 private:
@@ -539,8 +536,7 @@ private:
     {
         typename ITCP_protocol<T>::Game *game = new typename ITCP_protocol<T>::Game();
         game->name = new std::string();
-        game->owner = new std::string();
-        get_rec(m_to_recv, game->name, game->owner);
+        get_rec(m_to_recv, game->name);
         m_callback->game_deleted(*this, game);
     }
 

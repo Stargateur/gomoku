@@ -127,9 +127,9 @@ void	Server::run(void)
     while (it_game != m_games.end())
     {
         auto game = *it_game;
-        Time lol;
         try
         {
+            Time lol;
             game->run(*m_iselect, lol);
             it_game++;
         }
@@ -141,9 +141,14 @@ void	Server::run(void)
         }
         catch (std::exception &e)
         {
-            std::cerr << e.what() << std::endl;
-            delete game;
             it_game = m_games.erase(it_game);
+            std::cerr << e.what() << std::endl;
+            for (auto itcp_protocol : m_itcp_protocols)
+                game->send_game_deleted(*itcp_protocol);
+            delete game;
+            for (auto game_it : m_games)
+                for (auto game_player_it : game_it->get_players())
+                    game_it->send_game_deleted(*game_player_it);
         }
     }
 }
@@ -199,6 +204,8 @@ void	Server::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std:
             }
     }
     itcp_protocol.get_data()->set_login(login);
+    for (auto game : m_games)
+        game->send_game_created(itcp_protocol);
     delete password;
 }
 
@@ -225,15 +232,25 @@ void	Server::create_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pro
     if (client->get_login() == nullptr)
     {
         delete game_info->name;
-        delete game_info->owner;
         delete game_info;
         throw AServer_exception();
     }
+    for (auto game_it : m_games)
+        if (game_it->get_name() == *game_info->name)
+            {
+                delete game_info->name;
+                delete game_info;
+                throw AServer_exception();
+            }
     Game	*game = new Game(*this, game_info->name);
 
-    m_games.push_back(game);
-    delete game_info->owner;
     delete game_info;
+    for (auto it : m_itcp_protocols)
+        game->send_game_created(*it);        
+    for (auto it_game : m_games)
+        for (auto it : it_game->get_players())
+            game->send_game_created(*it);
+    m_games.push_back(game);
     throw Server_exception_client_transfer(game);
 }
 
@@ -243,7 +260,6 @@ void	Server::join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_proto
     if (client->get_login() == nullptr)
     {
         delete game_info->name;
-        delete game_info->owner;
         delete game_info;
         throw AServer_exception();
     }
@@ -251,12 +267,10 @@ void	Server::join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_proto
         if (*game_info->name == game->get_name())
         {
             delete game_info->name;
-            delete game_info->owner;
             delete game_info;
             throw Server_exception_client_transfer(game);
         }
     delete game_info->name;
-    delete game_info->owner;
     delete game_info;
     throw AServer_exception();
 }
@@ -311,7 +325,6 @@ void    Server::list_param_game(ITCP_protocol<Client> &itcp_protocol, std::list<
 void	Server::game_created(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
 {
     delete game->name;
-    delete game->owner;
     delete game;
     throw AServer_exception();
 }
@@ -353,7 +366,6 @@ void	Server::game_stone_put(ITCP_protocol<Client> &itcp_protocol, typename ITCP_
 void	Server::game_deleted(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game)
 {
     delete game->name;
-    delete game->owner;
     delete game;
     throw AServer_exception();
 }

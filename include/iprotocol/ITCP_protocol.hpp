@@ -35,7 +35,6 @@ public:
     struct	Game
     {
         std::string	*name;
-        std::string	*owner;
     };
 
     struct	Message

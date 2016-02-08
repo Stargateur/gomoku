@@ -11,12 +11,13 @@
 #ifndef		GAME_HPP_
 # define	GAME_HPP_
 
-# include	<array>
+# include   <map>
 # include   "ISelect.hpp"
 # include	"Client.hpp"
 # include   "ITime.hpp"
 # include	"White.hpp"
-# include	"Black.hpp"
+# include   "Black.hpp"
+# include   "Arbitre.hpp"
 # include	"ACallback.hpp"
 
 class	Game : public ACallback<Client>
@@ -27,23 +28,31 @@ public:
     void    pre_run(ISelect &iselect);
     void	run(ISelect &iselect, ITime &itime);
     void    add_player(ITCP_protocol<Client>  *player);
+private:
+    void    delete_player(std::list<ITCP_protocol<Client> *>::iterator &it);
+public:
     std::list<ITCP_protocol<Client> *> const    &get_players(void) const;
     std::string const	&get_name(void) const;
+    void    send_game_created(ITCP_protocol<Client> &itcp_protocol) const;
+    void    send_game_deleted(ITCP_protocol<Client> &itcp_protocol) const;
     void    timeout(ITCP_protocol<Client> &itcp_protocol) const;
     void	create_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game);
     void	join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game);
     void	leave_game(ITCP_protocol<Client> &itcp_protocol);
     void	put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone);
-    void	change_param_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param);
+    void    change_param_player_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_player_param *param);
+    void    change_param_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param);
     void	start_game(ITCP_protocol<Client> &itcp_protocol);
     void	ready_game(ITCP_protocol<Client> &itcp_protocol, bool ready);
 private:
     bool	m_is_start;
-//    std::array<ITCP_protocol<Client>::Game_stone::Color, m_size * m_size>	m_board;
     std::string	*m_name;
+    Arbitre m_arbitre;
     Black	m_black;
     White   m_white;
     ITime   *m_timeout;
+    std::list<ITCP_protocol<Client>::Game_param *>  m_param;
+    std::list<ITCP_protocol<Client>::Game_player_param *>  m_param_player;
 private:
     std::list<ITCP_protocol<Client> *>	m_itcp_protocols;
 };

@@ -5,7 +5,7 @@
 ## Login   <plasko_a@epitech.eu>
 ## 
 ## Started on  Mon Jan 25 18:27:08 2016 Antoine Plaskowski
-## Last update Sun Jan 31 01:31:05 2016 Antoine Plaskowski
+## Last update Mon Feb  8 16:56:35 2016 Antoine Plaskowski
 ##
 
 DIR		=	source
@@ -39,11 +39,11 @@ SRC		+=	$(DIR_IPROTOCOL)/TCP_packet_send.cpp
 SRC		+=	$(DIR_ITIME)/ITime.cpp
 SRC		+=	$(DIR_ITIME)/Time.cpp
 
-
 SRC_SERVER	=	$(DIR_SERVER)/main.cpp
 SRC_SERVER	+=	$(DIR_SERVER)/Server.cpp
 SRC_SERVER	+=	$(DIR_SERVER)/Client.cpp
 SRC_SERVER	+=	$(DIR_SERVER)/Game.cpp
+SRC_SERVER	+=	$(DIR_SERVER)/Arbitre.cpp
 SRC_SERVER	+=	$(DIR_SERVER)/White.cpp
 SRC_SERVER	+=	$(DIR_SERVER)/Black.cpp
 
