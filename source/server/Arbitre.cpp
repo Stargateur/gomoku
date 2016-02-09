@@ -10,9 +10,9 @@ Arbitre::Arbitre(ITCP_protocol<Client>::Callback &itcp_protocol) :
 	m_black_loose(0),
 	m_is_black_turn(true)
 {
-	for (int i = 0; i < Arbitre::board_size; i++)
+	for (unsigned int i = 0; i < Arbitre::board_size; i++)
 	{
-		for (int j = 0; j < Arbitre::board_size; j++)
+		for (unsigned int j = 0; j < Arbitre::board_size; j++)
 		{
 			m_board[i * Arbitre::board_size + j] = prot::Game_stone::Color::None;
 		}
@@ -62,7 +62,7 @@ bool Arbitre::check_stone_libre(int x, int y) const
 	int tab[8][2] = {
 		{ 1, 0 },
 		{ 0, 1 },
-		{ -1, 0 },
+		{-1, 0 },
 		{ 0, -1 },
 		{ 1, 1 },
 		{ -1, -1 },
@@ -96,7 +96,7 @@ void Arbitre::check_victory_five(ITCP_protocol<Client> &itcp_protocol, prot::Gam
 		{ 0, 1 },
 		{ 1, 0 },
 		{ 1, 1 },
-		{ 1, -1 },
+		{ 1, -1 }
 	};
 	int i = 0;
 	int j = 0;
@@ -151,15 +151,15 @@ void Arbitre::check_victory(ITCP_protocol<Client> &itcp_protocol, prot::Game_sto
 
 void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
 {
-	int capture[8][4] = {
-		{ -1, -1, -1, -1 },
-		{ -1, -1, -1, -1 },
-		{ -1, -1, -1, -1 },
-		{ -1, -1, -1, -1 },
-		{ -1, -1, -1, -1 },
-		{ -1, -1, -1, -1 },
-		{ -1, -1, -1, -1 },
-		{ -1, -1, -1, -1 }
+	uint8_t capture[8][4] = {
+		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
+		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
+		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
+		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
+		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
+		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
+		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
+		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size }
 	};
 
 #ifdef DEBUG
@@ -178,14 +178,14 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 			int i = 0;
 			prot::Game_stone *mess = new prot::Game_stone();
 			mess->color = prot::Game_stone::Color::None;
-			while (capture[i][0] != -1)
+			while (capture[i][0] != Arbitre::board_size)
 			{
-				mess->x = capture[i][0];
-				mess->y = capture[i][1];
+				mess->x = static_cast<unsigned char>(capture[i][0]);
+				mess->y = static_cast<unsigned char>(capture[i][1]);
 				m_callback.put_stone_game(itcp_protocol, mess);
 				(*this)(capture[i][0], capture[i][1]) = prot::Game_stone::Color::None;
-				mess->x = capture[i][2];
-				mess->y = capture[i][3];
+				mess->x = static_cast<unsigned char>(capture[i][2]);
+				mess->y = static_cast<unsigned char>(capture[i][3]);
 				m_callback.put_stone_game(itcp_protocol, mess);
 				(*this)(capture[i][2], capture[i][3]) = prot::Game_stone::Color::None;
 				if (stone->color == prot::Game_stone::Color::Black)
@@ -202,7 +202,7 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 	}
 }
 
-bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
+bool Arbitre::can_capture(prot::Game_stone * stone, uint8_t coord[8][4]) const
 {
 	int x = stone->x;
 	int y = stone->y;
@@ -583,7 +583,7 @@ bool Arbitre::is_diag_no_iso_three(int coord[4], ITCP_protocol<Client>::Game_sto
 bool Arbitre::check_horizontal_three(int coord[4], ITCP_protocol<Client>::Game_stone * stone) const
 {
 	int x;
-	int tmp[4] = { -1, -1, -1, -1 };
+	int tmp[4] = { Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size };
 
 	x = coord[0];
 	while (x <= coord[2])
@@ -605,7 +605,7 @@ bool Arbitre::check_horizontal_three(int coord[4], ITCP_protocol<Client>::Game_s
 bool Arbitre::check_vertical_three(int coord[4], ITCP_protocol<Client>::Game_stone * stone) const
 {
 	int y;
-	int tmp[4] = { -1, -1, -1, -1 };
+	int tmp[4] = { Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size };
 
 	y = coord[1];
 	while (y <= coord[3])
@@ -628,7 +628,7 @@ bool Arbitre::check_diag_iso_three(int coord[4], ITCP_protocol<Client>::Game_sto
 {
 	int x;
 	int y;
-	int tmp[4] = { -1, -1, -1, -1 };
+	int tmp[4] = { Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size };
 
 	x = coord[1];
 	y = coord[1];
@@ -653,7 +653,7 @@ bool Arbitre::check_diag_no_iso_three(int coord[4], ITCP_protocol<Client>::Game_
 {
 	int x;
 	int y;
-	int tmp[4] = { -1, -1, -1, -1 };
+	int tmp[4] = { Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size };
 
 	x = coord[1];
 	y = coord[1];
@@ -676,7 +676,7 @@ bool Arbitre::check_diag_no_iso_three(int coord[4], ITCP_protocol<Client>::Game_
 
 bool Arbitre::is_double_three(ITCP_protocol<Client>::Game_stone * stone) const
 {
-	int coord[4] = { -1, -1, -1, -1 };
+	int coord[4] = { Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size };
 
 	if (is_horizontal_three(coord, stone))
 		return check_horizontal_three(coord, stone);
@@ -689,12 +689,12 @@ bool Arbitre::is_double_three(ITCP_protocol<Client>::Game_stone * stone) const
 	return false;
 }
 
-const ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(int x, int y) const
+const ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y) const
 {
-	return (m_board[x * Arbitre::board_size + y]);
+	return (m_board[x * static_cast<int>(Arbitre::board_size) + y]);
 }
 
-ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(int x, int y)
+ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y)
 {
 	return (m_board[x * Arbitre::board_size + y]);
 }
