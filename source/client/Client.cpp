@@ -15,6 +15,7 @@
 #include	"Select.hpp"
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
+#include	"Time.hpp"
 
 Client::Client(void) :
     m_itcp_protocol(new TCP_protocol<ITCP_client>(this, new TCP_client("localhost", "4242"))),
@@ -38,7 +39,7 @@ void	Client::run(void)
             m_iselect->want_read(*m_itcp_protocol->get_data());
         if (m_itcp_protocol->want_send() == true)
             m_iselect->want_write(*m_itcp_protocol->get_data());
-        m_iselect->select();
+        m_iselect->select(Time(1, 0));
         if (m_iselect->can_read(*m_itcp_protocol->get_data()) == true)
 		{
 			m_iselect->reset_read(*m_itcp_protocol->get_data());
@@ -49,6 +50,7 @@ void	Client::run(void)
 			m_iselect->reset_write(*m_itcp_protocol->get_data());
             m_itcp_protocol->send(*m_itcp_protocol->get_data());
 		}
+		checkUserInputs();
     }
 }
 
@@ -159,8 +161,8 @@ void Client::checkUserInputs(void)
 	bool	tmp;
 
 	PlayerInfo::getInstance().lock();
-	tmp = PlayerInfo::getInstance().mWantDisconnect;
-	PlayerInfo::getInstance().unlock();
-	if (tmp)
+	std::cout << "checking user" << std::endl;
+	if (PlayerInfo::getInstance().mWantDisconnect || PlayerInfo::getInstance().mWantQuit)
 		m_itcp_protocol->send_disconnect();
+	PlayerInfo::getInstance().unlock();
 }
