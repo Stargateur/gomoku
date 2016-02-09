@@ -1,6 +1,6 @@
 #include "PlayerInfo.hpp"
 
-PlayerInfo::PlayerInfo() : mWantQuit(false), mWantDisconnect(false), mWantConnect(false), mWantPlay(false), mIsConnected(false)
+PlayerInfo::PlayerInfo() : mWantQuit(false), mWantDisconnect(false), mWantConnect(false), mWantPlay(false), mIsConnected(false), mColor("black")
 {
 }
 

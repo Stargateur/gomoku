@@ -24,10 +24,15 @@ Client::Client(void) :
     m_itcp_protocol->send_connect("plasko_a", "plasko_a");
 	ITCP_protocol<ITCP_client>::Game game;
 	game.name = new std::string("mdr");
-	m_itcp_protocol->send_create_game(game);
+	PlayerInfo::getInstance().lock();
+	if (PlayerInfo::getInstance().mColor.compare("black") == 0)
+		m_itcp_protocol->send_create_game(game);
+	else
+		m_itcp_protocol->send_join_game(game);
 	ITCP_protocol<ITCP_client>::Game_player_param params;
 	params.name = new std::string("color");
-	params.value = new std::string("black");
+	params.value = new std::string(PlayerInfo::getInstance().mColor);
+	PlayerInfo::getInstance().unlock();
 	m_itcp_protocol->send_change_param_player_game(params);
 	m_itcp_protocol->send_ready_game(true);
 }
@@ -47,7 +52,7 @@ void	Client::run(void)
             m_iselect->want_read(*m_itcp_protocol->get_data());
         if (m_itcp_protocol->want_send() == true)
             m_iselect->want_write(*m_itcp_protocol->get_data());
-        m_iselect->select(Time(1, 0));
+        m_iselect->select(Time(0, 500000000));
         if (m_iselect->can_read(*m_itcp_protocol->get_data()) == true)
 		{
 			m_iselect->reset_read(*m_itcp_protocol->get_data());
