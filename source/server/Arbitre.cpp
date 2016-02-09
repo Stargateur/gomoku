@@ -89,7 +89,7 @@ bool Arbitre::check_stone_libre(int x, int y) const
 	return (true);
 }
 
-void Arbitre::check_vertical_victory(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone *stone)
+void Arbitre::check_victory_five(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone *stone)
 {
 	int tab[4][2] =
 	{
@@ -117,7 +117,7 @@ void Arbitre::check_vertical_victory(ITCP_protocol<Client> &itcp_protocol, prot:
 		j = tab[k][1];
 		while (check_coord(x - i, y - j) && (*this)(x - i, y - j) == stone->color)
 		{
-			if (check_stone_libre(x - i, y) == false)
+			if (check_stone_libre(x - i, y - j) == false)
 				break;
 			i += tab[k][0];
 			j += tab[k][1];
@@ -125,9 +125,9 @@ void Arbitre::check_vertical_victory(ITCP_protocol<Client> &itcp_protocol, prot:
 		}
 		if (nb >= 5)
 		{
-			prot::Game_result *gr = new prot::Game_result();
-			gr->winner = new std::string("Fin de la game");
-			m_callback.result_game(itcp_protocol, gr);
+			prot::Game_result gr;
+			gr.winner = new std::string("Fin de la game");
+			m_callback.result_game(itcp_protocol, &gr);
 		}
 	}
 }
@@ -136,17 +136,17 @@ void Arbitre::check_victory(ITCP_protocol<Client> &itcp_protocol, prot::Game_sto
 {
 	if (m_black_loose >= 10)
 	{
-		prot::Game_result *gr = new prot::Game_result();
-		gr->winner = new std::string("Fin de la game");
-		m_callback.result_game(itcp_protocol, gr);
+		prot::Game_result gr;
+		gr.winner = new std::string("Fin de la game");
+		m_callback.result_game(itcp_protocol, &gr);
 	}
 	if (m_white_loose >= 10)
 	{
-		prot::Game_result *gr = new prot::Game_result();
-		gr->winner = new std::string("Fin de la game");
-		m_callback.result_game(itcp_protocol, gr);
+		prot::Game_result gr;
+		gr.winner = new std::string("Fin de la game");
+		m_callback.result_game(itcp_protocol, &gr);
 	}
-	check_vertical_victory(itcp_protocol, stone);
+	check_victory_five(itcp_protocol, stone);
 }
 
 void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
@@ -163,7 +163,7 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 	};
 
 #ifdef DEBUG
-	std::cout << "put_stone (DEBUG : illo)" << std::endl;
+	std::cout << "put_stone (DEBUG : illo) " <<  std::endl;
 #endif
 	if (can_put_stone(stone))
 	{
@@ -176,16 +176,14 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 		if (can_capture(stone, capture))
 		{
 			int i = 0;
+			prot::Game_stone *mess = new prot::Game_stone();
+			mess->color = prot::Game_stone::Color::None;
 			while (capture[i][0] != -1)
 			{
-				prot::Game_stone *mess = new prot::Game_stone();
-				mess->color = prot::Game_stone::Color::None;
 				mess->x = capture[i][0];
 				mess->y = capture[i][1];
 				m_callback.put_stone_game(itcp_protocol, mess);
 				(*this)(capture[i][0], capture[i][1]) = prot::Game_stone::Color::None;
-				mess = new prot::Game_stone();
-				mess->color = prot::Game_stone::Color::None;
 				mess->x = capture[i][2];
 				mess->y = capture[i][3];
 				m_callback.put_stone_game(itcp_protocol, mess);
@@ -197,11 +195,11 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 				i++;
 			}
 		}
+#ifdef DEBUG
+		dump();
+#endif
 		check_victory(itcp_protocol, stone);
 	}
-#ifdef DEBUG
-	dump();
-#endif
 }
 
 bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
@@ -353,10 +351,10 @@ bool Arbitre::is_horizontal_three(int coord[4], ITCP_protocol<Client>::Game_ston
 	int		i = 1;
 	int		x = static_cast<int>(stone->x);
 	int		tmp = 0;
-	int		nb[3] = { 0, 0, 0 };
+	int		nb[3] = { 0, 1, 0 };
 	bool	empty = true;
 
-	while (x + i < Arbitre::board_size && (empty || (*this)(x + i, stone->y) != prot::Game_stone::Color::None))
+	while (check_coord(x + i, stone->y) && (empty || (*this)(x + i, stone->y) != prot::Game_stone::Color::None))
 	{
 		if (prot::Game_stone::notColor((*this)(x + i, stone->y)) == stone->color)
 			break;
@@ -364,7 +362,7 @@ bool Arbitre::is_horizontal_three(int coord[4], ITCP_protocol<Client>::Game_ston
 		{
 			coord[0] = x + i - 1;
 			coord[1] = stone->y;
-			nb[1] += i;
+			nb[1] += i - 1;
 			empty = false;
 		}
 		else if (empty == false)
@@ -375,7 +373,7 @@ bool Arbitre::is_horizontal_three(int coord[4], ITCP_protocol<Client>::Game_ston
 	i = 1;
 	tmp = 0;
 	empty = true;
-	while (x - i > -1 && (empty || (*this)(x - i, stone->y) != prot::Game_stone::Color::None))
+	while (check_coord(x - i, stone->y) && (empty || (*this)(x - i, stone->y) != prot::Game_stone::Color::None))
 	{
 		if (prot::Game_stone::notColor((*this)(x - i, stone->y)) == stone->color)
 			break;
@@ -410,10 +408,10 @@ bool Arbitre::is_vertical_three(int coord[4], ITCP_protocol<Client>::Game_stone 
 	int		i = 1;
 	int		y = static_cast<int>(stone->y);
 	int		tmp = 0;
-	int		nb[3] = { 0, 0, 0 };
+	int		nb[3] = { 0, 1, 0 };
 	bool	empty = true;
 
-	while (y + i < Arbitre::board_size && (empty || (*this)(stone->x, y + i) != prot::Game_stone::Color::None))
+	while (check_coord(stone->x, y + i) && (empty || (*this)(stone->x, y + i) != prot::Game_stone::Color::None))
 	{
 		if (prot::Game_stone::notColor((*this)(stone->x, y + i)) == stone->color)
 			break;
@@ -421,7 +419,7 @@ bool Arbitre::is_vertical_three(int coord[4], ITCP_protocol<Client>::Game_stone 
 		{
 			coord[0] = stone->x;
 			coord[1] = y + i - 1;
-			nb[1] += i;
+			nb[1] += i - 1;
 			empty = false;
 		}
 		else if (empty == false)
@@ -432,7 +430,7 @@ bool Arbitre::is_vertical_three(int coord[4], ITCP_protocol<Client>::Game_stone 
 	i = 1;
 	tmp = 0;
 	empty = true;
-	while (y - i > -1 && (empty || (*this)(stone->x, y - i) != prot::Game_stone::Color::None))
+	while (check_coord(stone->x, y - i) && (empty || (*this)(stone->x, y - i) != prot::Game_stone::Color::None))
 	{
 		if (prot::Game_stone::notColor((*this)(stone->x, y - i)) == stone->color)
 			break;
@@ -468,10 +466,10 @@ bool Arbitre::is_diag_iso_three(int coord[4], ITCP_protocol<Client>::Game_stone 
 	int		x = static_cast<int>(stone->x);
 	int		y = static_cast<int>(stone->y);
 	int		tmp = 0;
-	int		nb[3] = { 0, 0, 0 };
+	int		nb[3] = { 0, 1, 0 };
 	bool	empty = true;
 
-	while (x + i < Arbitre::board_size && y + i < Arbitre::board_size && (empty || (*this)(x + i, y + i) != prot::Game_stone::Color::None))
+	while (check_coord(x + i, y + i) && (empty || (*this)(x + i, y + i) != prot::Game_stone::Color::None))
 	{
 		if (prot::Game_stone::notColor((*this)(x + i, y + i)) == stone->color)
 			break;
@@ -479,7 +477,7 @@ bool Arbitre::is_diag_iso_three(int coord[4], ITCP_protocol<Client>::Game_stone 
 		{
 			coord[0] = x + i - 1;
 			coord[1] = y + i - 1;
-			nb[1] += i;
+			nb[1] += i - 1;
 			empty = false;
 		}
 		else if (empty == false)
@@ -490,7 +488,7 @@ bool Arbitre::is_diag_iso_three(int coord[4], ITCP_protocol<Client>::Game_stone 
 	i = 1;
 	tmp = 0;
 	empty = true;
-	while (x - i > -1 && y - i > -1 && (empty || (*this)(x - i, y - i) != prot::Game_stone::Color::None))
+	while (check_coord(x - i, y - i) && (empty || (*this)(x - i, y - i) != prot::Game_stone::Color::None))
 	{
 		if (prot::Game_stone::notColor((*this)(x - i, y - i)) == stone->color)
 			break;
@@ -528,10 +526,10 @@ bool Arbitre::is_diag_no_iso_three(int coord[4], ITCP_protocol<Client>::Game_sto
 	int		x = static_cast<int>(stone->x);
 	int		y = static_cast<int>(stone->y);
 	int		tmp = 0;
-	int		nb[3] = { 0, 0, 0 };
+	int		nb[3] = { 0, 1, 0 };
 	bool	empty = true;
 
-	while (x - i > 0 && y + i < Arbitre::board_size && (empty || (*this)(x - i, y + i) != prot::Game_stone::Color::None))
+	while (check_coord(x - i, y + i) && (empty || (*this)(x - i, y + i) != prot::Game_stone::Color::None))
 	{
 		if (prot::Game_stone::notColor((*this)(x - i, y + i)) == stone->color)
 			break;
@@ -539,7 +537,7 @@ bool Arbitre::is_diag_no_iso_three(int coord[4], ITCP_protocol<Client>::Game_sto
 		{
 			coord[0] = x - i + 1;
 			coord[1] = y + i - 1;
-			nb[1] += i;
+			nb[1] += i - 1;
 			empty = false;
 		}
 		else if (empty == false)
@@ -550,7 +548,7 @@ bool Arbitre::is_diag_no_iso_three(int coord[4], ITCP_protocol<Client>::Game_sto
 	i = 1;
 	tmp = 0;
 	empty = true;
-	while (x + i < Arbitre::board_size && y - i > -1 && (empty || (*this)(x + i, y - i) != prot::Game_stone::Color::None))
+	while (check_coord(x + i, y - i) && (empty || (*this)(x + i, y - i) != prot::Game_stone::Color::None))
 	{
 		if (prot::Game_stone::notColor((*this)(x + i, y - i)) == stone->color)
 			break;
@@ -682,6 +680,12 @@ bool Arbitre::is_double_three(ITCP_protocol<Client>::Game_stone * stone) const
 
 	if (is_horizontal_three(coord, stone))
 		return check_horizontal_three(coord, stone);
+	if (is_vertical_three(coord, stone))
+		return check_vertical_three(coord, stone);
+	if (is_diag_iso_three(coord, stone))
+		return check_diag_iso_three(coord, stone);
+	if (is_diag_no_iso_three(coord, stone))
+		return check_diag_no_iso_three(coord, stone);
 	return false;
 }
 

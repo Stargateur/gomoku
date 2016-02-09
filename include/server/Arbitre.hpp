@@ -18,7 +18,7 @@ public:
 
 	bool check_stone_libre(int x, int y) const;
 
-	void check_vertical_victory(ITCP_protocol<Client> &itcp_protocol, ITCP_protocol<Client>::Game_stone * stone);
+	void check_victory_five(ITCP_protocol<Client> &itcp_protocol, ITCP_protocol<Client>::Game_stone * stone);
 
 	void	check_victory(ITCP_protocol<Client> &itcp_protocol, ITCP_protocol<Client>::Game_stone *stone);
 

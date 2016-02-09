@@ -180,14 +180,12 @@ void	Server::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std:
         itcp_protocol.send_result(ITCP_protocol<Client>::Error::Wrong_password);
         throw std::logic_error("Wrong login() and/or password");
     }
-    for (auto it_itcp_protocol : m_itcp_protocols)
+/*    for (auto it_itcp_protocol : m_itcp_protocols)
     {
         auto client = it_itcp_protocol->get_data();
 
-        std::cout << *login << "je test pour ce login" << std::endl;
         if (client->get_login() != nullptr)
         {
-            std::cout << "la ici pd " << *client->get_login();
             if (*client->get_login() == *login)
             {
                 delete login;
@@ -197,6 +195,22 @@ void	Server::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std:
             }
         }
     }
+    for (auto game : m_games)
+        for (auto it_itcp_protocol : game->get_players())
+        {
+            auto client = it_itcp_protocol->get_data();
+
+            if (client->get_login() != nullptr)
+            {
+                if (*client->get_login() == *login)
+                {
+                    delete login;
+                    delete password;
+                    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Login_already_use);
+                    throw std::logic_error("this login is already used");
+                }
+            }            
+        }*/
     itcp_protocol.get_data()->set_login(login);
     for (auto game : m_games)
         game->send_game_created(itcp_protocol);
