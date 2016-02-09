@@ -219,7 +219,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, uint8_t coord[8][4]) const
 			i++;
 		}
 	}
-	if (check_coord(x - 3, y) && (*this)(x + 3, y) == stone->color)
+	if (check_coord(x + 3, y) && (*this)(x + 3, y) == stone->color)
 	{
 		if ((*this)(x + 2, y) == prot::Game_stone::notColor(stone->color) && (*this)(x + 1, y) == prot::Game_stone::notColor(stone->color))
 		{
@@ -691,7 +691,7 @@ bool Arbitre::is_double_three(ITCP_protocol<Client>::Game_stone * stone) const
 
 const ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y) const
 {
-	return (m_board[x * static_cast<int>(Arbitre::board_size) + y]);
+	return (m_board[x * Arbitre::board_size + y]);
 }
 
 ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y)
