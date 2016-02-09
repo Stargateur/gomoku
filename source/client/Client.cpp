@@ -22,6 +22,14 @@ Client::Client(void) :
     m_iselect(new Select)
 {
     m_itcp_protocol->send_connect("plasko_a", "plasko_a");
+	ITCP_protocol<ITCP_client>::Game game;
+	game.name = new std::string("mdr");
+	m_itcp_protocol->send_create_game(game);
+	ITCP_protocol<ITCP_client>::Game_player_param params;
+	params.name = new std::string("color");
+	params.value = new std::string("black");
+	m_itcp_protocol->send_change_param_player_game(params);
+	m_itcp_protocol->send_ready_game(true);
 }
 
 Client::~Client(void)
@@ -164,5 +172,10 @@ void Client::checkUserInputs(void)
 	std::cout << "checking user" << std::endl;
 	if (PlayerInfo::getInstance().mWantDisconnect || PlayerInfo::getInstance().mWantQuit)
 		m_itcp_protocol->send_disconnect();
+	if (PlayerInfo::getInstance().mWantPlay)
+	{
+		m_itcp_protocol->send_put_stone_game(PlayerInfo::getInstance().mLastPlay);
+		PlayerInfo::getInstance().mWantPlay = false;
+	}
 	PlayerInfo::getInstance().unlock();
 }

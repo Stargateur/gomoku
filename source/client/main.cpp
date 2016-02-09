@@ -39,8 +39,9 @@ void start_tcpclient()
 			}
 			catch (std::exception &e) {
 				PlayerInfo::getInstance().lock();
+				PlayerInfo::getInstance().mIsConnected = false;
 				PlayerInfo::getInstance().mHasFailed = true;
-				PlayerInfo::getInstance().mErrorMessage = "Connection failed !";
+				PlayerInfo::getInstance().mErrorMessage = "Connection error !";
 				std::cout << "Error de connexion" << std::endl;
 				PlayerInfo::getInstance().unlock();
 			}

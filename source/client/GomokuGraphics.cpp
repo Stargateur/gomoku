@@ -47,6 +47,12 @@ void		click_plateau(sf::Vector2f *param)
 					(param->y <= tryY + 10 && param->y >= tryY - 10))
 				{
 					std::cout << "LA BISCOTTE : " << x << " | " << y << std::endl;
+					PlayerInfo::getInstance().lock();
+					PlayerInfo::getInstance().mLastPlay.x = x;
+					PlayerInfo::getInstance().mLastPlay.y = y;
+					PlayerInfo::getInstance().mLastPlay.color = PlayerInfo::getInstance().mLastPlay.Black;
+					PlayerInfo::getInstance().mWantPlay = true;
+					PlayerInfo::getInstance().unlock();
 				}
 			}
 		}
@@ -117,6 +123,12 @@ void GomokuGraphics::checkClientUpdates(void)
 			PlayerInfo::getInstance().mWantConnect = false;
 			mCurrentView = &mGameView;
 		}
+	}
+	else if (PlayerInfo::getInstance().mHasFailed && !PlayerInfo::getInstance().mIsConnected)
+	{
+		std::cout << PlayerInfo::getInstance().mErrorMessage << std::endl;
+		PlayerInfo::getInstance().mHasFailed = false;
+		mCurrentView = &mConnectView;
 	}
 	PlayerInfo::getInstance().unlock();
 }

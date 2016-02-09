@@ -3,9 +3,10 @@
 #ifndef  GAMEINFO_HPP_
 # define GAMEINFO_HPP_
 
-#include <list>
-#include <mutex>
-#include "ITCP_protocol.hpp"
+#include	<list>
+#include	<mutex>
+#include	"ITCP_protocol.hpp"
+#include	"ITCP_client.hpp"
 
 class GameInfo
 {
@@ -21,8 +22,8 @@ public:
 	void			unlock(void);
 
 public:
-	std::list<ITCP_protocol<GameInfo>::Game_stone>	mHisto;
-	ITCP_protocol<GameInfo>::Game_stone::Color		mPlate[19][19];
+	std::list<ITCP_protocol<ITCP_client>::Game_stone>	mHisto;
+	ITCP_protocol<ITCP_client>::Game_stone::Color		mPlate[19][19];
 	size_t											mSpecs;
 	std::string										mOpponent;
 	bool											mGameEnd;
