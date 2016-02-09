@@ -2,6 +2,7 @@
 
 GameInfo::GameInfo()
 {
+	reset();
 }
 
 GameInfo::~GameInfo()

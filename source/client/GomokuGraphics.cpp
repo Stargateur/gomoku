@@ -121,7 +121,7 @@ void GomokuGraphics::affStone()
 			if (GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::Black ||
 				GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::White)
 			{
-				if (mStones[x][y] != nullptr)
+				if (mStones[x][y] == nullptr)
 				{
 					GVOButton<int> *button = nullptr;
 					if (GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::Black)
