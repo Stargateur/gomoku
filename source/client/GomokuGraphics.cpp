@@ -80,8 +80,7 @@ void GomokuGraphics::run()
 				mWindow->close();
 			if (event.type == sf::Event::MouseButtonReleased)
 			{
-				souris.x = event.mouseButton.x;
-				souris.y = event.mouseButton.y;
+				souris = mWindow->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 				mCurrentView->mouseClick(mWindow->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)));
 				std::cout << "clik" << std::endl;
 			}
