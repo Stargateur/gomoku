@@ -32,8 +32,23 @@ GomokuGraphics::~GomokuGraphics()
 void		click_plateau(sf::Vector2f *param)
 {
 	std::cout << "click sur le plateau" << std::endl;
+	size_t		xStart = 242;
+	size_t		yStart = 98;
 	if (param != NULL)
 	{
+		for (size_t x = 0; x < 19; x++)
+		{
+			for (size_t y = 0; y < 19; y++)
+			{
+				size_t tryX = xStart + x * 34;
+				size_t tryY = yStart + y * 34;
+				if ((param->x <= tryX + 5 && param->x >= tryX - 5) &&
+					(param->y <= tryY + 5 && param->y >= tryY - 5))
+				{
+					std::cout << "LA BISCOTTE : " << x << " | " << y << std::endl;
+				}
+			}
+		}
 		std::cout << "x:" << param->x << " y:" << param->y << std::endl;
 	}
 }
@@ -42,9 +57,9 @@ void GomokuGraphics::init()
 {
 	mWindow = new sf::RenderWindow(sf::VideoMode(WIN_X, WIN_Y, 32), "Hikaru no GO");
 	//charge texture
-	if (!mTextureBackground.loadFromFile("C:/Users/Elliott/Epitech/gomoku/Sprite/board.png", sf::IntRect(0, 0, 798, 798)))
+	if (!mTextureBackground.loadFromFile("../Sprite/board.png", sf::IntRect(0, 0, 798, 798)))
 	{std::cerr << "Cant load the texture" << std::endl;}
-	if (!mTopTexture.loadFromFile("C:/Users/Elliott/Epitech/gomoku/Sprite/connexion.png", sf::IntRect(0, 0, 1920, 1080)))
+	if (!mTopTexture.loadFromFile("../Sprite/connexion.png", sf::IntRect(0, 0, 1920, 1080)))
 	{std::cerr << "Cant load the texture" << std::endl;}
 	//set sprites
 	//Background
