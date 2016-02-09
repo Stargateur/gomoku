@@ -170,6 +170,7 @@ void	Client::ready_game(ITCP_protocol<ITCP_client> &itcp_protocol, bool ready)
 
 void	Client::result_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_result *game_result)
 {
+	m_itcp_protocol->send_disconnect();
 }
 
 void	Client::message(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Message *message)
