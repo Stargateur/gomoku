@@ -69,7 +69,7 @@ void	Client::run(void)
 
 void	Client::result(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Error error)
 {
-    std::cout << error << std::endl;
+    std::cout << ITCP_protocol<ITCP_client>::get_str_error(error) << std::endl;
 }
 
 void	Client::connect(ITCP_protocol<ITCP_client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)

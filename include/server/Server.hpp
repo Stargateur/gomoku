@@ -61,6 +61,7 @@ private:
     ITime	*m_timeout;
     std::list<Game *>	m_games;
     std::list<ITCP_protocol<Client> *>  m_itcp_protocols;
+    std::list<ITCP_protocol<Client> *>  m_disconnecteds;
 };
 
 class	AServer_exception : public std::exception

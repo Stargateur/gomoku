@@ -20,6 +20,11 @@ static void    sigint(int)
     g_keep_running = false;
 }
 
+enum lol
+{
+    XD
+};
+
 int	main(void)
 {
 	Server	server;

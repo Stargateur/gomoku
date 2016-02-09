@@ -71,6 +71,14 @@ void    Server::pre_run(void) const
             m_iselect->want_write(*client.get_itcp_client());
     }
 
+    for (auto disconnect : m_disconnecteds)
+    {
+        Client &client = *disconnect->get_data();
+
+        if (disconnect->want_send())
+            m_iselect->want_write(*client.get_itcp_client());
+    }
+
     for (auto game : m_games)
     {
         game->pre_run(*m_iselect);
@@ -89,6 +97,29 @@ void	Server::run(void)
         std::cerr << "Un client s'est connecter" << std::endl;
         #endif
         m_itcp_protocols.push_back(new TCP_protocol<Client>(this, client));
+    }
+    auto disconnect = m_disconnecteds.begin();
+    while (disconnect != m_disconnecteds.end())
+    {
+        auto itcp_protocol = *disconnect;
+        Client &client = *itcp_protocol->get_data();
+        try
+        {
+            if (m_iselect->can_write(*client.get_itcp_client()))
+            {
+                m_iselect->reset_write(*client.get_itcp_client());
+                itcp_protocol->send(*client.get_itcp_client());
+            }
+            else
+                throw AServer_exception();
+            disconnect++;
+        }
+        catch (std::exception &e)
+        {
+            std::cerr << e.what() << std::endl;
+            disconnect = m_itcp_protocols.erase(disconnect);
+            delete itcp_protocol;
+        }
     }
     for (auto it = m_itcp_protocols.begin(); it != m_itcp_protocols.end();)
     {
@@ -121,8 +152,8 @@ void	Server::run(void)
         catch (std::exception &e)
         {
             std::cerr << e.what() << std::endl;
-            delete itcp_protocol;
             it = m_itcp_protocols.erase(it);
+            m_disconnecteds.push_back(itcp_protocol);
         }
     }
     auto it_game = m_games.begin();
@@ -161,7 +192,7 @@ void	Server::result(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol
         std::cout << itcp_protocol.get_data()->get_login();
     else
         std::cout << "Unknow client";
-    std::cout << " has send this error " << error << std::endl;
+    std::cout << " has send this error " << ITCP_protocol<Client>::get_str_error(error) << std::endl;
 }
 
 void	Server::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)

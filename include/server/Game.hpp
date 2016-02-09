@@ -55,7 +55,8 @@ private:
     std::list<ITCP_protocol<Client>::Game_param *>  m_param;
     std::list<ITCP_protocol<Client>::Game_player_param *>  m_param_player;
 private:
-    std::list<ITCP_protocol<Client> *>	m_itcp_protocols;
+    std::list<ITCP_protocol<Client> *>  m_itcp_protocols;
+    std::list<ITCP_protocol<Client> *>  m_disconnecteds;
 };
 
 class   AGame_exception : public std::exception
