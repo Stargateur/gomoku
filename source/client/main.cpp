@@ -8,7 +8,7 @@
 // Last update Mon Feb  8 17:43:11 2016 Antoine Plaskowski
 //
 
-#if 1
+#if 0
 #include	<iostream>
 #include	<exception>
 #include	<thread>
@@ -115,14 +115,19 @@ lol(void) :
 	std::string s = "";
 	while (s != "j" && s != "c")
 	{
-		std::cout << "connexion(j/c)" << std::endl;
+		std::cout << "connexion(c/j)" << std::endl;
 		std::cin >> s;
 	}
 	if (s == "c")
+	{
+		color = "black";
 		m_itcp_protocol->send_create_game(game);
+	}
 	else
+	{
+		color = "white";
 		m_itcp_protocol->send_join_game(game);
-	std::cin >> color;
+	}
     ITCP_protocol<ITCP_client>::Game_player_param	param;
     std::string ptdr("color");
     param.name = &ptdr;
