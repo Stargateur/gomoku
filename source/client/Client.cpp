@@ -141,6 +141,13 @@ void	Client::game_param_changed(ITCP_protocol<ITCP_client> &itcp_protocol, typen
 
 void	Client::game_stone_put(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_stone *stone)
 {
+	GameInfo::getInstance().lock();
+	if (stone != nullptr)
+	{
+		GameInfo::getInstance().mPlate[stone->x][stone->y] = stone->color;
+		GameInfo::getInstance().mHisto.push_back(stone);
+	}
+	GameInfo::getInstance().unlock();
 }
 
 void	Client::game_deleted(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game *game)
