@@ -20,7 +20,7 @@ Game::Game(typename ITCP_protocol<Client>::Callback &callback, std::string *name
     m_arbitre(*this),
     m_black(m_arbitre),
     m_white(m_arbitre),
-    m_timeout(new Time(5))
+    m_timeout(new Time(500000000))
 {
     ITCP_protocol<Client>::Game_player_param *game_player_param = new ITCP_protocol<Client>::Game_player_param;
 
@@ -168,7 +168,7 @@ void	Game::put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pr
 		throw std::logic_error("you are you ?");
 	}
 	for (auto it : m_itcp_protocols)
-		std::cout << *(it->get_data()->get_login()) << std::endl;
+		it->send_game_stone_put(*stone);
 }
 
 void    Game::change_param_player_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_player_param *param)

@@ -28,6 +28,7 @@ public:
 	bool									mWantConnect;
 	bool									mWantPlay;
 	bool									mHasFailed;
+	bool									mIsConnected;
 	ITCP_protocol<PlayerInfo>::Game_stone	mLastPlay;
 };
 

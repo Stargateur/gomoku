@@ -26,20 +26,23 @@ void start_tcpclient()
 	while (keepRunning == true)
 	{
 		PlayerInfo::getInstance().lock();
-		wantConnect = PlayerInfo::getInstance().mWantConnect;
+		wantConnect = PlayerInfo::getInstance().mWantConnect && !PlayerInfo::getInstance().mHasFailed;
 		PlayerInfo::getInstance().unlock();
 		if (wantConnect == true)
 		{
 			try {
 				Client		client;
+				PlayerInfo::getInstance().lock();
+				PlayerInfo::getInstance().mIsConnected = true;
+				PlayerInfo::getInstance().unlock();
 				client.run();
 			}
 			catch (std::exception &e) {
 				PlayerInfo::getInstance().lock();
 				PlayerInfo::getInstance().mHasFailed = true;
 				PlayerInfo::getInstance().mErrorMessage = "Connection failed !";
-				PlayerInfo::getInstance().unlock();
 				std::cout << "Error de connexion" << std::endl;
+				PlayerInfo::getInstance().unlock();
 			}
 		}
 		else
@@ -72,7 +75,10 @@ int				main(void) try
 	std::thread	tcpclient(start_tcpclient);
 	start_ui();
 
-	// Waiting for all threads
+	// Quitting all threads
+	PlayerInfo::getInstance().lock();
+	PlayerInfo::getInstance().mWantQuit = true;
+	PlayerInfo::getInstance().unlock();
 	tcpclient.join();
 
 	// end of program

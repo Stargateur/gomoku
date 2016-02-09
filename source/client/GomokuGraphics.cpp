@@ -1,10 +1,28 @@
 #include	"GomokuGraphics.hpp"
 #include	"GVOButton.hpp"
 #include	"IGVObject.hpp"
+#include	"PlayerInfo.hpp"
+#include	"GameInfo.hpp"
+
+void		connect(std::string params)
+{
+	if (params.empty() == false)
+	{
+		PlayerInfo::getInstance().lock();
+		PlayerInfo::getInstance().mHost = params;
+		PlayerInfo::getInstance().mWantConnect = true;
+		PlayerInfo::getInstance().unlock();
+	}
+}
 
 GomokuGraphics::GomokuGraphics()
 {
-	mCurrentView = &mGameView;
+	mCurrentView = &mConnectView;
+	if (!mTopTexture.loadFromFile("../Sprite/connexion.png", sf::IntRect(0, 0, 1920, 1080)))
+		std::cerr << "Cant load the texture" << std::endl;
+	GVOButton<std::string> *button = new GVOButton<std::string>(sf::Vector2f(WIN_X / 4.8, 81.6), mTopTexture, sf::Vector2f(0.8, 0.8));
+	button->setAction(connect, "localhost");
+	mConnectView.pushObject(button);
 }
 
 GomokuGraphics::~GomokuGraphics()
@@ -52,6 +70,8 @@ void GomokuGraphics::run()
 				std::cout << "clik" << std::endl;
 			}
 		}
+		// check actual state
+		checkClientUpdates();
 		//clear
 		mWindow->clear();
 		//draw all Sprites
@@ -63,4 +83,25 @@ void GomokuGraphics::run()
 		//aff display
 		mWindow->display();
 	}
+}
+
+void GomokuGraphics::checkClientUpdates(void)
+{
+	PlayerInfo::getInstance().lock();
+	// check connection
+	if (PlayerInfo::getInstance().mWantConnect == true)
+	{
+		if (PlayerInfo::getInstance().mHasFailed)
+		{
+			std::cout << PlayerInfo::getInstance().mErrorMessage << std::endl;
+			PlayerInfo::getInstance().mHasFailed = false;
+			PlayerInfo::getInstance().mWantConnect = false;
+		}
+		else if (PlayerInfo::getInstance().mIsConnected)
+		{
+			PlayerInfo::getInstance().mWantConnect = false;
+			mCurrentView = &mGameView;
+		}
+	}
+	PlayerInfo::getInstance().unlock();
 }
