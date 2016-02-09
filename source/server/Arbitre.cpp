@@ -74,15 +74,16 @@ bool Arbitre::check_stone_libre(int x, int y) const
 	{
 		if (check_coord(x + tab[i][0], y + tab[i][1]) == false)
 			continue;
-		if ((*this)(x + tab[i][0], y + tab[i][1]) != prot::Game_stone::Color::None)
-			continue;
 		if (check_coord(x - tab[i][0], y - tab[i][1]) == false)
-			continue;
-		if ((*this)(x - tab[i][0], y - tab[i][1]) != (*this)(x, y))
 			continue;
 		if (check_coord(x - tab[i][0] * 2, y - tab[i][1] * 2) == false)
 			continue;
-		if ((*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) != prot::Game_stone::notColor((*this)(x, y)))
+		if ((*this)(x - tab[i][0], y - tab[i][1]) != (*this)(x, y))
+			continue;
+		if (((*this)(x + tab[i][0], y + tab[i][1]) != prot::Game_stone::Color::None ||
+				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) != prot::Game_stone::notColor((*this)(x, y)))
+			&& ((*this)(x + tab[i][0], y + tab[i][1]) != prot::Game_stone::notColor((*this)(x, y)) ||
+				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) != prot::Game_stone::Color::None))
 			continue;
 		return (false);
 	}
@@ -104,12 +105,11 @@ void Arbitre::check_victory_five(ITCP_protocol<Client> &itcp_protocol, prot::Gam
 		{
 			if ((*this)(x, y) == stone->color)
 			{
-				int i = 0;
-				int j = 0;
-				int	nb = 0;
 				for (int k = 0; k < 4; k++)
 				{
-					nb = 0;
+					int nb = 0;
+					int i = 0;
+					int j = 0;
 					while (check_coord(x + i, y + j) && (*this)(x + i, y + j) == stone->color)
 					{
 						if (check_stone_libre(x + i, y + j) == false)
@@ -183,6 +183,9 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 		m_is_black_turn = !m_is_black_turn;
 		if (can_capture(stone, capture))
 		{
+#ifdef DEBUG
+			std::cout << "can capture (DEBUG : illo) " << std::endl;
+#endif
 			int i = 0;
 			prot::Game_stone *mess = new prot::Game_stone();
 			mess->color = prot::Game_stone::Color::None;
