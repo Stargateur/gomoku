@@ -43,7 +43,11 @@ public:
         Packet_not_allowed,
         Game_param_not_exist,
         Game_player_param_not_exist,
-        All_player_are_not_ready
+        All_player_are_not_ready,
+        Game_stone_double_three_not_allow,
+        Game_stone_case_not_empty,
+        Game_stone_coordinate_not_valide,
+        Game_stone_not_your_turn,
     };
 
     struct	Game
@@ -123,7 +127,7 @@ public:
         virtual void	game_deleted(ITCP_protocol &itcp_protocol, Game *game) = 0;
         virtual void	start_game(ITCP_protocol &itcp_protocol) = 0;
         virtual void	ready_game(ITCP_protocol &itcp_protocol, bool ready) = 0;
-        virtual void	result_game(ITCP_protocol &itcp_protocol, Game_result *game_result) = 0;
+        virtual void    result_game(ITCP_protocol &itcp_protocol, Game_result *game_result) = 0;
         virtual void	message(ITCP_protocol &itcp_protocol, Message *message) = 0;
     };
 public:
@@ -174,8 +178,6 @@ public:
             return ("Ignore");
         case Unknow:
             return ("Unknow");
-        case Wrong_login:
-            return ("Wrong_login");
         case Disconnected:
             return ("Disconnected");
         case Not_connected:
@@ -206,6 +208,14 @@ public:
             return ("Game_player_param_not_exist");
         case All_player_are_not_ready:
             return ("All_player_are_not_ready");
+        case Game_stone_double_three_not_allow:
+            return ("Game_stone_double_three_not_allow");
+        case Game_stone_case_not_empty:
+            return ("Game_stone_case_not_empty");
+        case Game_stone_coordinate_not_valide:
+            return ("Game_stone_coordinate_not_valide");
+        case Game_stone_not_your_turn:
+            return ("Game_stone_not_your_turn");
         };
         throw std::logic_error("Unknown error code");
     }

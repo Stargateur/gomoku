@@ -123,6 +123,7 @@ lol(void) :
 	{
 		color = "black";
 		m_itcp_protocol->send_create_game(game);
+		m_itcp_protocol->send_create_game(game);
 	}
 	else
 	{
@@ -189,7 +190,7 @@ void	run(void)
 
 void	result(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Error error)
 {
-    std::cout << error << std::endl;
+    std::cout << ITCP_protocol<ITCP_client>::get_str_error(error) << std::endl;
 }
 
 void	connect(ITCP_protocol<ITCP_client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)

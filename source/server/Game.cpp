@@ -47,12 +47,43 @@ void    Game::pre_run(ISelect &iselect)
         if (itcp_protocol->want_send())
             iselect.want_write(*client.get_itcp_client());
     }
+
+    for (auto disconnect : m_disconnecteds)
+    {
+        Client &client = *disconnect->get_data();
+
+        if (disconnect->want_send())
+            iselect.want_write(*client.get_itcp_client());
+    }
 }
 
 void    Game::run(ISelect &iselect, ITime &)
 {
-    if (m_itcp_protocols.size() == 0)
+    if (m_itcp_protocols.size() == 0 && m_disconnecteds.size() == 0)
         throw AGame_exception();
+    auto disconnect = m_disconnecteds.begin();
+    while (disconnect != m_disconnecteds.end())
+    {
+        auto itcp_protocol = *disconnect;
+        Client &client = *itcp_protocol->get_data();
+        try
+        {
+            if (iselect.can_write(*client.get_itcp_client()))
+            {
+                iselect.reset_write(*client.get_itcp_client());
+                itcp_protocol->send(*client.get_itcp_client());
+            }
+            else
+                throw AGame_exception();
+            disconnect++;
+        }
+        catch (std::exception &e)
+        {
+            std::cerr << e.what() << std::endl;
+            disconnect = m_disconnecteds.erase(disconnect);
+            delete itcp_protocol;
+        }
+    }
     auto it = m_itcp_protocols.begin();
     while (it != m_itcp_protocols.end())
     {
@@ -87,7 +118,7 @@ void    Game::run(ISelect &iselect, ITime &)
         {
             std::cerr << e.what() << std::endl;
             delete_player(it);
-            delete itcp_protocol;
+            m_disconnecteds.push_back(itcp_protocol);
         }
     }
 }
