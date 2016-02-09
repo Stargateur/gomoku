@@ -132,10 +132,14 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 		{ -1, -1, -1, -1 }
 	};
 
+#ifdef DEBUG
 	std::cout << "put_stone (DEBUG : illo)" << std::endl;
+#endif
 	if (can_put_stone(stone))
 	{
+#ifdef DEBUG
 		std::cout << "can put_stone (DEBUG : illo)" << std::endl;
+#endif
 		m_callback.put_stone_game(itcp_protocol, stone);
 		(*this)(stone->x, stone->y) = stone->color;
 		m_is_black_turn = !m_is_black_turn;
@@ -267,17 +271,47 @@ bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
 bool Arbitre::can_put_stone(ITCP_protocol<Client>::Game_stone * stone) const
 {
 	if (m_is_black_turn && stone->color != prot::Game_stone::Color::Black)
+	{
+#ifdef DEBUG
+		std::cout << "can not put_stone not your turn (DEBUG : illo)" << std::endl;
+#endif
 		return false;
+	}
 	if (!m_is_black_turn && stone->color != prot::Game_stone::Color::White)
+	{
+#ifdef DEBUG
+		std::cout << "can not put_stone not your turn (DEBUG : illo)" << std::endl;
+#endif
 		return false;
+	}
 	if (stone->x >= 19)
+	{
+#ifdef DEBUG
+		std::cout << "can not put_stone out of range (DEBUG : illo)" << std::endl;
+#endif
 		return false;
+	}
 	if (stone->y >= 19)
+	{
+#ifdef DEBUG
+		std::cout << "can not put_stone out of range (DEBUG : illo)" << std::endl;
+#endif
 		return false;
+	}
 	if ((*this)(stone->x, stone->y) != prot::Game_stone::Color::None)
+	{
+#ifdef DEBUG
+		std::cout << "can not put_stone case non libre (DEBUG : illo)" << std::endl;
+#endif
 		return (false);
+	}
 	if (is_double_three(stone))
+	{
+#ifdef DEBUG
+		std::cout << "can not put_stone double three (DEBUG : illo)" << std::endl;
+#endif
 		return false;
+	}
 	return true;
 }
 

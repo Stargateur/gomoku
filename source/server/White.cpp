@@ -27,12 +27,11 @@ bool	White::is_ready(void) const
 
 void	White::put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
 {
-    if (stone->color != ITCP_protocol<Client>::Game_stone::Color::White)
-        throw std::logic_error("place que du white");
+    stone->color = ITCP_protocol<Client>::Game_stone::Color::White;
     m_callback.put_stone_game(itcp_protocol, stone);
 }
 
-void	White::ready_game(ITCP_protocol<Client> &itcp_protocol, bool ready)
+void	White::ready_game(ITCP_protocol<Client> &, bool ready)
 {
     m_is_ready = ready;
 }
