@@ -31,6 +31,9 @@ void start_tcpclient()
 		PlayerInfo::getInstance().unlock();
 		if (wantConnect == true)
 		{
+			PlayerInfo::getInstance().lock();
+			PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::DOING;
+			PlayerInfo::getInstance().unlock();
 			try {
 				Client		client;
 				PlayerInfo::getInstance().lock();
