@@ -179,8 +179,6 @@ void	Client::message(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_pr
 
 void Client::checkUserInputs(void)
 {
-	bool	tmp;
-
 	PlayerInfo::getInstance().lock();
 	std::cout << "checking user" << std::endl;
 	if (PlayerInfo::getInstance().mWantDisconnect || PlayerInfo::getInstance().mWantQuit)

@@ -17,6 +17,13 @@ void		connect(std::string params)
 
 GomokuGraphics::GomokuGraphics()
 {
+	for (size_t i = 0; i < 19; i++)
+	{
+		for (size_t j = 0; j < 19; j++)
+		{
+			mStones[i][j] = nullptr;
+		}
+	}
 }
 
 GomokuGraphics::~GomokuGraphics()
