@@ -163,7 +163,7 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 	};
 
 #ifdef DEBUG
-	std::cout << "put_stone (DEBUG : illo) " <<  std::endl;
+	std::cout << "put_stone (DEBUG : illo) " << std::endl;
 #endif
 	if (can_put_stone(stone))
 	{
@@ -585,9 +585,10 @@ bool Arbitre::check_horizontal_three(int coord[4], ITCP_protocol<Client>::Game_s
 	int x;
 	int tmp[4] = { Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size };
 
-	x = coord[0];
-	while (x <= coord[2])
+	x = coord[2];
+	while (x <= coord[0])
 	{
+		std::cout << x << " " << stone->y << std::endl;
 		if ((*this)(x, coord[1]) == stone->color || x == stone->x)
 		{
 			if (is_vertical_three(tmp, stone))
@@ -607,8 +608,8 @@ bool Arbitre::check_vertical_three(int coord[4], ITCP_protocol<Client>::Game_sto
 	int y;
 	int tmp[4] = { Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size };
 
-	y = coord[1];
-	while (y <= coord[3])
+	y = coord[3];
+	while (y <= coord[1])
 	{
 		if ((*this)(coord[0], y) == stone->color || y == stone->y)
 		{
@@ -630,9 +631,9 @@ bool Arbitre::check_diag_iso_three(int coord[4], ITCP_protocol<Client>::Game_sto
 	int y;
 	int tmp[4] = { Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size };
 
-	x = coord[1];
-	y = coord[1];
-	while (y <= coord[3])
+	x = coord[2];
+	y = coord[3];
+	while (y <= coord[1])
 	{
 		if ((*this)(x, y) == stone->color || y == stone->y)
 		{
@@ -655,9 +656,9 @@ bool Arbitre::check_diag_no_iso_three(int coord[4], ITCP_protocol<Client>::Game_
 	int y;
 	int tmp[4] = { Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size };
 
-	x = coord[1];
-	y = coord[1];
-	while (y <= coord[3])
+	x = coord[2];
+	y = coord[3];
+	while (y <= coord[1])
 	{
 		if ((*this)(x, y) == stone->color || y == stone->y)
 		{
@@ -679,13 +680,33 @@ bool Arbitre::is_double_three(ITCP_protocol<Client>::Game_stone * stone) const
 	int coord[4] = { Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size };
 
 	if (is_horizontal_three(coord, stone))
+	{
+#ifdef DEBUG
+		std::cout << "Three horizontal (DEBUG : illo)" << std::endl;
+#endif
 		return check_horizontal_three(coord, stone);
+	}
 	if (is_vertical_three(coord, stone))
+	{
+#ifdef DEBUG
+		std::cout << "Three vertical (DEBUG : illo)" << std::endl;
+#endif
 		return check_vertical_three(coord, stone);
+	}
 	if (is_diag_iso_three(coord, stone))
+	{
+#ifdef DEBUG
+		std::cout << "Three diag iso (DEBUG : illo)" << std::endl;
+#endif
 		return check_diag_iso_three(coord, stone);
+	}
 	if (is_diag_no_iso_three(coord, stone))
+	{
+#ifdef DEBUG
+		std::cout << "Three diag no iso (DEBUG : illo)" << std::endl;
+#endif
 		return check_diag_no_iso_three(coord, stone);
+	}
 	return false;
 }
 
