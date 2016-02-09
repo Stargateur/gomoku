@@ -9,8 +9,9 @@ void		connect(std::string params)
 	if (params.empty() == false)
 	{
 		PlayerInfo::getInstance().lock();
+		std::cout << "Asking connection" << std::endl;
 		PlayerInfo::getInstance().mHost = params;
-		PlayerInfo::getInstance().mWantConnect = true;
+		PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::ASK;
 		PlayerInfo::getInstance().unlock();
 	}
 }
@@ -55,7 +56,7 @@ void		click_plateau(sf::Vector2f *param)
 						PlayerInfo::getInstance().mLastPlay.color = PlayerInfo::getInstance().mLastPlay.Black;
 					else
 						PlayerInfo::getInstance().mLastPlay.color = PlayerInfo::getInstance().mLastPlay.White;
-					PlayerInfo::getInstance().mWantPlay = true;
+					PlayerInfo::getInstance().mWantPlay = PlayerInfo::STATE::ASK;
 					PlayerInfo::getInstance().unlock();
 				}
 			}
@@ -170,24 +171,15 @@ void GomokuGraphics::checkClientUpdates(void)
 {
 	PlayerInfo::getInstance().lock();
 	// check connection
-	if (PlayerInfo::getInstance().mWantConnect == true)
+	if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::DONE)
 	{
-		if (PlayerInfo::getInstance().mHasFailed)
-		{
-			std::cout << PlayerInfo::getInstance().mErrorMessage << std::endl;
-			PlayerInfo::getInstance().mHasFailed = false;
-			PlayerInfo::getInstance().mWantConnect = false;
-		}
-		else if (PlayerInfo::getInstance().mIsConnected)
-		{
-			PlayerInfo::getInstance().mWantConnect = false;
-			mCurrentView = &mGameView;
-		}
+		PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::NOTHING;
+		mCurrentView = &mGameView;
 	}
-	else if (PlayerInfo::getInstance().mHasFailed && !PlayerInfo::getInstance().mIsConnected)
+	else if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::FAILED)
 	{
+		PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::NOTHING;
 		std::cout << PlayerInfo::getInstance().mErrorMessage << std::endl;
-		PlayerInfo::getInstance().mHasFailed = false;
 		mCurrentView = &mConnectView;
 	}
 	PlayerInfo::getInstance().unlock();

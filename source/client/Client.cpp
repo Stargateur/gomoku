@@ -64,6 +64,9 @@ void	Client::run(void)
             m_itcp_protocol->send(*m_itcp_protocol->get_data());
 		}
 		checkUserInputs();
+		PlayerInfo::getInstance().lock();
+		g_keep_running = PlayerInfo::getInstance().mDisconnect == PlayerInfo::STATE::DONE;
+		PlayerInfo::getInstance().unlock();
     }
 }
 
@@ -74,12 +77,16 @@ void	Client::result(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_pro
 
 void	Client::connect(ITCP_protocol<ITCP_client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)
 {
-	m_itcp_protocol->send_disconnect();
+	PlayerInfo::getInstance().lock();
+	PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
+	PlayerInfo::getInstance().unlock();
 }
 
 void	Client::disconnect(ITCP_protocol<ITCP_client> &itcp_protocol)
 {
-	m_itcp_protocol->send_disconnect();
+	PlayerInfo::getInstance().lock();
+	PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
+	PlayerInfo::getInstance().unlock();
 }
 
 void	Client::ping(ITCP_protocol<ITCP_client> &itcp_protocol)
@@ -170,7 +177,9 @@ void	Client::ready_game(ITCP_protocol<ITCP_client> &itcp_protocol, bool ready)
 
 void	Client::result_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_result *game_result)
 {
-	m_itcp_protocol->send_disconnect();
+	PlayerInfo::getInstance().lock();
+	PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
+	PlayerInfo::getInstance().unlock();
 }
 
 void	Client::message(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Message *message)
@@ -181,12 +190,21 @@ void Client::checkUserInputs(void)
 {
 	PlayerInfo::getInstance().lock();
 	std::cout << "checking user" << std::endl;
-	if (PlayerInfo::getInstance().mWantDisconnect || PlayerInfo::getInstance().mWantQuit)
+	if (PlayerInfo::getInstance().mDisconnect == PlayerInfo::STATE::ASK)
+	{
 		m_itcp_protocol->send_disconnect();
-	if (PlayerInfo::getInstance().mWantPlay)
+		PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::DONE;
+	}
+	else if (PlayerInfo::getInstance().mQuit == PlayerInfo::STATE::ASK)
+	{
+		m_itcp_protocol->send_disconnect();
+		PlayerInfo::getInstance().mQuit = PlayerInfo::STATE::DONE;
+		PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::DONE;
+	}
+	if (PlayerInfo::getInstance().mWantPlay == PlayerInfo::STATE::ASK)
 	{
 		m_itcp_protocol->send_put_stone_game(PlayerInfo::getInstance().mLastPlay);
-		PlayerInfo::getInstance().mWantPlay = false;
+		PlayerInfo::getInstance().mWantPlay = PlayerInfo::STATE::DONE;
 	}
 	PlayerInfo::getInstance().unlock();
 }

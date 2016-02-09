@@ -10,6 +10,16 @@
 
 class PlayerInfo
 {
+public:
+	enum STATE
+	{
+		NOTHING,
+		ASK,
+		DOING,
+		DONE,
+		FAILED
+	};
+
 private:
 	PlayerInfo();
 	~PlayerInfo();
@@ -25,12 +35,10 @@ public:
 	std::string								mColor;
 	std::string								mHost;
 	std::string								mErrorMessage;
-	bool									mWantQuit;
-	bool									mWantDisconnect;
-	bool									mWantConnect;
-	bool									mWantPlay;
-	bool									mHasFailed;
-	bool									mIsConnected;
+	STATE									mQuit;
+	STATE									mDisconnect;
+	STATE									mConnect;
+	STATE									mWantPlay;
 	ITCP_protocol<ITCP_client>::Game_stone	mLastPlay;
 };
 

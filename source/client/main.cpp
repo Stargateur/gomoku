@@ -26,21 +26,21 @@ void start_tcpclient()
 	while (keepRunning == true)
 	{
 		PlayerInfo::getInstance().lock();
-		wantConnect = PlayerInfo::getInstance().mWantConnect && !PlayerInfo::getInstance().mHasFailed;
+		wantConnect = PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::ASK;
+		std::cout << "User want connect: " << wantConnect << std::endl;
 		PlayerInfo::getInstance().unlock();
 		if (wantConnect == true)
 		{
 			try {
 				Client		client;
 				PlayerInfo::getInstance().lock();
-				PlayerInfo::getInstance().mIsConnected = true;
+				PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::DONE;
 				PlayerInfo::getInstance().unlock();
 				client.run();
 			}
 			catch (std::exception &e) {
 				PlayerInfo::getInstance().lock();
-				PlayerInfo::getInstance().mIsConnected = false;
-				PlayerInfo::getInstance().mHasFailed = true;
+				PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::FAILED;
 				PlayerInfo::getInstance().mErrorMessage = "Connection error !";
 				std::cout << "Error de connexion" << std::endl;
 				PlayerInfo::getInstance().unlock();
@@ -53,7 +53,7 @@ void start_tcpclient()
 		}
 
 		PlayerInfo::getInstance().lock();
-		keepRunning = !PlayerInfo::getInstance().mWantQuit;
+		keepRunning = !PlayerInfo::getInstance().mQuit == PlayerInfo::STATE::ASK;
 		PlayerInfo::getInstance().unlock();
 	}
 }
@@ -78,7 +78,7 @@ int				main(void) try
 
 	// Quitting all threads
 	PlayerInfo::getInstance().lock();
-	PlayerInfo::getInstance().mWantQuit = true;
+	PlayerInfo::getInstance().mQuit = PlayerInfo::STATE::ASK;
 	PlayerInfo::getInstance().unlock();
 	tcpclient.join();
 
