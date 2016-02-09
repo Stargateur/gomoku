@@ -184,7 +184,10 @@ void	Server::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std:
     {
         auto client = it_itcp_protocol->get_data();
 
+        std::cout << *login << "je test pour ce login" << std::endl;
         if (client->get_login() != nullptr)
+        {
+            std::cout << "la ici pd " << *client->get_login();
             if (*client->get_login() == *login)
             {
                 delete login;
@@ -192,6 +195,7 @@ void	Server::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std:
                 itcp_protocol.send_result(ITCP_protocol<Client>::Error::Login_already_use);
                 throw std::logic_error("this login is already used");
             }
+        }
     }
     itcp_protocol.get_data()->set_login(login);
     for (auto game : m_games)
