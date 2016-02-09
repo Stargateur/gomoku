@@ -78,11 +78,11 @@ bool Arbitre::check_stone_libre(int x, int y) const
 			continue;
 		if (check_coord(x - tab[i][0], y - tab[i][1]) == false)
 			continue;
-		if ((*this)(x + tab[i][0], y + tab[i][1]) != (*this)(x, y))
+		if ((*this)(x - tab[i][0], y - tab[i][1]) != (*this)(x, y))
 			continue;
 		if (check_coord(x - tab[i][0] * 2, y - tab[i][1] * 2) == false)
 			continue;
-		if ((*this)(x + tab[i][0], y + tab[i][1]) != prot::Game_stone::notColor((*this)(x, y)))
+		if ((*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) != prot::Game_stone::notColor((*this)(x, y)))
 			continue;
 		return (false);
 	}
@@ -98,36 +98,44 @@ void Arbitre::check_victory_five(ITCP_protocol<Client> &itcp_protocol, prot::Gam
 		{ 1, 1 },
 		{ 1, -1 }
 	};
-	int i = 0;
-	int j = 0;
-	int	nb = 0;
-	int x = static_cast<int>(stone->x);
-	int y = static_cast<int>(stone->y);
-	for (int k = 0; k < 4; k++)
+	for (int x = 0; x < Arbitre::board_size; x++)
 	{
-		while (check_coord(x + i, y + j) && (*this)(x + i, y + j) == stone->color)
+		for (int y = 0; y < Arbitre::board_size; y++)
 		{
-			if (check_stone_libre(x + i, y + j) == false)
-				break;
-			i += tab[k][0];
-			j += tab[k][1];
-			nb++;
-		}
-		i = tab[k][0];
-		j = tab[k][1];
-		while (check_coord(x - i, y - j) && (*this)(x - i, y - j) == stone->color)
-		{
-			if (check_stone_libre(x - i, y - j) == false)
-				break;
-			i += tab[k][0];
-			j += tab[k][1];
-			nb++;
-		}
-		if (nb >= 5)
-		{
-			prot::Game_result gr;
-			gr.winner = new std::string("Fin de la game");
-			m_callback.result_game(itcp_protocol, &gr);
+			if ((*this)(x, y) == stone->color)
+			{
+				int i = 0;
+				int j = 0;
+				int	nb = 0;
+				for (int k = 0; k < 4; k++)
+				{
+					nb = 0;
+					while (check_coord(x + i, y + j) && (*this)(x + i, y + j) == stone->color)
+					{
+						if (check_stone_libre(x + i, y + j) == false)
+							break;
+						i += tab[k][0];
+						j += tab[k][1];
+						nb++;
+					}
+					i = tab[k][0];
+					j = tab[k][1];
+					while (check_coord(x - i, y - j) && (*this)(x - i, y - j) == stone->color)
+					{
+						if (check_stone_libre(x - i, y - j) == false)
+							break;
+						i += tab[k][0];
+						j += tab[k][1];
+						nb++;
+					}
+					if (nb >= 5)
+					{
+						prot::Game_result gr;
+						gr.winner = new std::string("Fin de la game");
+						m_callback.result_game(itcp_protocol, &gr);
+					}
+				}
+			}
 		}
 	}
 }
