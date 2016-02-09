@@ -15,7 +15,8 @@ void GView::pushObject(IGVObject * object)
 
 void GView::removeObject(IGVObject * object)
 {
-	mObjects.remove(object);
+	if (object != nullptr)
+		mObjects.remove(object);
 }
 
 #include <iostream>

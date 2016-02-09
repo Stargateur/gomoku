@@ -11,7 +11,7 @@ class GVOButton : public IGVObject
 {
 public:
 	GVOButton(sf::Vector2f pos, sf::Texture texture, sf::Vector2f scale) : mPos(pos), mTexture(texture), mHoverTexture(texture),
-		mScale(scale), mHoverScale(scale)
+		mScale(scale), mHoverScale(scale), mCallback(nullptr)
 	{
 		mMainSprite.setTexture(mTexture);
 		mMainSprite.setPosition(mPos);
@@ -50,7 +50,7 @@ public:
 		if (pos.x >= mCurView->getGlobalBounds().left && pos.x <= mCurView->getGlobalBounds().left + mCurView->getGlobalBounds().width &&
 			pos.y >= mCurView->getGlobalBounds().top && pos.y <= mCurView->getGlobalBounds().top + mCurView->getGlobalBounds().height)
 		{
-			if (mCallback != NULL)
+			if (mCallback != nullptr)
 				(*mCallback)(mCallbackParam);
 		}
 	}
