@@ -17,6 +17,7 @@ public:
 	~GomokuGraphics();
 	void init();
 	void run();
+	void affStone();
 
 private:
 	void	checkClientUpdates(void);
@@ -27,9 +28,12 @@ private:
 	sf::Sprite			mBackground;
 	sf::Texture			mTopTexture;
 	sf::Sprite			mTopMenu;
+	sf::Texture			mBlackTexture;
+	sf::Texture			mWhiteTexture;
 	GView				*mCurrentView;
 	GView				mGameView;
 	GView				mConnectView;
+	IGVObject			*mStones[19][19];
 };
 
 #endif // !GOMOKU_GRAPHICS_HPP_

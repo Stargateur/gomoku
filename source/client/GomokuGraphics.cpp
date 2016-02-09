@@ -68,6 +68,10 @@ void GomokuGraphics::init()
 	{std::cerr << "Cant load the texture" << std::endl;}
 	if (!mTopTexture.loadFromFile("../Sprite/connexion.png", sf::IntRect(0, 0, 1920, 1080)))
 	{std::cerr << "Cant load the texture" << std::endl;}
+	if (!mBlackTexture.loadFromFile("../Sprite/black.png", sf::IntRect(0, 0, 1920, 1080)))
+	{std::cerr << "Cant load the texture" << std::endl;}
+	if (!mWhiteTexture.loadFromFile("../Sprite/white.png", sf::IntRect(0, 0, 1920, 1080)))
+	{std::cerr << "Cant load the texture" << std::endl;}
 	//set sprites
 	//Background
 	GVOButton<sf::Vector2f *> *button = new GVOButton<sf::Vector2f *>(sf::Vector2f(WIN_X / 4.8, 81.6), mTextureBackground, sf::Vector2f(0.8, 0.8));
@@ -100,10 +104,37 @@ void GomokuGraphics::run()
 		for (sf::Sprite *aff : mylist)
 		{
 			mWindow->draw(*aff);
+			affStone();
 		}
 		//aff display
 		mWindow->display();
 	}
+}
+
+void GomokuGraphics::affStone()
+{
+	GameInfo::getInstance().lock(); 
+	for (size_t x = 0; x < 19; x++)
+	{
+		for (size_t y = 0; y < 19; y++)
+		{
+			if (GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::Black ||
+				GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::White)
+			{
+				if (mStones[x][y] != nullptr)
+				{
+					GVOButton<int> *button = nullptr;
+					if (GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::Black)
+						button = new GVOButton<int>(sf::Vector2f(242 + x * 34, 98 + y * 34), mBlackTexture, sf::Vector2f(0.8, 0.8));
+					if (GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::White)
+						button = new GVOButton<int>(sf::Vector2f(242 + x * 34, 98 + y * 34), mWhiteTexture, sf::Vector2f(0.8, 0.8));
+					mStones[x][y] = button;
+					mGameView.pushObject(button);
+				}
+			}
+		}
+	}
+	GameInfo::getInstance().unlock();
 }
 
 void GomokuGraphics::checkClientUpdates(void)
