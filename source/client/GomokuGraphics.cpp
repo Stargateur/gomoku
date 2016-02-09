@@ -75,13 +75,13 @@ void GomokuGraphics::init()
 {
 	mWindow = new sf::RenderWindow(sf::VideoMode(WIN_X, WIN_Y, 32), "Hikaru no GO");
 	//charge texture
-	if (!mTextureBackground.loadFromFile("../Sprite/board.png", sf::IntRect(0, 0, 798, 798)))
+	if (!mTextureBackground.loadFromFile("Sprite/board.png", sf::IntRect(0, 0, 798, 798)))
 	{std::cerr << "Cant load the texture" << std::endl;}
-	if (!mTopTexture.loadFromFile("../Sprite/connexion.png", sf::IntRect(0, 0, 1920, 1080)))
+	if (!mTopTexture.loadFromFile("Sprite/connexion.png", sf::IntRect(0, 0, 1920, 1080)))
 	{std::cerr << "Cant load the texture" << std::endl;}
-	if (!mBlackTexture.loadFromFile("../Sprite/black.png", sf::IntRect(0, 0, 1920, 1080)))
+	if (!mBlackTexture.loadFromFile("Sprite/black.png", sf::IntRect(0, 0, 1920, 1080)))
 	{std::cerr << "Cant load the texture" << std::endl;}
-	if (!mWhiteTexture.loadFromFile("../Sprite/white.png", sf::IntRect(0, 0, 1920, 1080)))
+	if (!mWhiteTexture.loadFromFile("Sprite/white.png", sf::IntRect(0, 0, 1920, 1080)))
 	{std::cerr << "Cant load the texture" << std::endl;}
 	//set sprites
 	mCurrentView = &mConnectView;
