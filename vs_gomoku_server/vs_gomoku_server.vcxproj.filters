@@ -22,6 +22,7 @@
     <ClCompile Include="..\source\server\White.cpp" />
     <ClCompile Include="..\source\server\Arbitre.cpp" />
     <ClCompile Include="..\source\server\Black.cpp" />
+    <ClCompile Include="..\source\server\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iprotocol\ATCP_packet.hpp" />
@@ -48,5 +49,6 @@
     <ClInclude Include="..\include\iprotocol\ACallback.hpp" />
     <ClInclude Include="..\include\server\Arbitre.hpp" />
     <ClInclude Include="..\include\server\Black.hpp" />
+    <ClInclude Include="..\include\server\Utils.hpp" />
   </ItemGroup>
 </Project>

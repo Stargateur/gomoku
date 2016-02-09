@@ -150,13 +150,13 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 			mess->x = capture[i][0];
 			mess->y = capture[i][1];
 			m_callback.put_stone_game(itcp_protocol, mess);
-			(*this)(stone->x, stone->y) = prot::Game_stone::Color::None;
+			(*this)(capture[i][0], capture[i][1]) = prot::Game_stone::Color::None;
 			mess = new prot::Game_stone();
 			mess->color = prot::Game_stone::Color::None;
 			mess->x = capture[i][2];
 			mess->y = capture[i][3];
 			m_callback.put_stone_game(itcp_protocol, mess);
-			(*this)(stone->x, stone->y) = prot::Game_stone::Color::None;
+			(*this)(capture[i][2], capture[i][3]) = prot::Game_stone::Color::None;
 			if (stone->color == prot::Game_stone::Color::Black)
 				m_white_loose += 2;
 			else
@@ -173,7 +173,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
 	int y = stone->y;
 	int i = 0;
 
-	if (x - 3 > -1 && (*this)(x - 3, y) == stone->color)
+	if (check_coord(x - 3, y) && (*this)(x - 3, y) == stone->color)
 	{
 		if ((*this)(x - 2, y) == prot::Game_stone::notColor(stone->color) && (*this)(x - 1, y) == prot::Game_stone::notColor(stone->color))
 		{
@@ -184,7 +184,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
 			i++;
 		}
 	}
-	if (x + 3 < Arbitre::board_size && (*this)(x + 3, y) == stone->color)
+	if (check_coord(x - 3, y) && (*this)(x + 3, y) == stone->color)
 	{
 		if ((*this)(x + 2, y) == prot::Game_stone::notColor(stone->color) && (*this)(x + 1, y) == prot::Game_stone::notColor(stone->color))
 		{
@@ -195,7 +195,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
 			i++;
 		}
 	}
-	if (y - 3 > -1 && (*this)(x, y - 3) == stone->color)
+	if (check_coord(x, y - 3) && (*this)(x, y - 3) == stone->color)
 	{
 		if ((*this)(x, y - 2) == prot::Game_stone::notColor(stone->color) && (*this)(x, y - 1) == prot::Game_stone::notColor(stone->color))
 		{
@@ -206,7 +206,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
 			i++;
 		}
 	}
-	if (y + 3 < Arbitre::board_size && (*this)(x, y + 3) == stone->color)
+	if (check_coord(x, y + 3) && (*this)(x, y + 3) == stone->color)
 	{
 		if ((*this)(x, y + 2) == prot::Game_stone::notColor(stone->color) && (*this)(x, y + 1) == prot::Game_stone::notColor(stone->color))
 		{
@@ -217,7 +217,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
 			i++;
 		}
 	}
-	if (x - 3 > -1 && y - 3 > -1 && (*this)(x - 3, y - 3) == stone->color)
+	if (check_coord(x - 3, y - 3) && (*this)(x - 3, y - 3) == stone->color)
 	{
 		if ((*this)(x - 2, y - 2) == prot::Game_stone::notColor(stone->color) && (*this)(x - 1, y - 1) == prot::Game_stone::notColor(stone->color))
 		{
@@ -228,7 +228,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
 			i++;
 		}
 	}
-	if (x + 3 < Arbitre::board_size && y + 3 < Arbitre::board_size && (*this)(x + 3, y + 3) == stone->color)
+	if (check_coord(x + 3, y + 3) && (*this)(x + 3, y + 3) == stone->color)
 	{
 		if ((*this)(x + 2, y + 2) == prot::Game_stone::notColor(stone->color) && (*this)(x + 1, y + 1) == prot::Game_stone::notColor(stone->color))
 		{
@@ -239,7 +239,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
 			i++;
 		}
 	}
-	if (x + 3 > -1 && y - 3 > -1 && (*this)(x + 3, y - 3) == stone->color)
+	if (check_coord(x + 3, y - 3) && (*this)(x + 3, y - 3) == stone->color)
 	{
 		if ((*this)(x + 2, y - 2) == prot::Game_stone::notColor(stone->color) && (*this)(x + 1, y - 1) == prot::Game_stone::notColor(stone->color))
 		{
@@ -250,7 +250,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const
 			i++;
 		}
 	}
-	if (x - 3 < Arbitre::board_size && y + 3 < Arbitre::board_size && (*this)(x - 3, y + 3) == stone->color)
+	if (check_coord(x - 3, y + 3) && (*this)(x - 3, y + 3) == stone->color)
 	{
 		if ((*this)(x - 2, y + 2) == prot::Game_stone::notColor(stone->color) && (*this)(x - 1, y + 1) == prot::Game_stone::notColor(stone->color))
 		{

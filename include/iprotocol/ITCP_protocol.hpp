@@ -29,7 +29,21 @@ public:
         None = 0,
         Ignore,
         Unknow,
-        Wrong_login
+        Disconnected,
+        Not_connected,
+        Timeout,
+        Wrong_login,
+        Wrong_password,
+        Wrong_version,
+        Login_already_use,
+        Game_already_exist,
+        Game_not_exist,
+        Already_in_game,
+        Not_in_game,
+        Packet_not_allowed,
+        Game_param_not_exist,
+        Game_player_param_not_exist,
+        All_player_are_not_ready
     };
 
     struct	Game
@@ -162,6 +176,36 @@ public:
             return ("Unknow");
         case Wrong_login:
             return ("Wrong_login");
+        case Disconnected:
+            return ("Disconnected");
+        case Not_connected:
+            return ("Not_connected");
+        case Timeout:
+            return ("Timeout");
+        case Wrong_login:
+            return ("Wrong_login");
+        case Wrong_password:
+            return ("Wrong password");
+        case Wrong_version:
+            return ("Wrong_version");
+        case Login_already_use:
+            return ("Login_already_use");
+        case Game_already_exist:
+            return ("Game_already_exist");
+        case Game_not_exist:
+            return ("Game_not_exist");
+        case Already_in_game:
+            return ("Already_in_game");
+        case Not_in_game:
+            return ("Not_in_game");
+        case Packet_not_allowed:
+            return ("Packet_not_allowed");
+        case Game_param_not_exist:
+            return ("Game_param_not_exist");
+        case Game_player_param_not_exist:
+            return ("Game_player_param_not_exist");
+        case All_player_are_not_ready:
+            return ("All_player_are_not_ready");
         };
         throw std::logic_error("Unknown error code");
     }
