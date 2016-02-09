@@ -60,6 +60,7 @@ void		change_color(std::string color)
 {
 	PlayerInfo::getInstance().lock();
 	PlayerInfo::getInstance().mColor = color;
+	std::cout << "You are now " << color << std::endl;
 	PlayerInfo::getInstance().unlock();
 }
 sf::Vector2f souris;
