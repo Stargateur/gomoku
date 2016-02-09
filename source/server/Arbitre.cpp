@@ -30,6 +30,24 @@ Arbitre::Arbitre(const Arbitre & copy) :
 Arbitre::~Arbitre(void)
 {}
 
+void Arbitre::dump(void) const
+{
+	for (int i = 0; i < Arbitre::board_size; i++)
+	{
+		for (int j = 0; j < Arbitre::board_size; j++)
+		{
+			prot::Game_stone::Color col = (*this)(i, j);
+			if (col == prot::Game_stone::Color::None)
+				std::cout << " ";
+			if (col == prot::Game_stone::Color::Black)
+				std::cout << "o";
+			if (col == prot::Game_stone::Color::White)
+				std::cout << "x";
+		}
+		std::cout << std::endl;
+	}
+}
+
 bool Arbitre::check_coord(int x, int y) const
 {
 	if (x < 0 || x >= Arbitre::board_size)
@@ -71,7 +89,7 @@ bool Arbitre::check_stone_libre(int x, int y) const
 	return (true);
 }
 
-void Arbitre::check_vertical_victory(prot::Game_stone *stone) const
+void Arbitre::check_vertical_victory(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone *stone)
 {
 	int tab[4][2] =
 	{
@@ -106,17 +124,29 @@ void Arbitre::check_vertical_victory(prot::Game_stone *stone) const
 			nb++;
 		}
 		if (nb >= 5)
-			throw std::logic_error("La game est finie.");
+		{
+			prot::Game_result *gr = new prot::Game_result();
+			gr->winner = new std::string("Fin de la game");
+			m_callback.result_game(itcp_protocol, gr);
+		}
 	}
 }
 
-void Arbitre::check_victory(prot::Game_stone * stone) const
+void Arbitre::check_victory(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
 {
 	if (m_black_loose >= 10)
-		throw std::logic_error("La game est finie. Blanc a gagne");
+	{
+		prot::Game_result *gr = new prot::Game_result();
+		gr->winner = new std::string("Fin de la game");
+		m_callback.result_game(itcp_protocol, gr);
+	}
 	if (m_white_loose >= 10)
-		throw std::logic_error("La game est finie. Noir a gagne");
-	check_vertical_victory(stone);
+	{
+		prot::Game_result *gr = new prot::Game_result();
+		gr->winner = new std::string("Fin de la game");
+		m_callback.result_game(itcp_protocol, gr);
+	}
+	check_vertical_victory(itcp_protocol, stone);
 }
 
 void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
@@ -143,32 +173,35 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 		m_callback.put_stone_game(itcp_protocol, stone);
 		(*this)(stone->x, stone->y) = stone->color;
 		m_is_black_turn = !m_is_black_turn;
-	}
-	if (can_capture(stone, capture))
-	{
-		int i = 0;
-		while (capture[i][0] != -1)
+		if (can_capture(stone, capture))
 		{
-			prot::Game_stone *mess = new prot::Game_stone();
-			mess->color = prot::Game_stone::Color::None;
-			mess->x = capture[i][0];
-			mess->y = capture[i][1];
-			m_callback.put_stone_game(itcp_protocol, mess);
-			(*this)(capture[i][0], capture[i][1]) = prot::Game_stone::Color::None;
-			mess = new prot::Game_stone();
-			mess->color = prot::Game_stone::Color::None;
-			mess->x = capture[i][2];
-			mess->y = capture[i][3];
-			m_callback.put_stone_game(itcp_protocol, mess);
-			(*this)(capture[i][2], capture[i][3]) = prot::Game_stone::Color::None;
-			if (stone->color == prot::Game_stone::Color::Black)
-				m_white_loose += 2;
-			else
-				m_black_loose += 2;
-			i++;
+			int i = 0;
+			while (capture[i][0] != -1)
+			{
+				prot::Game_stone *mess = new prot::Game_stone();
+				mess->color = prot::Game_stone::Color::None;
+				mess->x = capture[i][0];
+				mess->y = capture[i][1];
+				m_callback.put_stone_game(itcp_protocol, mess);
+				(*this)(capture[i][0], capture[i][1]) = prot::Game_stone::Color::None;
+				mess = new prot::Game_stone();
+				mess->color = prot::Game_stone::Color::None;
+				mess->x = capture[i][2];
+				mess->y = capture[i][3];
+				m_callback.put_stone_game(itcp_protocol, mess);
+				(*this)(capture[i][2], capture[i][3]) = prot::Game_stone::Color::None;
+				if (stone->color == prot::Game_stone::Color::Black)
+					m_white_loose += 2;
+				else
+					m_black_loose += 2;
+				i++;
+			}
 		}
+		check_victory(itcp_protocol, stone);
 	}
-	check_victory(stone);
+#ifdef DEBUG
+	dump();
+#endif
 }
 
 bool Arbitre::can_capture(prot::Game_stone * stone, int coord[8][4]) const

@@ -8,7 +8,7 @@
 // Last update Mon Feb  8 17:43:11 2016 Antoine Plaskowski
 //
 
-#if 0
+#if 1
 #include	<iostream>
 #include	<exception>
 #include	<thread>
@@ -109,9 +109,8 @@ lol(void) :
     m_iselect(new Select)
 {
     m_itcp_protocol->send_connect("plasko_a", "plasko_a");
-    std::string name;
+    std::string name = "game";
 
-    std::cin >> name;
     ITCP_protocol<ITCP_client>::Game    game = {&name};
 	std::string s = "";
 	while (s != "j" && s != "c")

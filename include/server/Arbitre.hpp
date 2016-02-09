@@ -12,13 +12,15 @@ public:
 	Arbitre(const Arbitre &copy);
 	~Arbitre(void);
 
+	void dump(void) const;
+
 	bool check_coord(int x, int y) const;
 
 	bool check_stone_libre(int x, int y) const;
 
-	void check_vertical_victory(ITCP_protocol<Client>::Game_stone * stone) const;
+	void check_vertical_victory(ITCP_protocol<Client> &itcp_protocol, ITCP_protocol<Client>::Game_stone * stone);
 
-	void	check_victory(ITCP_protocol<Client>::Game_stone *stone) const;
+	void	check_victory(ITCP_protocol<Client> &itcp_protocol, ITCP_protocol<Client>::Game_stone *stone);
 
 	void	put_stone_game(ITCP_protocol<Client> &itcp_protocol, ITCP_protocol<Client>::Game_stone *stone);
 
