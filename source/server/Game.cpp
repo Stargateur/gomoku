@@ -86,8 +86,8 @@ void    Game::run(ISelect &iselect, ITime &)
         catch (std::exception &e)
         {
             std::cerr << e.what() << std::endl;
-            delete itcp_protocol;
             delete_player(it);
+            delete itcp_protocol;
         }
     }
 }
@@ -110,9 +110,10 @@ void    Game::add_player(ITCP_protocol<Client> *player)
 
 void    Game::delete_player(std::list<ITCP_protocol<Client> *>::iterator &it)
 {
+    Client  *client = (*it)->get_data();
     it = m_itcp_protocols.erase(it);
     for (auto itcp_protocol : m_itcp_protocols)
-        itcp_protocol->send_game_player_left(*(*it)->get_data()->get_login());
+        itcp_protocol->send_game_player_left(*client->get_login());
 }
 
 std::list<ITCP_protocol<Client> *> const   &Game::get_players(void) const
@@ -166,9 +167,11 @@ void	Game::put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pr
 	{
         itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
 		throw std::logic_error("you are you ?");
+        delete stone;
 	}
 	for (auto it : m_itcp_protocols)
 		it->send_game_stone_put(*stone);
+    delete stone;
 }
 
 void    Game::change_param_player_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_player_param *param)
@@ -206,6 +209,21 @@ void	Game::start_game(ITCP_protocol<Client> &itcp_protocol)
 void	Game::ready_game(ITCP_protocol<Client> &itcp_protocol, bool)
 {
     itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
+}
+
+void    Game::result_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_result *game_result)
+{
+    if (itcp_protocol.get_callback() != &m_white && itcp_protocol.get_callback() != &m_black)
+    {
+        itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
+        delete game_result->winner;
+        delete game_result;
+        throw std::logic_error("you are you ?");
+    }
+    for (auto it : m_itcp_protocols)
+        it->send_result_game(*game_result);
+    delete game_result->winner;
+    delete game_result;
 }
 
 AGame_exception::AGame_exception(void) noexcept

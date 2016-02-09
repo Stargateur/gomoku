@@ -44,6 +44,7 @@ public:
     void    change_param_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param);
     void	start_game(ITCP_protocol<Client> &itcp_protocol);
     void	ready_game(ITCP_protocol<Client> &itcp_protocol, bool ready);
+    void    result_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_result *game_result);
 private:
     bool	m_is_start;
     std::string	*m_name;
