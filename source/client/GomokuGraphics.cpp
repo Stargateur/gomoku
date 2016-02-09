@@ -179,12 +179,13 @@ void GomokuGraphics::checkClientUpdates(void)
 	}
 	else if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::DONE)
 	{
-		PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::NOTHING;
+		PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::NOTHING;
 		mCurrentView = &mGameView;
 	}
 	else if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::FAILED)
 	{
 		PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::NOTHING;
+		PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::NOTHING;
 		std::cout << PlayerInfo::getInstance().mErrorMessage << std::endl;
 		mCurrentView = &mConnectView;
 	}

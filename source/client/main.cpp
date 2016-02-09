@@ -31,9 +31,9 @@ void start_tcpclient()
 		PlayerInfo::getInstance().unlock();
 		if (wantConnect == true)
 		{
-			PlayerInfo::getInstance().lock();
+			/*PlayerInfo::getInstance().lock();
 			PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::DOING;
-			PlayerInfo::getInstance().unlock();
+			PlayerInfo::getInstance().unlock();*/
 			try {
 				Client		client;
 				PlayerInfo::getInstance().lock();
@@ -47,6 +47,7 @@ void start_tcpclient()
 				PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::FAILED;
 				PlayerInfo::getInstance().mErrorMessage = "Connection error !";
 				std::cout << "Error de connexion" << std::endl;
+				std::cout << e.what() << std::endl;
 				PlayerInfo::getInstance().unlock();
 			}
 		}
