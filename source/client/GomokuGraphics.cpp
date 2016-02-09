@@ -146,6 +146,14 @@ void GomokuGraphics::affStone()
 					mGameView.pushObject(button);
 				}
 			}
+			else
+			{
+				if (mStones[x][y] != nullptr)
+				{
+					mGameView.removeObject(mStones[x][y]);
+					mStones[x][y] = nullptr;
+				}
+			}
 		}
 	}
 	GameInfo::getInstance().unlock();
