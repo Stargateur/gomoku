@@ -34,16 +34,17 @@ void		click_plateau(sf::Vector2f *param)
 	std::cout << "click sur le plateau" << std::endl;
 	size_t		xStart = 242;
 	size_t		yStart = 98;
+	size_t		prec = 10;
 	if (param != NULL)
 	{
 		for (size_t x = 0; x < 19; x++)
 		{
 			for (size_t y = 0; y < 19; y++)
 			{
-				size_t tryX = xStart + x * 34;
-				size_t tryY = yStart + y * 34;
-				if ((param->x <= tryX + 5 && param->x >= tryX - 5) &&
-					(param->y <= tryY + 5 && param->y >= tryY - 5))
+				size_t tryX = xStart + x * 33;
+				size_t tryY = yStart + y * 33;
+				if ((param->x <= tryX + 10 && param->x >= tryX - 10) &&
+					(param->y <= tryY + 10 && param->y >= tryY - 10))
 				{
 					std::cout << "LA BISCOTTE : " << x << " | " << y << std::endl;
 				}
