@@ -18,6 +18,7 @@ void GView::removeObject(IGVObject * object)
 	mObjects.remove(object);
 }
 
+#include <iostream>
 std::list<sf::Sprite *> GView::getSprites()
 {
 	std::list<sf::Sprite *>res;

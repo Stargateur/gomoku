@@ -55,11 +55,11 @@
     <ClCompile Include="..\source\client\PlayerInfo.cpp">
       <Filter>client</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\client\GView.cpp">
-      <Filter>client</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\client\GomokuGraphics.cpp">
       <Filter>client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\client\GView.cpp">
+      <Filter>client\IGView</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -120,17 +120,17 @@
     <ClInclude Include="..\include\client\PlayerInfo.hpp">
       <Filter>client</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\client\GView.hpp">
-      <Filter>client</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\client\IGVObject.hpp">
-      <Filter>client</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\client\GVOButton.hpp">
-      <Filter>client</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\client\GomokuGraphics.hpp">
       <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\GView.hpp">
+      <Filter>client\IGView</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\GVOButton.hpp">
+      <Filter>client\IGView</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\IGVObject.hpp">
+      <Filter>client\IGView</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +145,9 @@
     </Filter>
     <Filter Include="client">
       <UniqueIdentifier>{00dc5e19-4236-4b8c-a18d-50f1b2796786}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="client\IGView">
+      <UniqueIdentifier>{ed9341cb-6a47-4d6a-950b-f56c7ce6a9ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

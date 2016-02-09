@@ -22,6 +22,7 @@ public:
 
 public:
 	std::string								mPseudo;
+	std::string								mColor;
 	std::string								mHost;
 	std::string								mErrorMessage;
 	bool									mWantQuit;

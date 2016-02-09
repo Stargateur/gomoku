@@ -17,12 +17,6 @@ void		connect(std::string params)
 
 GomokuGraphics::GomokuGraphics()
 {
-	mCurrentView = &mConnectView;
-	if (!mTopTexture.loadFromFile("../Sprite/connexion.png", sf::IntRect(0, 0, 1920, 1080)))
-		std::cerr << "Cant load the texture" << std::endl;
-	GVOButton<std::string> *button = new GVOButton<std::string>(sf::Vector2f(WIN_X / 4.8, 81.6), mTopTexture, sf::Vector2f(0.8, 0.8));
-	button->setAction(connect, "localhost");
-	mConnectView.pushObject(button);
 }
 
 GomokuGraphics::~GomokuGraphics()
@@ -41,8 +35,8 @@ void		click_plateau(sf::Vector2f *param)
 		{
 			for (size_t y = 0; y < 19; y++)
 			{
-				size_t tryX = xStart + x * 33;
-				size_t tryY = yStart + y * 33;
+				float tryX = xStart + x * 33.5;
+				float tryY = yStart + y * 33.5;
 				if ((param->x <= tryX + 10 && param->x >= tryX - 10) &&
 					(param->y <= tryY + 10 && param->y >= tryY - 10))
 				{
@@ -50,7 +44,10 @@ void		click_plateau(sf::Vector2f *param)
 					PlayerInfo::getInstance().lock();
 					PlayerInfo::getInstance().mLastPlay.x = x;
 					PlayerInfo::getInstance().mLastPlay.y = y;
-					PlayerInfo::getInstance().mLastPlay.color = PlayerInfo::getInstance().mLastPlay.Black;
+					if (PlayerInfo::getInstance().mColor.compare("black") == 0)
+						PlayerInfo::getInstance().mLastPlay.color = PlayerInfo::getInstance().mLastPlay.Black;
+					else
+						PlayerInfo::getInstance().mLastPlay.color = PlayerInfo::getInstance().mLastPlay.White;
 					PlayerInfo::getInstance().mWantPlay = true;
 					PlayerInfo::getInstance().unlock();
 				}
@@ -58,6 +55,13 @@ void		click_plateau(sf::Vector2f *param)
 		}
 		std::cout << "x:" << param->x << " y:" << param->y << std::endl;
 	}
+}
+void		change_color(std::string color)
+{
+	PlayerInfo::getInstance().lock();
+	PlayerInfo::getInstance().mColor = color;
+	std::cout << "You are now " << color << std::endl;
+	PlayerInfo::getInstance().unlock();
 }
 sf::Vector2f souris;
 void GomokuGraphics::init()
@@ -73,10 +77,20 @@ void GomokuGraphics::init()
 	if (!mWhiteTexture.loadFromFile("../Sprite/white.png", sf::IntRect(0, 0, 1920, 1080)))
 	{std::cerr << "Cant load the texture" << std::endl;}
 	//set sprites
+	mCurrentView = &mConnectView;
+	GVOButton<std::string> *button = new GVOButton<std::string>(sf::Vector2f(WIN_X / 2 - mTopTexture.getSize().x / 2, 2 * WIN_Y / 3), mTopTexture, sf::Vector2f(0.8, 0.8));
+	button->setAction(connect, "localhost");
+	mConnectView.pushObject(button);
+	button = new GVOButton<std::string>(sf::Vector2f(WIN_X / 3 - mBlackTexture.getSize().x / 2, WIN_Y / 3), mBlackTexture, sf::Vector2f(0.8, 0.8));
+	button->setAction(change_color, "black");
+	mConnectView.pushObject(button);
+	button = new GVOButton<std::string>(sf::Vector2f(2 * WIN_X / 3 - mWhiteTexture.getSize().x / 2, WIN_Y / 3), mWhiteTexture, sf::Vector2f(0.8, 0.8));
+	button->setAction(change_color, "white");
+	mConnectView.pushObject(button);
 	//Background
-	GVOButton<sf::Vector2f *> *button = new GVOButton<sf::Vector2f *>(sf::Vector2f(WIN_X / 4.8, 81.6), mTextureBackground, sf::Vector2f(0.8, 0.8));
-	button->setAction(&click_plateau, &souris);
-	mGameView.pushObject(button);
+	GVOButton<sf::Vector2f *> *button2 = new GVOButton<sf::Vector2f *>(sf::Vector2f(WIN_X / 4.8, 81.6), mTextureBackground, sf::Vector2f(0.8, 0.8));
+	button2->setAction(&click_plateau, &souris);
+	mGameView.pushObject(button2);
 }
 
 void GomokuGraphics::run()
@@ -121,15 +135,23 @@ void GomokuGraphics::affStone()
 			if (GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::Black ||
 				GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::White)
 			{
-				if (mStones[x][y] != nullptr)
+				if (mStones[x][y] == nullptr)
 				{
 					GVOButton<int> *button = nullptr;
 					if (GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::Black)
-						button = new GVOButton<int>(sf::Vector2f(242 + x * 34, 98 + y * 34), mBlackTexture, sf::Vector2f(0.8, 0.8));
+						button = new GVOButton<int>(sf::Vector2f(225 + x * 33.5, 80 + y * 33.5), mBlackTexture, sf::Vector2f(0.8, 0.8));
 					if (GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::White)
-						button = new GVOButton<int>(sf::Vector2f(242 + x * 34, 98 + y * 34), mWhiteTexture, sf::Vector2f(0.8, 0.8));
+						button = new GVOButton<int>(sf::Vector2f(225 + x * 33.5, 80 + y * 33.5), mWhiteTexture, sf::Vector2f(0.8, 0.8));
 					mStones[x][y] = button;
 					mGameView.pushObject(button);
+				}
+			}
+			else
+			{
+				if (mStones[x][y] != nullptr)
+				{
+					mGameView.removeObject(mStones[x][y]);
+					mStones[x][y] = nullptr;
 				}
 			}
 		}
