@@ -27,7 +27,6 @@ void start_tcpclient()
 	{
 		PlayerInfo::getInstance().lock();
 		wantConnect = PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::ASK;
-		std::cout << "User want connect: " << wantConnect << std::endl;
 		PlayerInfo::getInstance().unlock();
 		if (wantConnect == true)
 		{

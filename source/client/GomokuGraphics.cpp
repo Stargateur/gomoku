@@ -19,12 +19,8 @@ void		connect(std::string params)
 GomokuGraphics::GomokuGraphics()
 {
 	for (size_t i = 0; i < 19; i++)
-	{
 		for (size_t j = 0; j < 19; j++)
-		{
 			mStones[i][j] = nullptr;
-		}
-	}
 }
 
 GomokuGraphics::~GomokuGraphics()
@@ -101,6 +97,19 @@ void GomokuGraphics::init()
 	mGameView.pushObject(button2);
 }
 
+void GomokuGraphics::reset(void)
+{
+	for (size_t i = 0; i < 19; i++)
+	{
+		for (size_t j = 0; j < 19; j++)
+		{
+			if (mStones[i][j] != nullptr)
+				mGameView.removeObject(mStones[i][j]);
+			mStones[i][j] = nullptr;
+		}
+	}
+}
+
 void GomokuGraphics::run()
 {
 	while (mWindow->isOpen())
@@ -175,6 +184,10 @@ void GomokuGraphics::checkClientUpdates(void)
 	{
 		PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::NOTHING;
 		PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::NOTHING;
+		GameInfo::getInstance().lock();
+		GameInfo::getInstance().reset();
+		GameInfo::getInstance().unlock();
+		reset();
 		mCurrentView = &mConnectView;
 	}
 	else if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::DONE)
@@ -187,6 +200,10 @@ void GomokuGraphics::checkClientUpdates(void)
 		PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::NOTHING;
 		PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::NOTHING;
 		std::cout << PlayerInfo::getInstance().mErrorMessage << std::endl;
+		GameInfo::getInstance().lock();
+		GameInfo::getInstance().reset();
+		GameInfo::getInstance().unlock();
+		reset();
 		mCurrentView = &mConnectView;
 	}
 	PlayerInfo::getInstance().unlock();

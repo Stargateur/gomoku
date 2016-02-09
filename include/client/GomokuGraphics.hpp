@@ -13,11 +13,12 @@
 class GomokuGraphics
 {
 public:
-	GomokuGraphics();
-	~GomokuGraphics();
-	void init();
-	void run();
-	void affStone();
+	GomokuGraphics(void);
+	~GomokuGraphics(void);
+	void	init(void);
+	void	reset(void);
+	void	run(void);
+	void	affStone(void);
 
 private:
 	void	checkClientUpdates(void);
