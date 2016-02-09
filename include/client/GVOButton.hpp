@@ -46,6 +46,7 @@ public:
 	}
 	void	mouseClick(sf::Vector2f pos)
 	{
+		std::cout << "scalex:" << mCurView->getGlobalBounds().intersects(sf::FloatRect(pos, sf::Vector2f(1,1))) << std::endl;
 		if (pos.x >= mCurView->getGlobalBounds().left && pos.x <= mCurView->getGlobalBounds().left + mCurView->getGlobalBounds().width &&
 			pos.y >= mCurView->getGlobalBounds().top && pos.y <= mCurView->getGlobalBounds().top + mCurView->getGlobalBounds().height)
 		{
