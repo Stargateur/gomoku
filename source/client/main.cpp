@@ -39,8 +39,9 @@ void start_tcpclient()
 			}
 			catch (std::exception &e) {
 				PlayerInfo::getInstance().lock();
+				PlayerInfo::getInstance().mIsConnected = false;
 				PlayerInfo::getInstance().mHasFailed = true;
-				PlayerInfo::getInstance().mErrorMessage = "Connection failed !";
+				PlayerInfo::getInstance().mErrorMessage = "Connection error !";
 				std::cout << "Error de connexion" << std::endl;
 				PlayerInfo::getInstance().unlock();
 			}
@@ -115,14 +116,19 @@ lol(void) :
 	std::string s = "";
 	while (s != "j" && s != "c")
 	{
-		std::cout << "connexion(j/c)" << std::endl;
+		std::cout << "connexion(c/j)" << std::endl;
 		std::cin >> s;
 	}
 	if (s == "c")
+	{
+		color = "black";
 		m_itcp_protocol->send_create_game(game);
+	}
 	else
+	{
+		color = "white";
 		m_itcp_protocol->send_join_game(game);
-	std::cin >> color;
+	}
     ITCP_protocol<ITCP_client>::Game_player_param	param;
     std::string ptdr("color");
     param.name = &ptdr;

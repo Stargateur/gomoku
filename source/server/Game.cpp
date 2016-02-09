@@ -166,12 +166,11 @@ void	Game::put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pr
 	if (itcp_protocol.get_callback() != &m_white && itcp_protocol.get_callback() != &m_black)
 	{
         itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
-		throw std::logic_error("you are you ?");
         delete stone;
+		throw std::logic_error("you are you ?");
 	}
 	for (auto it : m_itcp_protocols)
 		it->send_game_stone_put(*stone);
-    delete stone;
 }
 
 void    Game::change_param_player_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_player_param *param)
@@ -222,8 +221,6 @@ void    Game::result_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pr
     }
     for (auto it : m_itcp_protocols)
         it->send_result_game(*game_result);
-    delete game_result->winner;
-    delete game_result;
 }
 
 AGame_exception::AGame_exception(void) noexcept
