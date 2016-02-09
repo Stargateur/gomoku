@@ -40,6 +40,7 @@ void start_tcpclient()
 				PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::DONE;
 				PlayerInfo::getInstance().unlock();
 				client.run();
+				std::cout << "end run" << std::endl;
 			}
 			catch (std::exception &e) {
 				PlayerInfo::getInstance().lock();

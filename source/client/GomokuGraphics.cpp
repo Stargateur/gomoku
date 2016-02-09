@@ -171,7 +171,13 @@ void GomokuGraphics::checkClientUpdates(void)
 {
 	PlayerInfo::getInstance().lock();
 	// check connection
-	if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::DONE)
+	if (PlayerInfo::getInstance().mDisconnect == PlayerInfo::STATE::DONE)
+	{
+		PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::NOTHING;
+		PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::NOTHING;
+		mCurrentView = &mConnectView;
+	}
+	else if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::DONE)
 	{
 		PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::NOTHING;
 		mCurrentView = &mGameView;

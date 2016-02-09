@@ -65,7 +65,7 @@ void	Client::run(void)
 		}
 		checkUserInputs();
 		PlayerInfo::getInstance().lock();
-		g_keep_running = PlayerInfo::getInstance().mDisconnect == PlayerInfo::STATE::DONE;
+		g_keep_running = !PlayerInfo::getInstance().mDisconnect == PlayerInfo::STATE::DONE;
 		PlayerInfo::getInstance().unlock();
     }
 }
