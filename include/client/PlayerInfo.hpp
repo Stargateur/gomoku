@@ -3,9 +3,10 @@
 #ifndef PLAYERINFO_HPP__
 # define PLAYERINFO_HPP__
 
-#include <string>
-#include <mutex>
-#include "ITCP_protocol.hpp"
+#include	<string>
+#include	<mutex>
+#include	"ITCP_protocol.hpp"
+#include	"ITCP_client.hpp"
 
 class PlayerInfo
 {
@@ -29,7 +30,7 @@ public:
 	bool									mWantPlay;
 	bool									mHasFailed;
 	bool									mIsConnected;
-	ITCP_protocol<PlayerInfo>::Game_stone	mLastPlay;
+	ITCP_protocol<ITCP_client>::Game_stone	mLastPlay;
 };
 
 #endif // !PLAYERINFO_HPP__

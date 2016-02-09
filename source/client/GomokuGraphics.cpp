@@ -34,18 +34,25 @@ void		click_plateau(sf::Vector2f *param)
 	std::cout << "click sur le plateau" << std::endl;
 	size_t		xStart = 242;
 	size_t		yStart = 98;
+	size_t		prec = 10;
 	if (param != NULL)
 	{
 		for (size_t x = 0; x < 19; x++)
 		{
 			for (size_t y = 0; y < 19; y++)
 			{
-				size_t tryX = xStart + x * 34;
-				size_t tryY = yStart + y * 34;
-				if ((param->x <= tryX + 5 && param->x >= tryX - 5) &&
-					(param->y <= tryY + 5 && param->y >= tryY - 5))
+				size_t tryX = xStart + x * 33;
+				size_t tryY = yStart + y * 33;
+				if ((param->x <= tryX + 10 && param->x >= tryX - 10) &&
+					(param->y <= tryY + 10 && param->y >= tryY - 10))
 				{
 					std::cout << "LA BISCOTTE : " << x << " | " << y << std::endl;
+					PlayerInfo::getInstance().lock();
+					PlayerInfo::getInstance().mLastPlay.x = x;
+					PlayerInfo::getInstance().mLastPlay.y = y;
+					PlayerInfo::getInstance().mLastPlay.color = PlayerInfo::getInstance().mLastPlay.Black;
+					PlayerInfo::getInstance().mWantPlay = true;
+					PlayerInfo::getInstance().unlock();
 				}
 			}
 		}
@@ -79,8 +86,7 @@ void GomokuGraphics::run()
 				mWindow->close();
 			if (event.type == sf::Event::MouseButtonReleased)
 			{
-				souris.x = event.mouseButton.x;
-				souris.y = event.mouseButton.y;
+				souris = mWindow->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
 				mCurrentView->mouseClick(mWindow->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)));
 				std::cout << "clik" << std::endl;
 			}
@@ -117,6 +123,12 @@ void GomokuGraphics::checkClientUpdates(void)
 			PlayerInfo::getInstance().mWantConnect = false;
 			mCurrentView = &mGameView;
 		}
+	}
+	else if (PlayerInfo::getInstance().mHasFailed && !PlayerInfo::getInstance().mIsConnected)
+	{
+		std::cout << PlayerInfo::getInstance().mErrorMessage << std::endl;
+		PlayerInfo::getInstance().mHasFailed = false;
+		mCurrentView = &mConnectView;
 	}
 	PlayerInfo::getInstance().unlock();
 }
