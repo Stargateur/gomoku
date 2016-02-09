@@ -125,9 +125,9 @@ void GomokuGraphics::affStone()
 				{
 					GVOButton<int> *button = nullptr;
 					if (GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::Black)
-						button = new GVOButton<int>(sf::Vector2f(242 + x * 34, 98 + y * 34), mBlackTexture, sf::Vector2f(0.8, 0.8));
+						button = new GVOButton<int>(sf::Vector2f(225 + x * 34, 80 + y * 34), mBlackTexture, sf::Vector2f(0.8, 0.8));
 					if (GameInfo::getInstance().mPlate[x][y] == ITCP_protocol<ITCP_client>::Game_stone::Color::White)
-						button = new GVOButton<int>(sf::Vector2f(242 + x * 34, 98 + y * 34), mWhiteTexture, sf::Vector2f(0.8, 0.8));
+						button = new GVOButton<int>(sf::Vector2f(225 + x * 34, 80 + y * 34), mWhiteTexture, sf::Vector2f(0.8, 0.8));
 					mStones[x][y] = button;
 					mGameView.pushObject(button);
 				}
