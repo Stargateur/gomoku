@@ -21,6 +21,12 @@ public:
         m_callback(callback)
     {
     }
+
+    ACallback(ACallback const &acallback) :
+        m_callback(acallback.m_callback)
+    {
+
+    }
     ~ACallback(void)
     {
     }

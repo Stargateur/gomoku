@@ -157,7 +157,11 @@ void	Server::run(void)
 
 void	Server::result(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Error error)
 {
-    std::cout << error << std::endl;
+    if (itcp_protocol.get_data()->get_login() != nullptr)
+        std::cout << itcp_protocol.get_data()->get_login();
+    else
+        std::cout << "Unknow client";
+    std::cout << " has send this error " << error << std::endl;
 }
 
 void	Server::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)
@@ -166,23 +170,26 @@ void	Server::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std:
     {
         delete login;
         delete password;
+        itcp_protocol.send_result(ITCP_protocol<Client>::Error::Wrong_version);
         throw std::logic_error("Wrong version");
     }
     if (*login != *password)
     {
         delete login;
         delete password;
+        itcp_protocol.send_result(ITCP_protocol<Client>::Error::Wrong_password);
         throw std::logic_error("Wrong login() and/or password");
     }
-    for (auto itcp_protocol : m_itcp_protocols)
+    for (auto it_itcp_protocol : m_itcp_protocols)
     {
-        auto client = itcp_protocol->get_data();
+        auto client = it_itcp_protocol->get_data();
 
         if (client->get_login() != nullptr)
             if (*client->get_login() == *login)
             {
                 delete login;
                 delete password;
+                itcp_protocol.send_result(ITCP_protocol<Client>::Error::Login_already_use);
                 throw std::logic_error("this login is already used");
             }
     }
@@ -194,6 +201,7 @@ void	Server::connect(ITCP_protocol<Client> &itcp_protocol, uint8_t version, std:
 
 void	Server::disconnect(ITCP_protocol<Client> &itcp_protocol)
 {
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Disconnected);
     throw Server_exception_client_disconnected();
 }
 
@@ -216,6 +224,7 @@ void	Server::create_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pro
     {
         delete game_info->name;
         delete game_info;
+        itcp_protocol.send_result(ITCP_protocol<Client>::Error::Not_connected);
         throw AServer_exception();
     }
     for (auto game_it : m_games)
@@ -244,6 +253,7 @@ void	Server::join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_proto
     {
         delete game_info->name;
         delete game_info;
+        itcp_protocol.send_result(ITCP_protocol<Client>::Error::Not_connected);
         throw AServer_exception();
     }
     for (auto game : m_games)
@@ -260,24 +270,28 @@ void	Server::join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_proto
 
 void	Server::leave_game(ITCP_protocol<Client> &itcp_protocol)
 {
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
     throw AServer_exception();
 }
 
 void	Server::put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
 {
     delete stone;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Not_in_game);
     throw AServer_exception();
 }
 
 void	Server::change_param_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param)
 {
     delete param;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Not_in_game);
     throw AServer_exception();
 }
 
 void    Server::change_param_player_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_player_param *param)
 {
     delete param;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Not_in_game);
     throw AServer_exception();
 }
 
@@ -290,6 +304,7 @@ void    Server::list_param_player_game(ITCP_protocol<Client> &itcp_protocol, std
         delete param;
     }
     delete params;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
     throw AServer_exception();
 }
 
@@ -302,6 +317,7 @@ void    Server::list_param_game(ITCP_protocol<Client> &itcp_protocol, std::list<
         delete param;
     }
     delete params;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
     throw AServer_exception();
 }
 
@@ -309,18 +325,21 @@ void	Server::game_created(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pr
 {
     delete game->name;
     delete game;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
     throw AServer_exception();
 }
 
 void	Server::game_player_joined(ITCP_protocol<Client> &itcp_protocol, std::string *name)
 {
     delete name;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
     throw AServer_exception();
 }
 
 void	Server::game_player_left(ITCP_protocol<Client> &itcp_protocol, std::string *name)
 {
     delete name;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
     throw AServer_exception();
 }
 
@@ -329,6 +348,7 @@ void    Server::game_player_param_changed(ITCP_protocol<Client> &itcp_protocol, 
     delete param->name;
     delete param->value;
     delete param;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
     throw AServer_exception();
 }
 
@@ -337,12 +357,14 @@ void	Server::game_param_changed(ITCP_protocol<Client> &itcp_protocol, typename I
     delete param->name;
     delete param->value;
     delete param;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
     throw AServer_exception();
 }
 
 void	Server::game_stone_put(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
 {
     delete stone;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
     throw AServer_exception();
 }
 
@@ -350,16 +372,19 @@ void	Server::game_deleted(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pr
 {
     delete game->name;
     delete game;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
     throw AServer_exception();
 }
 
 void	Server::start_game(ITCP_protocol<Client> &itcp_protocol)
 {
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Not_in_game);
     throw AServer_exception();
 }
 
-void	Server::ready_game(ITCP_protocol<Client> &itcp_protocol, bool ready)
+void	Server::ready_game(ITCP_protocol<Client> &itcp_protocol, bool)
 {
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Not_in_game);
     throw AServer_exception();
 }
 
@@ -367,17 +392,18 @@ void	Server::result_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pro
 {
     delete game_result->winner;
     delete game_result;
+    itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
     throw AServer_exception();
 }
 
 void	Server::message(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Message *message)
 {
-    auto client = itcp_protocol.get_data();
-    if (client->get_login() == nullptr)
+    if (itcp_protocol.get_data()->get_login() == nullptr)
     {
         delete message->name;
         delete message->message;
         delete message;
+        itcp_protocol.send_result(ITCP_protocol<Client>::Error::Not_connected);
         throw AServer_exception();
     }
     if (*itcp_protocol.get_data()->get_login() == *message->name)
