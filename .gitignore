@@ -12,6 +12,7 @@ a.out
 .#*
 gomoku_client
 gomoku_server
+build
 *.dpd
 *.autosave
 *.exe
