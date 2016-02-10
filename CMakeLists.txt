@@ -17,7 +17,7 @@ add_library(isocket
 target_compile_features(isocket PUBLIC cxx_range_for)
 target_include_directories(isocket PUBLIC include/isocket include/itime)
 if(WIN32)
-  target_link_libraries(isocket ws2_32)
+  target_link_libraries(isocket PUBLIC ws2_32)
 endif()
 add_library(itime
 	STATIC
@@ -43,9 +43,9 @@ add_executable(gomoku_client
 	source/client/main.cpp)
 target_compile_features(gomoku_client PUBLIC cxx_range_for)
 target_include_directories(gomoku_client PUBLIC include/iprotocol include/itime include/isocket include/client)
-target_link_libraries(gomoku_client isocket iprotocol itime)
+target_link_libraries(gomoku_client PUBLIC isocket iprotocol itime)
 target_include_directories(gomoku_client PUBLIC ${SFML_INCLUDE_DIR})
-target_link_libraries(gomoku_client ${SFML_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(gomoku_client PUBLIC ${SFML_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 add_executable(gomoku_server
 	source/server/Arbitre.cpp
 	source/server/Black.cpp
@@ -57,5 +57,5 @@ add_executable(gomoku_server
 	source/server/main.cpp)
 target_compile_features(gomoku_server PUBLIC cxx_range_for)
 target_include_directories(gomoku_server PUBLIC include/iprotocol include/itime include/isocket include/server)
-target_link_libraries(gomoku_server isocket iprotocol itime)
+target_link_libraries(gomoku_server PUBLIC isocket iprotocol itime)
 target_link_libraries(gomoku_server PUBLIC ${CMAKE_THREAD_LIBS_INIT})

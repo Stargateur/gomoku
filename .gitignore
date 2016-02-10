@@ -1,3 +1,6 @@
+cmake_install.cmake
+gomoku.sublime-project
+Makefile
 CMakeCache.txt
 CMakeFiles
 a.out
