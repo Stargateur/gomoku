@@ -3,6 +3,7 @@ CMakeFiles
 a.out
 *.o
 *~
+*.a
 *.so
 \#*#
 .#*
