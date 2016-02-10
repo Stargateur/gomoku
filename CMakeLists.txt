@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.4)
+project(gomoku)
 set(CMAKE_MODULE_PATH "C:/SFML-2.3.2/cmake/Modules/" ${CMAKE_MODULE_PATH})
 find_package(SFML 2 REQUIRED system window graphics network audio)
 find_package (Threads)
