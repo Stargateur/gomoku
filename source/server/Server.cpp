@@ -93,7 +93,7 @@ void	Server::run(void)
     {
         m_iselect->reset_read(*m_itcp_server);
         Client	*client = new Client(&m_itcp_server->accept(), nullptr, new Time(), false);
-        #ifdef DEBUG
+        #ifndef NDEBUG
         std::cerr << "Un client s'est connecter" << std::endl;
         #endif
         m_itcp_protocols.push_back(new TCP_protocol<Client>(this, client));

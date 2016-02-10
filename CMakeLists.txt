@@ -82,6 +82,7 @@ add_executable(gomoku_server
 	source/server/Game.cpp
 	source/server/Server.cpp
 	source/server/Utils.cpp
+	source/server/main.cpp
 	include/server/Arbitre.hpp
 	include/server/Black.hpp
 	include/server/White.hpp

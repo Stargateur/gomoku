@@ -83,9 +83,9 @@ private:
     {
         TCP_packet_send	*to_send = new TCP_packet_send();
         to_send->set_opcode(opcode);
-#ifdef	DEBUG
+	#ifndef	NDEBUG
         std::cerr << "je prépare un packet " << to_send->get_opcode() << std::endl;
-#endif	/* !DEBUG */
+	#endif	/* !DEBUG */
         m_to_send.push_back(to_send);
         return (*to_send);
     }
@@ -108,36 +108,36 @@ public:
         if (m_to_send.size() == 0)
             throw std::logic_error("il n'y a rien a envoyé");
         TCP_packet_send	*to_send = m_to_send.front();
-#ifdef	DEBUG
+	#ifndef	NDEBUG
         std::cerr << "j'envoie sur une socket client tcp " << to_send->get_opcode() << " " << std::endl;
-#endif	/* !DEBUG */
+	#endif	/* !DEBUG */
         m_to_send.pop_front();
         if (to_send->send(socket))
         {
-#ifdef	DEBUG
+			#ifndef	NDEBUG
             std::cerr << "Finis d'écrire" << std::endl;
-#endif	/* !DEBUG */
+			#endif	/* !DEBUG */
             delete to_send;
         }
         else
         {
-#ifdef	DEBUG
+			#ifndef	NDEBUG
             std::cerr << "Reste à écrire" << std::endl;
-#endif	/* !DEBUG */
+			#endif	/* !DEBUG */
         }
     }
 
 public:
     void	recv(ITCP_client const &socket)
     {
-#ifdef	DEBUG
+		#ifndef	NDEBUG
         std::cerr << "je lis une socket tcp " << std::endl;
-#endif	/* !DEBUG */
+		#endif	/* !DEBUG */
         if (m_to_recv.recv(socket) == false)
             return;
-#ifdef	DEBUG
+		#ifndef	NDEBUG
         std::cerr << "j'ai lu un paquet tcp " << m_to_recv.get_opcode() << std::endl;
-#endif	/* !DEBUG */
+		#endif	/* !DEBUG */
         switch (m_to_recv.get_opcode())
         {
         case ATCP_packet::Result:
