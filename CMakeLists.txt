@@ -1,3 +1,7 @@
+cmake_minimum_required(VERSION 3.4)
+set(CMAKE_MODULE_PATH "C:/SFML-2.3.2/cmake/Modules/" ${CMAKE_MODULE_PATH})
+find_package(SFML 2 REQUIRED system window graphics network audio)
+find_package (Threads)
 add_library(isocket
 	STATIC
 	source/isocket/ITCP_server.cpp
@@ -12,6 +16,9 @@ add_library(isocket
 	source/isocket/TCP_server.cpp)
 target_compile_features(isocket PUBLIC cxx_range_for)
 target_include_directories(isocket PUBLIC include/isocket include/itime)
+if(WIN32)
+  target_link_libraries(isocket ws2_32)
+endif()
 add_library(itime
 	STATIC
 	source/itime/ITime.cpp
@@ -36,7 +43,9 @@ add_executable(gomoku_client
 	source/client/main.cpp)
 target_compile_features(gomoku_client PUBLIC cxx_range_for)
 target_include_directories(gomoku_client PUBLIC include/iprotocol include/itime include/isocket include/client)
-target_link_libraries(gomoku_client pthread isocket iprotocol itime sfml-graphics sfml-window sfml-system sfml-network)
+target_link_libraries(gomoku_client isocket iprotocol itime)
+target_include_directories(gomoku_client PUBLIC ${SFML_INCLUDE_DIR})
+target_link_libraries(gomoku_client ${SFML_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 add_executable(gomoku_server
 	source/server/Arbitre.cpp
 	source/server/Black.cpp
@@ -48,4 +57,5 @@ add_executable(gomoku_server
 	source/server/main.cpp)
 target_compile_features(gomoku_server PUBLIC cxx_range_for)
 target_include_directories(gomoku_server PUBLIC include/iprotocol include/itime include/isocket include/server)
-target_link_libraries(gomoku_server pthread isocket iprotocol itime)
+target_link_libraries(gomoku_server isocket iprotocol itime)
+target_link_libraries(gomoku_server PUBLIC ${CMAKE_THREAD_LIBS_INIT})
