@@ -10,6 +10,7 @@
 
 #include    <iostream>
 #include    <csignal>
+#include	<chrono>
 #include	"Server.hpp"
 
 static sig_atomic_t g_keep_running = true;
@@ -29,6 +30,7 @@ int	main(void)
 {
 	Server	server;
 
+	auto start = std::chrono::steady_clock::now();
     std::signal(SIGINT, sigint);
     while (g_keep_running == true)
     try
@@ -40,5 +42,10 @@ int	main(void)
     {
         std::cerr << e.what() << std::endl;
     }
+	auto end = std::chrono::steady_clock::now();
+	auto diff = end - start;
+	auto lol = std::chrono::duration_cast<std::chrono::seconds>(diff);
+	diff -= lol;
+	std::cout << lol.count() << " s" << std::chrono::duration_cast<std::chrono::nanoseconds>(diff).count() << " n" << std::endl;
     return 0;
 }
