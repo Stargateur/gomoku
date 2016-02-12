@@ -126,7 +126,7 @@ int	TCP_client::connect(std::string const &host, std::string const &port)
 
 uintmax_t	TCP_client::recv(uint8_t &data, uintmax_t size) const
 {
-    auto	ret = ::recv(m_fd, reinterpret_cast<char *>(&data), size, 0);
+    intmax_t	ret = ::recv(m_fd, reinterpret_cast<char *>(&data), size, 0);
     if (ret == -1)
 #ifdef  _WIN32
         throw TCP_client_exception("WSA error numero : " + std::to_string(GetLastError()));
@@ -138,7 +138,7 @@ uintmax_t	TCP_client::recv(uint8_t &data, uintmax_t size) const
 
 uintmax_t	TCP_client::send(uint8_t const &data, uintmax_t size) const
 {
-    auto	ret = ::send(m_fd, reinterpret_cast<const char *>(&data), size, 0);
+	intmax_t	ret = ::send(m_fd, reinterpret_cast<const char *>(&data), size, 0);
     if (ret == -1)
 #ifdef  _WIN32
         throw TCP_client_exception("WSA error numero : " + std::to_string(GetLastError()));

@@ -28,9 +28,9 @@ bool	TCP_packet_send::send(ITCP_client const &socket)
         throw ATCP_packet_exception();
     uintmax_t	ret = socket.send(m_buffer[m_send], m_size_header + get_size() - m_send);
 
-#ifdef DEBUG
+	#ifndef NDEBUG
     std::cerr << "Nombre d'octect envoyé " << ret << std::endl;
-#endif
+	#endif
     if (ret > m_size_header + get_size() - m_send)
         throw ATCP_packet_exception();
     if (ret == 0)

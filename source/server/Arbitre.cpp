@@ -3,12 +3,104 @@
 
 using prot = ITCP_protocol<Client>;
 
+#pragma region Log
+
+Arbitre::log_level::log_level(Arbitre::log_level::log l) :
+	m_l(l)
+{}
+
+Arbitre::log_level::log_level(const log_level & copy) :
+	m_l(copy.get_log())
+{
+}
+
+Arbitre::log_level Arbitre::log_level::operator=(const Arbitre::log_level & copy)
+{
+	set_log(copy.get_log());
+	return (*this);
+}
+
+bool Arbitre::log_level::operator!=(const log_level & copy) const
+{
+	return (get_log() != copy.get_log());
+}
+
+bool Arbitre::log_level::operator==(const log_level & copy) const
+{
+	return (get_log() == copy.get_log());
+}
+
+Arbitre::log_level::~log_level()
+{}
+
+void Arbitre::log_level::set_log(Arbitre::log_level::log l)
+{
+	m_l = l;
+}
+
+Arbitre::log_level::log Arbitre::log_level::get_log() const
+{
+	return (m_l);
+}
+
+Arbitre::log_level	Arbitre::log_level::operator&(const Arbitre::log_level &copy) const
+{
+	return (int_to_log(log_to_int(get_log()) & log_to_int(copy.get_log())));
+}
+
+Arbitre::log_level	Arbitre::log_level::operator|(const Arbitre::log_level &copy) const
+{
+	return (int_to_log(log_to_int(get_log()) | log_to_int(copy.get_log())));
+}
+
+int				Arbitre::log_level::log_to_int(Arbitre::log_level::log l) const
+{
+	switch (l)
+	{
+	case None:
+		return (0);
+	case Can_play:
+		return (1);
+	case Capture:
+		return (2);
+	case Double_three:
+		return (4);
+	case Victory:
+		return (8);
+	default:
+		throw (std::logic_error("Unexpected enum"));
+	}
+}
+
+Arbitre::log_level::log		Arbitre::log_level::int_to_log(int l) const
+{
+	switch (l)
+	{
+	case 0:
+		return (None);
+	case 1:
+		return (Can_play);
+	case 2:
+		return (Capture);
+	case 4:
+		return (Double_three);
+	case 8:
+		return (Victory);
+	}
+	throw (std::logic_error("Unexpected int"));
+}
+
+#pragma endregion
+
+#pragma region Constructeur
+
 Arbitre::Arbitre(ITCP_protocol<Client>::Callback &itcp_protocol) :
 	ACallback(itcp_protocol),
 	m_board(),
 	m_white_loose(0),
 	m_black_loose(0),
-	m_is_black_turn(true)
+	m_is_black_turn(true),
+	m_level(log_level::None)
 {
 	for (unsigned int i = 0; i < Arbitre::board_size; i++)
 	{
@@ -24,11 +116,14 @@ Arbitre::Arbitre(const Arbitre & copy) :
 	m_board(copy.m_board),
 	m_white_loose(0),
 	m_black_loose(0),
-	m_is_black_turn(copy.m_is_black_turn)
+	m_is_black_turn(copy.m_is_black_turn),
+	m_level(copy.m_level)
 {}
 
 Arbitre::~Arbitre(void)
 {}
+
+#pragma endregion
 
 void Arbitre::dump(void) const
 {
@@ -48,6 +143,11 @@ void Arbitre::dump(void) const
 	}
 }
 
+void Arbitre::set_log_level(log_level l)
+{
+	m_level = l;
+}
+
 bool Arbitre::check_coord(int x, int y) const
 {
 	if (x < 0 || x >= Arbitre::board_size)
@@ -56,6 +156,8 @@ bool Arbitre::check_coord(int x, int y) const
 		return false;
 	return true;
 }
+
+#pragma region Victory
 
 bool Arbitre::check_stone_libre(int x, int y) const
 {
@@ -74,15 +176,16 @@ bool Arbitre::check_stone_libre(int x, int y) const
 	{
 		if (check_coord(x + tab[i][0], y + tab[i][1]) == false)
 			continue;
-		if ((*this)(x + tab[i][0], y + tab[i][1]) != prot::Game_stone::Color::None)
-			continue;
 		if (check_coord(x - tab[i][0], y - tab[i][1]) == false)
-			continue;
-		if ((*this)(x - tab[i][0], y - tab[i][1]) != (*this)(x, y))
 			continue;
 		if (check_coord(x - tab[i][0] * 2, y - tab[i][1] * 2) == false)
 			continue;
-		if ((*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) != prot::Game_stone::notColor((*this)(x, y)))
+		if ((*this)(x - tab[i][0], y - tab[i][1]) != (*this)(x, y))
+			continue;
+		if (((*this)(x + tab[i][0], y + tab[i][1]) != prot::Game_stone::Color::None ||
+				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) != prot::Game_stone::notColor((*this)(x, y)))
+			&& ((*this)(x + tab[i][0], y + tab[i][1]) != prot::Game_stone::notColor((*this)(x, y)) ||
+				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) != prot::Game_stone::Color::None))
 			continue;
 		return (false);
 	}
@@ -104,12 +207,11 @@ void Arbitre::check_victory_five(ITCP_protocol<Client> &itcp_protocol, prot::Gam
 		{
 			if ((*this)(x, y) == stone->color)
 			{
-				int i = 0;
-				int j = 0;
-				int	nb = 0;
 				for (int k = 0; k < 4; k++)
 				{
-					nb = 0;
+					int nb = 0;
+					int i = 0;
+					int j = 0;
 					while (check_coord(x + i, y + j) && (*this)(x + i, y + j) == stone->color)
 					{
 						if (check_stone_libre(x + i, y + j) == false)
@@ -157,6 +259,10 @@ void Arbitre::check_victory(ITCP_protocol<Client> &itcp_protocol, prot::Game_sto
 	check_victory_five(itcp_protocol, stone);
 }
 
+#pragma endregion
+
+#pragma region put_stone
+
 void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
 {
 	uint8_t capture[8][4] = {
@@ -170,14 +276,10 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size }
 	};
 
-#ifdef DEBUG
-	std::cout << "put_stone (DEBUG : illo) " << std::endl;
-#endif
 	if (can_put_stone(stone))
 	{
-#ifdef DEBUG
-		std::cout << "can put_stone (DEBUG : illo)" << std::endl;
-#endif
+		if ((m_level & log_level::Can_play) == log_level::Can_play)
+			std::cout << "can put_stone (DEBUG : illo)" << std::endl;
 		m_callback.put_stone_game(itcp_protocol, stone);
 		(*this)(stone->x, stone->y) = stone->color;
 		m_is_black_turn = !m_is_black_turn;
@@ -186,7 +288,7 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 			int i = 0;
 			prot::Game_stone *mess = new prot::Game_stone();
 			mess->color = prot::Game_stone::Color::None;
-			while (capture[i][0] != Arbitre::board_size)
+			while (i < 8 && capture[i][0] != Arbitre::board_size)
 			{
 				mess->x = static_cast<unsigned char>(capture[i][0]);
 				mess->y = static_cast<unsigned char>(capture[i][1]);
@@ -201,158 +303,108 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 				else
 					m_black_loose += 2;
 				i++;
+				if ((m_level & log_level::Capture) == log_level::Capture)
+				{
+					std::cout << "white loose : " << m_white_loose << " (DEBUG : illo)" << std::endl;
+					std::cout << "black loose : " << m_black_loose << " (DEBUG : illo)" << std::endl;
+				}
 			}
 		}
-#ifdef DEBUG
-		dump();
-#endif
 		check_victory(itcp_protocol, stone);
 	}
+	else
+		if ((m_level & log_level::Can_play) == log_level::Can_play)
+			std::cout << "can not put_stone (DEBUG : illo)" << std::endl;
+
 }
+
+#pragma endregion
+
+#pragma region Capture
 
 bool Arbitre::can_capture(prot::Game_stone * stone, uint8_t coord[8][4]) const
 {
-	int x = stone->x;
-	int y = stone->y;
+	int tab[8][2] =
+	{
+		{ 0, 1 },
+		{ 1, 1 },
+		{ 1, 0 },
+		{ -1, 0 },
+		{ -1, -1 },
+		{ 0, -1 },
+		{ -1, 1 },
+		{ 1, -1 }
+	};
 	int i = 0;
 
-	if (check_coord(x - 3, y) && (*this)(x - 3, y) == stone->color)
+	for (int k = 0; k < 8; k++)
 	{
-		if ((*this)(x - 2, y) == prot::Game_stone::notColor(stone->color) && (*this)(x - 1, y) == prot::Game_stone::notColor(stone->color))
+		if (check_coord(stone->x + tab[k][0] * 3, stone->y + tab[k][1] * 3) && (*this)(stone->x + tab[k][0] * 3, stone->y + tab[k][1] * 3) == stone->color)
 		{
-			coord[i][0] = x - 2;
-			coord[i][1] = y;
-			coord[i][2] = x - 1;
-			coord[i][3] = y;
-			i++;
-		}
-	}
-	if (check_coord(x + 3, y) && (*this)(x + 3, y) == stone->color)
-	{
-		if ((*this)(x + 2, y) == prot::Game_stone::notColor(stone->color) && (*this)(x + 1, y) == prot::Game_stone::notColor(stone->color))
-		{
-			coord[i][0] = x + 2;
-			coord[i][1] = y;
-			coord[i][2] = x + 1;
-			coord[i][3] = y;
-			i++;
-		}
-	}
-	if (check_coord(x, y - 3) && (*this)(x, y - 3) == stone->color)
-	{
-		if ((*this)(x, y - 2) == prot::Game_stone::notColor(stone->color) && (*this)(x, y - 1) == prot::Game_stone::notColor(stone->color))
-		{
-			coord[i][0] = x;
-			coord[i][1] = y - 2;
-			coord[i][2] = x;
-			coord[i][3] = y - 1;
-			i++;
-		}
-	}
-	if (check_coord(x, y + 3) && (*this)(x, y + 3) == stone->color)
-	{
-		if ((*this)(x, y + 2) == prot::Game_stone::notColor(stone->color) && (*this)(x, y + 1) == prot::Game_stone::notColor(stone->color))
-		{
-			coord[i][0] = x;
-			coord[i][1] = y + 2;
-			coord[i][2] = x;
-			coord[i][3] = y + 1;
-			i++;
-		}
-	}
-	if (check_coord(x - 3, y - 3) && (*this)(x - 3, y - 3) == stone->color)
-	{
-		if ((*this)(x - 2, y - 2) == prot::Game_stone::notColor(stone->color) && (*this)(x - 1, y - 1) == prot::Game_stone::notColor(stone->color))
-		{
-			coord[i][0] = x - 2;
-			coord[i][1] = y - 2;
-			coord[i][2] = x - 1;
-			coord[i][3] = y - 1;
-			i++;
-		}
-	}
-	if (check_coord(x + 3, y + 3) && (*this)(x + 3, y + 3) == stone->color)
-	{
-		if ((*this)(x + 2, y + 2) == prot::Game_stone::notColor(stone->color) && (*this)(x + 1, y + 1) == prot::Game_stone::notColor(stone->color))
-		{
-			coord[i][0] = x + 2;
-			coord[i][1] = y + 2;
-			coord[i][2] = x + 1;
-			coord[i][3] = y + 1;
-			i++;
-		}
-	}
-	if (check_coord(x + 3, y - 3) && (*this)(x + 3, y - 3) == stone->color)
-	{
-		if ((*this)(x + 2, y - 2) == prot::Game_stone::notColor(stone->color) && (*this)(x + 1, y - 1) == prot::Game_stone::notColor(stone->color))
-		{
-			coord[i][0] = x + 2;
-			coord[i][1] = y - 2;
-			coord[i][2] = x + 1;
-			coord[i][3] = y - 1;
-			i++;
-		}
-	}
-	if (check_coord(x - 3, y + 3) && (*this)(x - 3, y + 3) == stone->color)
-	{
-		if ((*this)(x - 2, y + 2) == prot::Game_stone::notColor(stone->color) && (*this)(x - 1, y + 1) == prot::Game_stone::notColor(stone->color))
-		{
-			coord[i][0] = x - 2;
-			coord[i][1] = y + 2;
-			coord[i][2] = x - 1;
-			coord[i][3] = y + 1;
-			i++;
+			if ((*this)(stone->x + tab[k][0] * 2, stone->y + tab[k][1] * 2) == prot::Game_stone::notColor(stone->color) && (*this)(stone->x + tab[k][0], stone->y + tab[k][1]) == prot::Game_stone::notColor(stone->color))
+			{
+				if ((m_level & log_level::Capture) == log_level::Capture)
+					std::cout << "capture between " << stone->x << " " << stone->y << " and " << stone->x + tab[k][0] * 3 << " " << stone->y + tab[k][1] * 3 << " (DEBUG : illo)" << std::endl;
+				coord[i][0] = stone->x + tab[k][0] * 2;
+				coord[i][1] = stone->y + tab[k][1] * 2;
+				coord[i][2] = stone->x + tab[k][0];
+				coord[i][3] = stone->y + tab[k][1];
+				i++;
+			}
 		}
 	}
 	return (i != 0);
 }
 
+#pragma endregion
+
+#pragma region Can_play
+
+
 bool Arbitre::can_put_stone(ITCP_protocol<Client>::Game_stone * stone) const
 {
 	if (m_is_black_turn && stone->color != prot::Game_stone::Color::Black)
 	{
-#ifdef DEBUG
-		std::cout << "can not put_stone not your turn (DEBUG : illo)" << std::endl;
-#endif
+		if ((m_level & log_level::Can_play) == log_level::Can_play)
+			std::cout << "can not put_stone not your turn (DEBUG : illo)" << std::endl;
 		return false;
 	}
 	if (!m_is_black_turn && stone->color != prot::Game_stone::Color::White)
 	{
-#ifdef DEBUG
-		std::cout << "can not put_stone not your turn (DEBUG : illo)" << std::endl;
-#endif
+		if ((m_level & log_level::Can_play) == log_level::Can_play)
+			std::cout << "can not put_stone not your turn (DEBUG : illo)" << std::endl;
 		return false;
 	}
 	if (stone->x >= 19)
 	{
-#ifdef DEBUG
-		std::cout << "can not put_stone out of range (DEBUG : illo)" << std::endl;
-#endif
+		if ((m_level & log_level::Can_play) == log_level::Can_play)
+			std::cout << "can not put_stone out of range (DEBUG : illo)" << std::endl;
 		return false;
 	}
 	if (stone->y >= 19)
 	{
-#ifdef DEBUG
-		std::cout << "can not put_stone out of range (DEBUG : illo)" << std::endl;
-#endif
+		if ((m_level & log_level::Can_play) == log_level::Can_play)
+			std::cout << "can not put_stone out of range (DEBUG : illo)" << std::endl;
 		return false;
 	}
 	if ((*this)(stone->x, stone->y) != prot::Game_stone::Color::None)
 	{
-#ifdef DEBUG
-		std::cout << "can not put_stone case non libre (DEBUG : illo)" << std::endl;
-#endif
+		if ((m_level & log_level::Can_play) == log_level::Can_play)
+			std::cout << "can not put_stone case non libre (DEBUG : illo)" << std::endl;
 		return (false);
 	}
 	if (is_double_three(stone))
 	{
-#ifdef DEBUG
-		std::cout << "can not put_stone double three (DEBUG : illo)" << std::endl;
-#endif
+		if ((m_level & log_level::Can_play) == log_level::Can_play)
+			std::cout << "can not put_stone double three (DEBUG : illo)" << std::endl;
 		return false;
 	}
 	return true;
 }
+
+#pragma endregion
+
+#pragma region Double_three
 
 bool Arbitre::is_horizontal_three(int coord[4], ITCP_protocol<Client>::Game_stone * stone) const
 {
@@ -596,7 +648,6 @@ bool Arbitre::check_horizontal_three(int coord[4], ITCP_protocol<Client>::Game_s
 	x = coord[2];
 	while (x <= coord[0])
 	{
-		std::cout << x << " " << stone->y << std::endl;
 		if ((*this)(x, coord[1]) == stone->color || x == stone->x)
 		{
 			if (is_vertical_three(tmp, stone))
@@ -689,34 +740,32 @@ bool Arbitre::is_double_three(ITCP_protocol<Client>::Game_stone * stone) const
 
 	if (is_horizontal_three(coord, stone))
 	{
-#ifdef DEBUG
-		std::cout << "Three horizontal (DEBUG : illo)" << std::endl;
-#endif
+		if ((m_level & log_level::Double_three) == log_level::Double_three)
+			std::cout << "Three horizontal (DEBUG : illo)" << std::endl;
 		return check_horizontal_three(coord, stone);
 	}
 	if (is_vertical_three(coord, stone))
 	{
-#ifdef DEBUG
-		std::cout << "Three vertical (DEBUG : illo)" << std::endl;
-#endif
+		if ((m_level & log_level::Double_three) == log_level::Double_three)
+			std::cout << "Three vertical (DEBUG : illo)" << std::endl;
 		return check_vertical_three(coord, stone);
 	}
 	if (is_diag_iso_three(coord, stone))
 	{
-#ifdef DEBUG
-		std::cout << "Three diag iso (DEBUG : illo)" << std::endl;
-#endif
+		if ((m_level & log_level::Double_three) == log_level::Double_three)
+			std::cout << "Three diag iso (DEBUG : illo)" << std::endl;
 		return check_diag_iso_three(coord, stone);
 	}
 	if (is_diag_no_iso_three(coord, stone))
 	{
-#ifdef DEBUG
-		std::cout << "Three diag no iso (DEBUG : illo)" << std::endl;
-#endif
+		if ((m_level & log_level::Double_three) == log_level::Double_three)
+			std::cout << "Three diag no iso (DEBUG : illo)" << std::endl;
 		return check_diag_no_iso_three(coord, stone);
 	}
 	return false;
 }
+
+#pragma endregion
 
 const ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y) const
 {

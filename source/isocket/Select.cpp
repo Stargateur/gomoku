@@ -65,7 +65,7 @@ bool    Select::can_read(ISocket const &socket) const
     if (socket.get_fd() >= FD_SETSIZE)
         throw Select_exception(strerror(EDOM));
 #endif
-    return (FD_ISSET(socket.get_fd(), &m_readfds));
+    return (FD_ISSET(socket.get_fd(), &m_readfds) != 0);
 }
 
 bool    Select::can_write(ISocket const &socket) const
@@ -74,7 +74,7 @@ bool    Select::can_write(ISocket const &socket) const
     if (socket.get_fd() >= FD_SETSIZE)
         throw Select_exception(strerror(EDOM));
 #endif
-    return (FD_ISSET(socket.get_fd(), &m_writefds));
+    return (FD_ISSET(socket.get_fd(), &m_writefds) != 0);
 }
 
 void    Select::want_read(ISocket const &socket)

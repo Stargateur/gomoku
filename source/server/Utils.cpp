@@ -9,7 +9,7 @@ void    Utils::timeout(ITCP_protocol<Client> &itcp_protocol, ITime &timeout)
     intmax_t      nano = last.get_nano();
 
     last.now();
-    #ifdef DEBUG
+    #ifndef NDEBUG
     std::cerr << "Test du timeout " << second << "s " << nano << "ns par rapport à ";
     std::cerr << last.get_second() << "s " << last.get_nano() << "n" << std::endl;
     #endif
@@ -19,19 +19,19 @@ void    Utils::timeout(ITCP_protocol<Client> &itcp_protocol, ITime &timeout)
     {
         if (client.get_wait_pong() == true)
         {
-            #ifdef DEBUG
+            #ifndef NDEBUG
             std::cerr << "le client a timeout deuxième fois" << std::endl;
             #endif
             throw std::logic_error("timeout");
         }
-        #ifdef DEBUG
+        #ifndef NDEBUG
         std::cerr << "le client a timeout première fois" << std::endl;
         #endif
         client.set_wait_pong(true);
         itcp_protocol.send_ping();
         return;
     }
-    #ifdef DEBUG
+    #ifndef NDEBUG
     std::cerr << "le client n'as pas timeout" << std::endl;
     #endif
     last.set_second(second);

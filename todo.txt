@@ -1,0 +1,2 @@
+faire un timeout pour le client si le serveur ne répond pas
+ramplacer itime par chrono du cpp
