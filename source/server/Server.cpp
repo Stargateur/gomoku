@@ -101,20 +101,27 @@ void	Server::run(void)
 
     if (m_iselect->can_read(*m_itcp_server))
     {
-        m_iselect->reset_read(*m_itcp_server);
-        Client	*client = new Client(&m_itcp_server->accept(), nullptr, new Time(), false);
-        #ifndef NDEBUG
-        std::cerr << "Un client s'est connecter" << std::endl;
-        #endif
-        m_itcp_protocols.push_back(new TCP_protocol<Client>(this, client));
+		try
+		{
+			m_iselect->reset_read(*m_itcp_server);
+			Client	*client = new Client(&m_itcp_server->accept(), nullptr, new Time(), false);
+			#ifndef NDEBUG
+			std::cerr << "Un client vient d'être accepté" << std::endl;
+			#endif
+			m_itcp_protocols.push_back(new TCP_protocol<Client>(this, client));
+		}
+		catch (std::exception &e)
+		{
+			std::cerr << e.what() << std::endl;
+		}
     }
     auto disconnect = m_disconnecteds.begin();
     while (disconnect != m_disconnecteds.end())
     {
         auto itcp_protocol = *disconnect;
-        Client &client = *itcp_protocol->get_data();
         try
         {
+			Client &client = *itcp_protocol->get_data();
             if (m_iselect->can_write(*client.get_itcp_client()))
             {
                 m_iselect->reset_write(*client.get_itcp_client());
@@ -134,10 +141,9 @@ void	Server::run(void)
     for (auto it = m_itcp_protocols.begin(); it != m_itcp_protocols.end();)
     {
         auto itcp_protocol = *it;
-        Client &client = *itcp_protocol->get_data();
-
         try
         {
+			Client &client = *itcp_protocol->get_data();
             if (m_iselect->can_read(*client.get_itcp_client()))
             {
                 itcp_protocol->get_data()->get_last()->now();
@@ -169,7 +175,7 @@ void	Server::run(void)
     auto it_game = m_games.begin();
     while (it_game != m_games.end())
     {
-        auto game = *it_game;
+        Game *game = *it_game;
         try
         {
             Time lol;

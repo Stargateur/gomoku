@@ -3,6 +3,7 @@ project(gomoku)
 set(CMAKE_MODULE_PATH "C:/SFML-2.3.2/cmake/Modules/" ${CMAKE_MODULE_PATH})
 find_package(SFML 2 REQUIRED system window graphics network audio)
 find_package (Threads)
+
 add_library(isocket
 	STATIC
 	source/isocket/ITCP_server.cpp
@@ -29,6 +30,7 @@ target_include_directories(isocket PUBLIC include/isocket include/itime)
 if(WIN32)
   target_link_libraries(isocket PUBLIC ws2_32)
 endif()
+
 add_library(itime
 	STATIC
 	source/itime/ITime.cpp
@@ -38,6 +40,7 @@ add_library(itime
 )
 target_compile_features(itime PUBLIC cxx_range_for)
 target_include_directories(itime PUBLIC include/itime)
+
 add_library(iprotocol
 	STATIC
 	source/iprotocol/ITCP_protocol.cpp
@@ -53,6 +56,7 @@ add_library(iprotocol
 )
 target_compile_features(iprotocol PUBLIC cxx_range_for)
 target_include_directories(iprotocol PUBLIC include/iprotocol include/itime include/isocket)
+
 add_executable(gomoku_client
 	source/client/Client.cpp
 	source/client/GameInfo.cpp
@@ -74,6 +78,16 @@ target_include_directories(gomoku_client PUBLIC include/iprotocol include/itime 
 target_link_libraries(gomoku_client PUBLIC isocket iprotocol itime)
 target_include_directories(gomoku_client PUBLIC ${SFML_INCLUDE_DIR})
 target_link_libraries(gomoku_client PUBLIC ${SFML_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(gomoku_ai
+	source/ai/Client.cpp
+	source/ai/main.cpp
+	include/ai/Client.hpp
+)
+target_compile_features(gomoku_ai PUBLIC cxx_range_for)
+target_include_directories(gomoku_ai PUBLIC include/iprotocol include/itime include/isocket include/ai)
+target_link_libraries(gomoku_ai PUBLIC isocket iprotocol itime)
+
 add_executable(gomoku_server
 	source/server/Arbitre.cpp
 	source/server/Black.cpp

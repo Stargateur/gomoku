@@ -21,7 +21,6 @@
 
 class	Server : public ITCP_protocol<Client>::Callback
 {
-
 public:
     Server(void);
 private:
