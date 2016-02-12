@@ -21,11 +21,11 @@ Client::Client(void) :
 {
     m_itcp_protocol->send_connect("ia", "ia");
 	ITCP_protocol<ITCP_client>::Game game;
-	game.name = new std::string("ia");
+	game.name = new std::string("mdr");
 	m_itcp_protocol->send_join_game(game);
 	ITCP_protocol<ITCP_client>::Game_player_param params;
 	params.name = new std::string("color");
-	params.value = new std::string("White");
+	params.value = new std::string("white");
 	m_itcp_protocol->send_change_param_player_game(params);
 	m_itcp_protocol->send_ready_game(true);
 }
@@ -135,6 +135,10 @@ void	Client::game_param_changed(ITCP_protocol<ITCP_client> &itcp_protocol, typen
 
 void	Client::game_stone_put(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_stone *stone)
 {
+	stone->color = ITCP_protocol<ITCP_client>::Game_stone::White;
+	stone->x--;
+	stone->y--;
+	itcp_protocol.send_put_stone_game(*stone);
 }
 
 void	Client::game_deleted(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game *game)

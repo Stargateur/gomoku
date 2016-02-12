@@ -79,6 +79,11 @@ target_link_libraries(gomoku_client PUBLIC isocket iprotocol itime)
 target_include_directories(gomoku_client PUBLIC ${SFML_INCLUDE_DIR})
 target_link_libraries(gomoku_client PUBLIC ${SFML_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
+add_custom_command(TARGET gomoku_client POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_SOURCE_DIR}/Sprite/"
+        $<TARGET_FILE_DIR:gomoku_client>/Sprite)
+
 add_executable(gomoku_ai
 	source/ai/Client.cpp
 	source/ai/main.cpp

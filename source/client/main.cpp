@@ -8,6 +8,9 @@
 // Last update Mon Feb  8 17:43:11 2016 Antoine Plaskowski
 //
 
+#ifdef WIN32
+#include	<windows.h>
+#endif
 #include	<iostream>
 #include	<exception>
 #include	<thread>
@@ -16,6 +19,20 @@
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
 #include	"GomokuGraphics.hpp"
+
+
+void getexepath(std::string &string)
+{
+	char result[MAX_PATH];
+	#ifdef WIN32
+	if (GetModuleFileName(NULL, result, MAX_PATH) == 0)
+		std::logic_error("error pas pu récup la path vers l'exe");
+	#else
+	if (readlink("/proc/self/exe", result, PATH_MAX) == -1)
+		std::logic_error("error pas pu récup la path vers l'exe");
+	#endif
+	string = result;
+}
 
 void start_tcpclient()
 {

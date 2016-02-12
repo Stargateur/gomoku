@@ -22,13 +22,17 @@ static void    sigint(int)
 	g_keep_running = 0;
 }
 
-int				main(void) try
+int				main(int argc, char **argv) try
 {
+	std::cout << argv[0] << std::endl;
 	Client	client;
 
 	std::signal(SIGINT, sigint);
 	while (g_keep_running != 0)
+	{
+		client.pre_run();
 		client.run();
+	}
 	return (0);
 }
 catch (std::exception &e)
