@@ -13,26 +13,19 @@
 #include	"TCP_protocol.hpp"
 #include	"TCP_client.hpp"
 #include	"Select.hpp"
-#include	"PlayerInfo.hpp"
-#include	"GameInfo.hpp"
 #include	"Time.hpp"
 
 Client::Client(void) :
-    m_itcp_protocol(new TCP_protocol<ITCP_client>(this, new TCP_client("10.26.111.229", "4243"))),
+    m_itcp_protocol(new TCP_protocol<ITCP_client>(this, new TCP_client("localhost", "4242"))),
     m_iselect(new Select)
 {
-    m_itcp_protocol->send_connect("test", "test");
+    m_itcp_protocol->send_connect("ia", "ia");
 	ITCP_protocol<ITCP_client>::Game game;
 	game.name = new std::string("mdr");
-	PlayerInfo::getInstance().lock();
-	if (PlayerInfo::getInstance().mColor.compare("black") == 0)
-		m_itcp_protocol->send_create_game(game);
-	else
-		m_itcp_protocol->send_join_game(game);
+	m_itcp_protocol->send_join_game(game);
 	ITCP_protocol<ITCP_client>::Game_player_param params;
 	params.name = new std::string("color");
-	params.value = new std::string(PlayerInfo::getInstance().mColor);
-	PlayerInfo::getInstance().unlock();
+	params.value = new std::string("white");
 	m_itcp_protocol->send_change_param_player_game(params);
 	m_itcp_protocol->send_ready_game(true);
 }
@@ -41,33 +34,28 @@ Client::~Client(void)
 {
 }
 
+void	Client::pre_run(void)
+{
+	m_iselect->reset();
+	if (m_itcp_protocol->want_recv() == true)
+		m_iselect->want_read(*m_itcp_protocol->get_data());
+	if (m_itcp_protocol->want_send() == true)
+		m_iselect->want_write(*m_itcp_protocol->get_data());
+}
+
 void	Client::run(void)
 {
-    bool	g_keep_running = true;
-
-    while (g_keep_running == true)
-    {
-        m_iselect->reset();
-        if (m_itcp_protocol->want_recv() == true)
-            m_iselect->want_read(*m_itcp_protocol->get_data());
-        if (m_itcp_protocol->want_send() == true)
-            m_iselect->want_write(*m_itcp_protocol->get_data());
-        m_iselect->select(Time(0, 500000000));
-        if (m_iselect->can_read(*m_itcp_protocol->get_data()) == true)
-		{
-			m_iselect->reset_read(*m_itcp_protocol->get_data());
-            m_itcp_protocol->recv(*m_itcp_protocol->get_data());
-		}
-        if (m_iselect->can_write(*m_itcp_protocol->get_data()) == true)
-		{
-			m_iselect->reset_write(*m_itcp_protocol->get_data());
-            m_itcp_protocol->send(*m_itcp_protocol->get_data());
-		}
-		checkUserInputs();
-		PlayerInfo::getInstance().lock();
-		g_keep_running = PlayerInfo::getInstance().mDisconnect != PlayerInfo::STATE::DONE;
-		PlayerInfo::getInstance().unlock();
-    }
+    m_iselect->select();
+    if (m_iselect->can_read(*m_itcp_protocol->get_data()) == true)
+	{
+		m_iselect->reset_read(*m_itcp_protocol->get_data());
+        m_itcp_protocol->recv(*m_itcp_protocol->get_data());
+	}
+    if (m_iselect->can_write(*m_itcp_protocol->get_data()) == true)
+	{
+		m_iselect->reset_write(*m_itcp_protocol->get_data());
+        m_itcp_protocol->send(*m_itcp_protocol->get_data());
+	}
 }
 
 void	Client::result(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Error error)
@@ -77,16 +65,10 @@ void	Client::result(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_pro
 
 void	Client::connect(ITCP_protocol<ITCP_client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)
 {
-	PlayerInfo::getInstance().lock();
-	PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
-	PlayerInfo::getInstance().unlock();
 }
 
 void	Client::disconnect(ITCP_protocol<ITCP_client> &itcp_protocol)
 {
-	PlayerInfo::getInstance().lock();
-	PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
-	PlayerInfo::getInstance().unlock();
 }
 
 void	Client::ping(ITCP_protocol<ITCP_client> &itcp_protocol)
@@ -153,13 +135,10 @@ void	Client::game_param_changed(ITCP_protocol<ITCP_client> &itcp_protocol, typen
 
 void	Client::game_stone_put(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_stone *stone)
 {
-	GameInfo::getInstance().lock();
-	if (stone != nullptr)
-	{
-		GameInfo::getInstance().mPlate[stone->x][stone->y] = stone->color;
-		GameInfo::getInstance().mHisto.push_back(stone);
-	}
-	GameInfo::getInstance().unlock();
+	stone->color = ITCP_protocol<ITCP_client>::Game_stone::White;
+	stone->x--;
+	stone->y--;
+	itcp_protocol.send_put_stone_game(*stone);
 }
 
 void	Client::game_deleted(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game *game)
@@ -177,33 +156,8 @@ void	Client::ready_game(ITCP_protocol<ITCP_client> &itcp_protocol, bool ready)
 
 void	Client::result_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_result *game_result)
 {
-	PlayerInfo::getInstance().lock();
-	PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
-	PlayerInfo::getInstance().unlock();
 }
 
 void	Client::message(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Message *message)
 {
-}
-
-void Client::checkUserInputs(void)
-{
-	PlayerInfo::getInstance().lock();
-	if (PlayerInfo::getInstance().mDisconnect == PlayerInfo::STATE::ASK)
-	{
-		m_itcp_protocol->send_disconnect();
-		PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::DONE;
-	}
-	else if (PlayerInfo::getInstance().mQuit == PlayerInfo::STATE::ASK)
-	{
-		m_itcp_protocol->send_disconnect();
-		PlayerInfo::getInstance().mQuit = PlayerInfo::STATE::DONE;
-		PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::DONE;
-	}
-	if (PlayerInfo::getInstance().mWantPlay == PlayerInfo::STATE::ASK)
-	{
-		m_itcp_protocol->send_put_stone_game(PlayerInfo::getInstance().mLastPlay);
-		PlayerInfo::getInstance().mWantPlay = PlayerInfo::STATE::DONE;
-	}
-	PlayerInfo::getInstance().unlock();
 }

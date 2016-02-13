@@ -39,9 +39,9 @@ bool	TCP_packet_recv::recv(ITCP_client const &socket)
     if (ret > m_size_header + get_size() - m_recv)
         throw ATCP_packet_exception();
 	}
-#ifdef DEBUG
+	#ifndef NDEBUG
     std::cerr << "Nombre d'octect lu " << ret << std::endl;
-#endif
+	#endif
     if (ret == 0)
         throw ATCP_packet_exception();
     m_recv += ret;

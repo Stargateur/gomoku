@@ -48,13 +48,23 @@ void    Game::pre_run(ISelect &iselect)
             iselect.want_write(*client.get_itcp_client());
     }
 
-    for (auto disconnect : m_disconnecteds)
-    {
-        Client &client = *disconnect->get_data();
+	auto disconnect = m_disconnecteds.begin();
+	while (disconnect != m_disconnecteds.end())
+	{
+		auto itcp_protocol = *disconnect;
+		Client &client = *itcp_protocol->get_data();
 
-        if (disconnect->want_send())
-            iselect.want_write(*client.get_itcp_client());
-    }
+		if (itcp_protocol->want_send())
+		{
+			iselect.want_write(*client.get_itcp_client());
+			disconnect++;
+		}
+		else
+		{
+			disconnect = m_disconnecteds.erase(disconnect);
+			delete itcp_protocol;
+		}
+	}
 }
 
 void    Game::run(ISelect &iselect, ITime &)
