@@ -23,7 +23,7 @@
 
 void getexepath(std::string &string)
 {
-	char result[MAX_PATH];
+	/*char result[MAX_PATH];
 	#ifdef WIN32
 	if (GetModuleFileName(NULL, result, MAX_PATH) == 0)
 		std::logic_error("error pas pu récup la path vers l'exe");
@@ -31,7 +31,7 @@ void getexepath(std::string &string)
 	if (readlink("/proc/self/exe", result, PATH_MAX) == -1)
 		std::logic_error("error pas pu récup la path vers l'exe");
 	#endif
-	string = result;
+	string = result;*/
 }
 
 void start_tcpclient()

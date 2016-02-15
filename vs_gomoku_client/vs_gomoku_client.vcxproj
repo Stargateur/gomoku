@@ -75,6 +75,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);../include/client/;../include/itime;../include/isocket/;../include/iprotocol/;C:/SFML-2.3.2/include</IncludePath>
     <OutDir>$(SolutionDir)</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;../include/client/;../include/itime;../include/isocket/;../include/iprotocol/;C:/SFML-2.3.2/include</IncludePath>
@@ -141,8 +142,13 @@
     <ClInclude Include="..\include\client\GameInfo.hpp" />
     <ClInclude Include="..\include\client\GView.hpp" />
     <ClInclude Include="..\include\client\GVOButton.hpp" />
+    <ClInclude Include="..\include\client\GVOCheckbox.hpp" />
+    <ClInclude Include="..\include\client\IGVAction.hpp" />
+    <ClInclude Include="..\include\client\IGVAMouseClick.hpp" />
+    <ClInclude Include="..\include\client\IGVAMouseHover.hpp" />
     <ClInclude Include="..\include\client\IGVObject.hpp" />
     <ClInclude Include="..\include\client\GomokuGraphics.hpp" />
+    <ClInclude Include="..\include\client\GVAMouseClickCallBack.hpp" />
     <ClInclude Include="..\include\client\PlayerInfo.hpp" />
     <ClInclude Include="..\include\iprotocol\ACallback.hpp" />
     <ClInclude Include="..\include\iprotocol\ATCP_packet.hpp" />

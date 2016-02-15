@@ -126,11 +126,26 @@
     <ClInclude Include="..\include\client\GView.hpp">
       <Filter>client\IGView</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\client\GVOButton.hpp">
-      <Filter>client\IGView</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\client\IGVObject.hpp">
       <Filter>client\IGView</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\GVOButton.hpp">
+      <Filter>client\IGView\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\GVOCheckbox.hpp">
+      <Filter>client\IGView\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\IGVAMouseHover.hpp">
+      <Filter>client\IGView\IGVAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\IGVAction.hpp">
+      <Filter>client\IGView\IGVAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\IGVAMouseClick.hpp">
+      <Filter>client\IGView\IGVAction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\client\GVAMouseClickCallBack.hpp">
+      <Filter>client\IGView\IGVAction</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +163,12 @@
     </Filter>
     <Filter Include="client\IGView">
       <UniqueIdentifier>{ed9341cb-6a47-4d6a-950b-f56c7ce6a9ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="client\IGView\Objects">
+      <UniqueIdentifier>{7bd8f897-09e5-4581-b85b-b64b0f418efa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="client\IGView\IGVAction">
+      <UniqueIdentifier>{f4f9ec87-e903-47f3-b8e8-92eaef60ef09}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
