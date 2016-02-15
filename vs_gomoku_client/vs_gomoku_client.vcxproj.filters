@@ -147,6 +147,9 @@
     <ClInclude Include="..\include\client\GVAMouseClickCallBack.hpp">
       <Filter>client\IGView\IGVAction</Filter>
     </ClInclude>
+    <ClInclude Include="GVAMouseClickActivate.hpp">
+      <Filter>client\IGView\IGVAction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="iprotocol">
