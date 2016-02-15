@@ -32,3 +32,7 @@ gomoku.VC.opendb
 *.cd
 *.user
 x64
+*.exp
+*.ilk
+*.lib
+*.pdb

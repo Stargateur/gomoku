@@ -1,19 +1,17 @@
 #pragma once
 
-#ifndef GVOBUTTON_HPP__
-#define GVOBUTTON_HPP__
+#ifndef GVOCHECKBOX_HPP__
+#define GVOCHECKBOX_HPP__
 
 #include	<SFML/Graphics.hpp>
 #include	"IGVObject.hpp"
-#include	"IGVAction.hpp"
-#include	"GVAMouseClickCallBack.hpp"
 
 template<typename T>
-class GVOButton : public IGVObject
+class GVOCheckbox : public IGVObject
 {
 public:
-	GVOButton(sf::Vector2f pos, sf::Texture texture, sf::Vector2f scale) : mPos(pos), mTexture(texture), mHoverTexture(texture),
-		mScale(scale), mHoverScale(scale), mAction(nullptr)
+	GVOCheckbox(sf::Vector2f pos, sf::Texture texture, sf::Vector2f scale) : mPos(pos), mTexture(texture), mHoverTexture(texture),
+		mScale(scale), mHoverScale(scale), mCallback(nullptr)
 	{
 		mMainSprite.setTexture(mTexture);
 		mMainSprite.setPosition(mPos);
@@ -41,16 +39,20 @@ public:
 	}
 
 public:
-	void	setAction(void(*callback)(T), T callbackParam)
+	void	setAction(void(*callback)(T param), T callbackParam)
 	{
-		mAction = new GVAMouseClickCallBack<T>(callback, callbackParam);
+		mCallback = callback;
+		mCallbackParam = callbackParam;
 	}
 	void	mouseClick(sf::Vector2f pos)
 	{
-		if (mAction != nullptr)
-		mAction->Act(*mCurView, pos);
-		std::cout << "scalex:" << mCurView->getGlobalBounds().intersects(sf::FloatRect(pos, sf::Vector2f(1,1))) << std::endl;
-		
+		std::cout << "scalex:" << mCurView->getGlobalBounds().intersects(sf::FloatRect(pos, sf::Vector2f(1, 1))) << std::endl;
+		if (pos.x >= mCurView->getGlobalBounds().left && pos.x <= mCurView->getGlobalBounds().left + mCurView->getGlobalBounds().width &&
+			pos.y >= mCurView->getGlobalBounds().top && pos.y <= mCurView->getGlobalBounds().top + mCurView->getGlobalBounds().height)
+		{
+			if (mCallback != nullptr)
+				(*mCallback)(mCallbackParam);
+		}
 	}
 	void	mouseMove(sf::Vector2f pos)
 	{
@@ -70,7 +72,8 @@ private:
 	sf::Vector2f	mScale;
 	sf::Vector2f	mHoverScale;
 	sf::Vector2f	mPos;
-	IGVAction		*mAction;
+	T				mCallbackParam;
+	void(*mCallback)(T param);
 };
 
 #endif // !GVOBUTTON_HPP__
