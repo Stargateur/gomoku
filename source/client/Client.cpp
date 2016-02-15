@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 //
 // Started on  Wed Jan 27 11:01:51 2016 Antoine Plaskowski
-// Last update Wed Jan 27 11:22:59 2016 Antoine Plaskowski
+// Last update Sat Feb 13 04:02:41 2016 Antoine Plaskowski
 //
 
 #include	<iostream>
@@ -18,7 +18,7 @@
 #include	"Time.hpp"
 
 Client::Client(void) :
-    m_itcp_protocol(new TCP_protocol<ITCP_client>(this, new TCP_client("10.26.111.229", "4243"))),
+    m_itcp_protocol(new TCP_protocol<ITCP_client>(this, new TCP_client("localhost", "4242"))),
     m_iselect(new Select)
 {
     m_itcp_protocol->send_connect("test", "test");
