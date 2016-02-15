@@ -6,10 +6,10 @@
 #include	<SFML/Graphics.hpp>
 #include	"IGVAMouseClick.hpp"
 
-class GVAMouseClickActivate : public IGVAMouseClick
+class GVAMouseClickActivate : public IGVAMouseClick<sf::Sprite, sf::Vector2f>
 {
 public:
-	GVAMouseClickActivate(void) {};
+	GVAMouseClickActivate(void) {}
 	virtual ~GVAMouseClickActivate(void) {}
 	virtual void Act(sf::Sprite &texture, sf::Vector2f &mousePosition) {}
 

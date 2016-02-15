@@ -6,11 +6,12 @@
 #include	<SFML/Graphics.hpp>
 #include	"IGVAction.hpp"
 
-class IGVAMouseClick : public IGVAction
+template<typename... Args>
+class IGVAMouseClick : public IGVAction<Args...>
 {
 public:
 	virtual ~IGVAMouseClick(void) {};
-	virtual void Act(sf::Sprite &texture, sf::Vector2f &mousePosition) = 0;
+	virtual void Act(Args... args) = 0;
 };
 
 #endif // !IGVAMOUSE_CLICK_HPP_

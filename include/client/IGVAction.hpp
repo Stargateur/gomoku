@@ -5,11 +5,12 @@
 
 #include	<SFML/Graphics.hpp>
 
+template<typename... Args>
 class IGVAction
 {
 public:
 	virtual ~IGVAction(void) {};
-	virtual void Act(sf::Sprite &texture, sf::Vector2f &mousePosition) = 0;
+	virtual void Act(Args... args) = 0;
 };
 
 #endif // !IGVACTION_HPP_

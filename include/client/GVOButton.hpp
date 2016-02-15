@@ -48,7 +48,7 @@ public:
 	void	mouseClick(sf::Vector2f pos)
 	{
 		if (mAction != nullptr)
-		mAction->Act(*mCurView, pos);
+			mAction->Act(*mCurView, pos);
 		std::cout << "scalex:" << mCurView->getGlobalBounds().intersects(sf::FloatRect(pos, sf::Vector2f(1,1))) << std::endl;
 		
 	}
@@ -70,7 +70,7 @@ private:
 	sf::Vector2f	mScale;
 	sf::Vector2f	mHoverScale;
 	sf::Vector2f	mPos;
-	IGVAction		*mAction;
+	IGVAction<sf::Sprite&, sf::Vector2f&>			*mAction;
 };
 
 #endif // !GVOBUTTON_HPP__

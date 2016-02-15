@@ -8,7 +8,7 @@
 #include	<iostream>
 
 template<typename T>
-class GVAMouseClickCallBack : public IGVAMouseClick
+class GVAMouseClickCallBack : public IGVAMouseClick<sf::Sprite &, sf::Vector2f &>
 {
 public:
 	GVAMouseClickCallBack(void(*callback)(T), T &callbackParam)
