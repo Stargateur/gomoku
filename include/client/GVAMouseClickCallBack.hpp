@@ -3,7 +3,7 @@
 #ifndef MOUSECLICKCALLBACK_HPP_
 #define MOUSECLICKCALLBACK_HPP_
 
-#include	<SFML\Graphics.hpp>
+#include	<SFML/Graphics.hpp>
 #include	"IGVAMouseClick.hpp"
 #include	<iostream>
 

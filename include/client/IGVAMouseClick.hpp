@@ -3,7 +3,7 @@
 #ifndef IGVAMOUSE_CLICK_HPP_
 #define IGVAMOUSE_CLICK_HPP_
 
-#include	<SFML\Graphics.hpp>
+#include	<SFML/Graphics.hpp>
 #include	"IGVAction.hpp"
 
 class IGVAMouseClick : public IGVAction

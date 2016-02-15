@@ -3,7 +3,7 @@
 #ifndef IGVACTION_HPP_
 #define IGVACTION_HPP_
 
-#include	<SFML\Graphics.hpp>
+#include	<SFML/Graphics.hpp>
 
 class IGVAction
 {
