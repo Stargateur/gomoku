@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 //
 // Started on  Tue Jan 26 17:50:03 2016 Antoine Plaskowski
-// Last update Fri Jan 29 23:56:37 2016 Antoine Plaskowski
+// Last update Wed Feb 17 14:19:23 2016 Antoine Plaskowski
 //
 
 #include    <thread>
@@ -36,7 +36,7 @@ catch (...)
 Server::Server(ITCP_server *itcp_server, ISelect *iselect) try :
     m_itcp_server(itcp_server),
     m_iselect(iselect),
-    m_timeout(new Time(500000000))
+    m_timeout(new Time(5))
 {
 }
 catch (...)

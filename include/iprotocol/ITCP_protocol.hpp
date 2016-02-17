@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 //
 // Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Thu Jan 28 10:45:40 2016 Antoine Plaskowski
+// Last update Wed Feb 17 14:36:04 2016 Antoine Plaskowski
 //
 
 #ifndef		ITCP_PROTOCOL_HPP_
@@ -88,15 +88,25 @@ public:
             Black,
             None
         }		color;
-		static Color notColor(Color c)
-		{
-			if (c == ITCP_protocol<T>::Game_stone::Color::Black)
-				return ITCP_protocol<T>::Game_stone::Color::White;
-			if (c == ITCP_protocol<T>::Game_stone::Color::White)
-				return ITCP_protocol<T>::Game_stone::Color::Black;
-			return ITCP_protocol<T>::Game_stone::Color::None;
-		}
-
+      Game_stone(uint8_t _x, uint8_t _y, Color _color) :
+	x(_x),
+	y(_y),
+	color(_color)
+      {
+      }
+      Game_stone(void) :
+	Game_stone(0, 0, None)
+      {
+      }
+      Color	operator!(void)
+      {
+	if (color == Black)
+	  return White;
+	else if (color == White)
+	  return Black;
+	else
+	  return None;
+      }
     };
 
     class	Callback

@@ -150,8 +150,8 @@ bool Arbitre::check_stone_libre(int x, int y) const
 		if ((*this)(x - tab[i][0], y - tab[i][1]) != (*this)(x, y))
 			continue;
 		if (((*this)(x + tab[i][0], y + tab[i][1]) == prot::Game_stone::Color::None &&
-				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) == prot::Game_stone::notColor((*this)(x, y)))
-			|| ((*this)(x + tab[i][0], y + tab[i][1]) == prot::Game_stone::notColor((*this)(x, y)) &&
+				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) == !((*this)(x, y)))
+			|| ((*this)(x + tab[i][0], y + tab[i][1]) == !((*this)(x, y)) &&
 				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) == prot::Game_stone::Color::None))
 		return (false);
 	}
@@ -314,7 +314,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, uint8_t coord[8][4]) const
 	{
 		if (check_coord(stone->x + tab[k][0] * 3, stone->y + tab[k][1] * 3) && (*this)(stone->x + tab[k][0] * 3, stone->y + tab[k][1] * 3) == stone->color)
 		{
-			if ((*this)(stone->x + tab[k][0] * 2, stone->y + tab[k][1] * 2) == prot::Game_stone::notColor(stone->color) && (*this)(stone->x + tab[k][0], stone->y + tab[k][1]) == prot::Game_stone::notColor(stone->color))
+			if ((*this)(stone->x + tab[k][0] * 2, stone->y + tab[k][1] * 2) == !(stone->color) && (*this)(stone->x + tab[k][0], stone->y + tab[k][1]) == !(stone->color))
 			{
 				if (m_level.is_active(log_level::Capture))
 					std::cout << "capture between " << stone->x << " " << stone->y << " and " << stone->x + tab[k][0] * 3 << " " << stone->y + tab[k][1] * 3 << " (DEBUG : illo)" << std::endl;
@@ -395,7 +395,7 @@ bool Arbitre::is_three_line(ITCP_protocol<Client>::Game_stone * stone, const std
 			empty[0].first = stone->x + i;
 			empty[0].second = stone->y + j;
 		}
-		else if ((*this)(stone->x + i, stone->y + j) == prot::Game_stone::notColor(stone->color))
+		else if ((*this)(stone->x + i, stone->y + j) == !(stone->color))
 			break;
 		else
 		{
@@ -418,7 +418,7 @@ bool Arbitre::is_three_line(ITCP_protocol<Client>::Game_stone * stone, const std
 			empty[1].first = stone->x - i;
 			empty[1].second = stone->y - j;
 		}
-		else if ((*this)(stone->x - i, stone->y - j) == prot::Game_stone::notColor(stone->color))
+		else if ((*this)(stone->x - i, stone->y - j) == !(stone->color))
 			break;
 		else
 		{

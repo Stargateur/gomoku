@@ -5,7 +5,7 @@
 // Login   <antoine.plaskowski@epitech.eu>
 //
 // Started on  Wed Jan 27 15:21:28 2016 Antoine Plaskowski
-// Last update Thu Jan 28 10:46:40 2016 Antoine Plaskowski
+// Last update Wed Feb 17 14:21:19 2016 Antoine Plaskowski
 //
 
 #include    <iostream>
@@ -20,7 +20,7 @@ Game::Game(typename ITCP_protocol<Client>::Callback &callback, std::string *name
     m_arbitre(*this),
     m_black(m_arbitre),
     m_white(m_arbitre),
-    m_timeout(new Time(500000000))
+    m_timeout(new Time(5))
 {
     ITCP_protocol<Client>::Game_player_param *game_player_param = new ITCP_protocol<Client>::Game_player_param;
 
@@ -258,7 +258,6 @@ void    Game::result_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_pr
         itcp_protocol.send_result(ITCP_protocol<Client>::Error::Packet_not_allowed);
         delete game_result->winner;
         delete game_result;
-        throw std::logic_error("you are you ?");
     }
     for (auto it : m_itcp_protocols)
         it->send_result_game(*game_result);
