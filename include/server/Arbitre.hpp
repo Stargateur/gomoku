@@ -1,5 +1,6 @@
 #pragma once
 
+#include <list>
 #include <array>
 #include "ACallback.hpp"
 #include "ITCP_protocol.hpp"
@@ -16,25 +17,21 @@ public:
 			None,
 			Can_play,
 			Capture,
-			Double_three,
+			Double_three ,
 			Victory
 		};
 		log_level(log l = None);
 		log_level(const log_level &copy);
 		~log_level();
 
-		void set_log(log l);
-		log get_log() const;
+		void activate(log l);
+		void desactivate(log l);
+		bool is_active(log l) const;
 		log_level	operator=(const log_level &copy);
-		bool	operator!=(const log_level &copy) const;
-		bool	operator==(const log_level &copy) const;
-		log_level operator|(const log_level &op) const;
-		log_level operator&(const log_level &op) const;
 	private:
-		log m_l;
+		int m_l;
 
 		int log_to_int(log l) const;
-		log int_to_log(int l) const;
 	};
 	Arbitre(ITCP_protocol<Client>::Callback& itcp_protocol);
 	Arbitre(const Arbitre &copy);
@@ -49,6 +46,7 @@ public:
 	static const uint8_t board_size = 19;
 private:
 	std::array<ITCP_protocol<Client>::Game_stone::Color, board_size * board_size>	m_board;
+	std::list<std::pair<int, int> > m_empty_square;
 	int			m_white_loose;
 	int			m_black_loose;
 	bool		m_is_black_turn;

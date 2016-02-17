@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include "Arbitre.hpp"
 
 using prot = ITCP_protocol<Client>;
@@ -10,47 +11,33 @@ Arbitre::log_level::log_level(Arbitre::log_level::log l) :
 {}
 
 Arbitre::log_level::log_level(const log_level & copy) :
-	m_l(copy.get_log())
+	m_l(copy.m_l)
 {
-}
-
-Arbitre::log_level Arbitre::log_level::operator=(const Arbitre::log_level & copy)
-{
-	set_log(copy.get_log());
-	return (*this);
-}
-
-bool Arbitre::log_level::operator!=(const log_level & copy) const
-{
-	return (get_log() != copy.get_log());
-}
-
-bool Arbitre::log_level::operator==(const log_level & copy) const
-{
-	return (get_log() == copy.get_log());
 }
 
 Arbitre::log_level::~log_level()
 {}
 
-void Arbitre::log_level::set_log(Arbitre::log_level::log l)
+bool Arbitre::log_level::is_active(Arbitre::log_level::log l) const
 {
-	m_l = l;
+	return (m_l & log_to_int(l));
 }
 
-Arbitre::log_level::log Arbitre::log_level::get_log() const
+Arbitre::log_level Arbitre::log_level::operator=(const log_level & copy)
 {
-	return (m_l);
+	m_l = copy.m_l;
+	return *this;
 }
 
-Arbitre::log_level	Arbitre::log_level::operator&(const Arbitre::log_level &copy) const
+
+void Arbitre::log_level::activate(Arbitre::log_level::log l)
 {
-	return (int_to_log(log_to_int(get_log()) & log_to_int(copy.get_log())));
+	m_l |= log_to_int(l);
 }
 
-Arbitre::log_level	Arbitre::log_level::operator|(const Arbitre::log_level &copy) const
+void Arbitre::log_level::desactivate(Arbitre::log_level::log l)
 {
-	return (int_to_log(log_to_int(get_log()) | log_to_int(copy.get_log())));
+	m_l &= ~log_to_int(l);
 }
 
 int				Arbitre::log_level::log_to_int(Arbitre::log_level::log l) const
@@ -72,24 +59,6 @@ int				Arbitre::log_level::log_to_int(Arbitre::log_level::log l) const
 	}
 }
 
-Arbitre::log_level::log		Arbitre::log_level::int_to_log(int l) const
-{
-	switch (l)
-	{
-	case 0:
-		return (None);
-	case 1:
-		return (Can_play);
-	case 2:
-		return (Capture);
-	case 4:
-		return (Double_three);
-	case 8:
-		return (Victory);
-	}
-	throw (std::logic_error("Unexpected int"));
-}
-
 #pragma endregion
 
 #pragma region Constructeur
@@ -97,6 +66,7 @@ Arbitre::log_level::log		Arbitre::log_level::int_to_log(int l) const
 Arbitre::Arbitre(ITCP_protocol<Client>::Callback &itcp_protocol) :
 	ACallback(itcp_protocol),
 	m_board(),
+	m_empty_square(),
 	m_white_loose(0),
 	m_black_loose(0),
 	m_is_black_turn(true),
@@ -106,9 +76,11 @@ Arbitre::Arbitre(ITCP_protocol<Client>::Callback &itcp_protocol) :
 	{
 		for (unsigned int j = 0; j < Arbitre::board_size; j++)
 		{
+			m_empty_square.push_back(std::pair<int, int>(i, j));
 			m_board[i * Arbitre::board_size + j] = prot::Game_stone::Color::None;
 		}
 	}
+	m_level.activate(log_level::Victory);
 }
 
 Arbitre::Arbitre(const Arbitre & copy) :
@@ -124,6 +96,8 @@ Arbitre::~Arbitre(void)
 {}
 
 #pragma endregion
+
+#pragma region ArbitreLogging
 
 void Arbitre::dump(void) const
 {
@@ -148,14 +122,7 @@ void Arbitre::set_log_level(log_level l)
 	m_level = l;
 }
 
-bool Arbitre::check_coord(int x, int y) const
-{
-	if (x < 0 || x >= Arbitre::board_size)
-		return false;
-	if (y < 0 || y >= Arbitre::board_size)
-		return false;
-	return true;
-}
+#pragma endregion
 
 #pragma region Victory
 
@@ -182,11 +149,10 @@ bool Arbitre::check_stone_libre(int x, int y) const
 			continue;
 		if ((*this)(x - tab[i][0], y - tab[i][1]) != (*this)(x, y))
 			continue;
-		if (((*this)(x + tab[i][0], y + tab[i][1]) != prot::Game_stone::Color::None ||
-				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) != prot::Game_stone::notColor((*this)(x, y)))
-			&& ((*this)(x + tab[i][0], y + tab[i][1]) != prot::Game_stone::notColor((*this)(x, y)) ||
-				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) != prot::Game_stone::Color::None))
-			continue;
+		if (((*this)(x + tab[i][0], y + tab[i][1]) == prot::Game_stone::Color::None &&
+				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) == prot::Game_stone::notColor((*this)(x, y)))
+			|| ((*this)(x + tab[i][0], y + tab[i][1]) == prot::Game_stone::notColor((*this)(x, y)) &&
+				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) == prot::Game_stone::Color::None))
 		return (false);
 	}
 	return (true);
@@ -216,6 +182,8 @@ void Arbitre::check_victory_five(ITCP_protocol<Client> &itcp_protocol, prot::Gam
 					{
 						if (check_stone_libre(x + i, y + j) == false)
 							break;
+						if (m_level.is_active(log_level::Victory))
+							std::cout << "stone " << x + i << " " << y + j << "est libre (DEBUG : illo)" << std::endl;
 						i += tab[k][0];
 						j += tab[k][1];
 						nb++;
@@ -226,6 +194,8 @@ void Arbitre::check_victory_five(ITCP_protocol<Client> &itcp_protocol, prot::Gam
 					{
 						if (check_stone_libre(x - i, y - j) == false)
 							break;
+						if (m_level.is_active(log_level::Victory))
+							std::cout << "stone " << x + i << " " << y + j << "est libre (DEBUG : illo)" << std::endl;
 						i += tab[k][0];
 						j += tab[k][1];
 						nb++;
@@ -278,10 +248,11 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 
 	if (can_put_stone(stone))
 	{
-		if ((m_level & log_level::Can_play) == log_level::Can_play)
+		if (m_level.is_active(log_level::Can_play))
 			std::cout << "can put_stone (DEBUG : illo)" << std::endl;
 		m_callback.put_stone_game(itcp_protocol, stone);
 		(*this)(stone->x, stone->y) = stone->color;
+		m_empty_square.erase(std::find(m_empty_square.begin(), m_empty_square.end(), std::pair<int, int>(stone->x, stone->y)));
 		m_is_black_turn = !m_is_black_turn;
 		if (can_capture(stone, capture))
 		{
@@ -292,10 +263,12 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 			{
 				mess->x = static_cast<unsigned char>(capture[i][0]);
 				mess->y = static_cast<unsigned char>(capture[i][1]);
+				m_empty_square.push_back(std::pair<int, int>(capture[i][0], capture[i][1]));
 				m_callback.put_stone_game(itcp_protocol, mess);
 				(*this)(capture[i][0], capture[i][1]) = prot::Game_stone::Color::None;
 				mess->x = static_cast<unsigned char>(capture[i][2]);
 				mess->y = static_cast<unsigned char>(capture[i][3]);
+				m_empty_square.push_back(std::pair<int, int>(capture[i][2], capture[i][3]));
 				m_callback.put_stone_game(itcp_protocol, mess);
 				(*this)(capture[i][2], capture[i][3]) = prot::Game_stone::Color::None;
 				if (stone->color == prot::Game_stone::Color::Black)
@@ -303,7 +276,7 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 				else
 					m_black_loose += 2;
 				i++;
-				if ((m_level & log_level::Capture) == log_level::Capture)
+				if (m_level.is_active(log_level::Capture))
 				{
 					std::cout << "white loose : " << m_white_loose << " (DEBUG : illo)" << std::endl;
 					std::cout << "black loose : " << m_black_loose << " (DEBUG : illo)" << std::endl;
@@ -313,7 +286,7 @@ void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_st
 		check_victory(itcp_protocol, stone);
 	}
 	else
-		if ((m_level & log_level::Can_play) == log_level::Can_play)
+		if (m_level.is_active(log_level::Can_play))
 			std::cout << "can not put_stone (DEBUG : illo)" << std::endl;
 
 }
@@ -343,7 +316,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, uint8_t coord[8][4]) const
 		{
 			if ((*this)(stone->x + tab[k][0] * 2, stone->y + tab[k][1] * 2) == prot::Game_stone::notColor(stone->color) && (*this)(stone->x + tab[k][0], stone->y + tab[k][1]) == prot::Game_stone::notColor(stone->color))
 			{
-				if ((m_level & log_level::Capture) == log_level::Capture)
+				if (m_level.is_active(log_level::Capture))
 					std::cout << "capture between " << stone->x << " " << stone->y << " and " << stone->x + tab[k][0] * 3 << " " << stone->y + tab[k][1] * 3 << " (DEBUG : illo)" << std::endl;
 				coord[i][0] = stone->x + tab[k][0] * 2;
 				coord[i][1] = stone->y + tab[k][1] * 2;
@@ -365,37 +338,37 @@ bool Arbitre::can_put_stone(ITCP_protocol<Client>::Game_stone * stone) const
 {
 	if (m_is_black_turn && stone->color != prot::Game_stone::Color::Black)
 	{
-		if ((m_level & log_level::Can_play) == log_level::Can_play)
+		if (m_level.is_active(log_level::Can_play))
 			std::cout << "can not put_stone not your turn (DEBUG : illo)" << std::endl;
 		return false;
 	}
 	if (!m_is_black_turn && stone->color != prot::Game_stone::Color::White)
 	{
-		if ((m_level & log_level::Can_play) == log_level::Can_play)
+		if (m_level.is_active(log_level::Can_play))
 			std::cout << "can not put_stone not your turn (DEBUG : illo)" << std::endl;
 		return false;
 	}
 	if (stone->x >= 19)
 	{
-		if ((m_level & log_level::Can_play) == log_level::Can_play)
+		if (m_level.is_active(log_level::Can_play))
 			std::cout << "can not put_stone out of range (DEBUG : illo)" << std::endl;
 		return false;
 	}
 	if (stone->y >= 19)
 	{
-		if ((m_level & log_level::Can_play) == log_level::Can_play)
+		if (m_level.is_active(log_level::Can_play))
 			std::cout << "can not put_stone out of range (DEBUG : illo)" << std::endl;
 		return false;
 	}
 	if ((*this)(stone->x, stone->y) != prot::Game_stone::Color::None)
 	{
-		if ((m_level & log_level::Can_play) == log_level::Can_play)
+		if (m_level.is_active(log_level::Can_play))
 			std::cout << "can not put_stone case non libre (DEBUG : illo)" << std::endl;
 		return (false);
 	}
 	if (is_three(stone))
 	{
-		if ((m_level & log_level::Can_play) == log_level::Can_play)
+		if (m_level.is_active(log_level::Can_play))
 			std::cout << "can not put_stone double three (DEBUG : illo)" << std::endl;
 		return false;
 	}
@@ -463,7 +436,7 @@ bool Arbitre::is_three_line(ITCP_protocol<Client>::Game_stone * stone, const std
 	{
 		coords[0] = empty[1];
 		coords[1] = empty[0];
-		if ((m_level & log_level::Double_three) == log_level::Double_three)
+		if (m_level.is_active(log_level::Double_three))
 			std::cout << "Find a three between " << coords[0].first << " " << coords[0].second << " and " << coords[1].first << " " << coords[1].second << " (DEBUG : illo)" << std::endl;
 		return (true);
 	}
@@ -473,7 +446,7 @@ bool Arbitre::is_three_line(ITCP_protocol<Client>::Game_stone * stone, const std
 		coords[0] = empty[1];
 		coords[1].first = empty[0].first + (tab[2] + 1) * coeff.first;
 		coords[1].second = empty[0].second + (tab[2] + 1) * coeff.second;
-		if ((m_level & log_level::Double_three) == log_level::Double_three)
+		if (m_level.is_active(log_level::Double_three))
 			std::cout << "Find a three between " << coords[0].first << " " << coords[0].second << " and " << coords[1].first << " " << coords[1].second << " (DEBUG : illo)" << std::endl;
 		return (true);
 	}
@@ -482,7 +455,7 @@ bool Arbitre::is_three_line(ITCP_protocol<Client>::Game_stone * stone, const std
 		coords[1] = empty[0];
 		coords[0].first = empty[1].first - (tab[0] + 1) * coeff.first;
 		coords[0].second = empty[1].second - (tab[0] + 1) * coeff.second;
-		if ((m_level & log_level::Double_three) == log_level::Double_three)
+		if (m_level.is_active(log_level::Double_three))
 			std::cout << "Find a three between " << coords[0].first << " " << coords[0].second << " and " << coords[1].first << " " << coords[1].second << " (DEBUG : illo)" << std::endl;
 		return (true);
 	}
@@ -516,7 +489,7 @@ bool Arbitre::is_three(ITCP_protocol<Client>::Game_stone * stone) const
 					new_stone.color = stone->color;
 				else
 					new_stone.color = (*this)(new_stone.x, new_stone.y);
-				if ((m_level & log_level::Double_three) == log_level::Double_three)
+				if (m_level.is_active(log_level::Double_three))
 					std::cout << "Seeking a second three in " << static_cast<int>(new_stone.x) << " " << static_cast<int>(new_stone.y) << " (DEBUG : illo)" << std::endl;
 				for (int l = 0; l < 4; l++)
 				{
@@ -537,6 +510,16 @@ bool Arbitre::is_three(ITCP_protocol<Client>::Game_stone * stone) const
 }
 #pragma endregion
 
+#pragma region Coord
+
+bool Arbitre::check_coord(int x, int y) const
+{
+	if (x < 0 || x >= Arbitre::board_size)
+		return false;
+	if (y < 0 || y >= Arbitre::board_size)
+		return false;
+	return true;
+}
 const ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y) const
 {
 	return (m_board[x * Arbitre::board_size + y]);
@@ -546,3 +529,5 @@ ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(unsigned int x, u
 {
 	return (m_board[x * Arbitre::board_size + y]);
 }
+
+#pragma endregion
