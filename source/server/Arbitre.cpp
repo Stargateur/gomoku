@@ -20,7 +20,7 @@ Arbitre::log_level::~log_level()
 
 bool Arbitre::log_level::is_active(Arbitre::log_level::log l) const
 {
-	return (m_l & log_to_int(l));
+	return ((m_l & log_to_int(l)) != 0);
 }
 
 Arbitre::log_level Arbitre::log_level::operator=(const log_level & copy)
@@ -81,6 +81,8 @@ Arbitre::Arbitre(ITCP_protocol<Client>::Callback &itcp_protocol) :
 		}
 	}
 	m_level.activate(log_level::Victory);
+	m_level.activate(log_level::Can_play);
+	m_level.activate(log_level::Capture);
 }
 
 Arbitre::Arbitre(const Arbitre & copy) :
@@ -135,8 +137,10 @@ void Arbitre::Welcome(ITCP_protocol<Client> &itcp_protocol)
 			{
 				stone.x = i;
 				stone.y = j;
-				itcp_protocol.send_game_stone_put(&stone);
+				itcp_protocol.send_game_stone_put(stone);
 			}
+		}
+	}
 }
 
 #pragma endregion
