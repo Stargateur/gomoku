@@ -122,6 +122,23 @@ void Arbitre::set_log_level(log_level l)
 	m_level = l;
 }
 
+void Arbitre::Welcome(ITCP_protocol<Client> &itcp_protocol)
+{
+	prot::Game_stone	stone;
+
+	for (int i = 0; i < Arbitre::board_size; i++)
+	{
+		for (int j = 0; j < Arbitre::board_size; j++)
+		{
+			stone.color = (*this)(i, j);
+			if (stone.color != prot::Game_stone::Color::None)
+			{
+				stone.x = i;
+				stone.y = j;
+				itcp_protocol.send_game_stone_put(&stone);
+			}
+}
+
 #pragma endregion
 
 #pragma region Victory

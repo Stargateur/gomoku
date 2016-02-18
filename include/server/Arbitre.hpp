@@ -38,6 +38,7 @@ public:
 	~Arbitre(void);
 
 	void dump(void) const;
+	void Welcome(ITCP_protocol<Client> &itcp_protocol);
 
 	void set_log_level(log_level l);
 
