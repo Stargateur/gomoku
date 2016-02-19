@@ -1,10 +1,19 @@
 cmake_minimum_required(VERSION 3.4)
 project(gomoku)
 set(CMAKE_MODULE_PATH "C:/SFML-2.3.2/cmake/Modules/" ${CMAKE_MODULE_PATH})
+if(WIN32)
+	set(Boost_USE_STATIC_LIBS ON)
+	set(Boost_USE_MULTITHREADED ON)
+	set(BOOSTROOT "C:/boost_1_60_0/")
+	set(BOOST_LIBRARYDIR "C:/boost_1_60_0/stage/libs/")
+	set(BOOST_INCLUDEDIR "C:/boost_1_60_0/")
+endif()
 find_package(SFML 2 REQUIRED system window graphics network audio)
-FIND_PACKAGE( Boost COMPONENTS program_options REQUIRED )
+FIND_PACKAGE(Boost COMPONENTS program_options REQUIRED)
 find_package (Threads)
+if(!WIN32)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+endif()
 add_library(isocket
 	STATIC
 	source/isocket/ITCP_server.cpp
