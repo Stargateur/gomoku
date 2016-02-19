@@ -2,8 +2,9 @@ cmake_minimum_required(VERSION 3.4)
 project(gomoku)
 set(CMAKE_MODULE_PATH "C:/SFML-2.3.2/cmake/Modules/" ${CMAKE_MODULE_PATH})
 find_package(SFML 2 REQUIRED system window graphics network audio)
+FIND_PACKAGE( Boost COMPONENTS program_options REQUIRED )
 find_package (Threads)
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 add_library(isocket
 	STATIC
 	source/isocket/ITCP_server.cpp
@@ -100,6 +101,7 @@ add_executable(gomoku_server
 	source/server/Client.cpp
 	source/server/Game.cpp
 	source/server/Server.cpp
+	source/server/Options.cpp
 	source/server/Utils.cpp
 	source/server/main.cpp
 	include/server/Arbitre.hpp
@@ -108,9 +110,12 @@ add_executable(gomoku_server
 	include/server/Client.hpp
 	include/server/Game.hpp
 	include/server/Server.hpp
+	include/server/Options.hpp
 	include/server/Utils.hpp
 )
 target_compile_features(gomoku_server PUBLIC cxx_range_for)
 target_include_directories(gomoku_server PUBLIC include/iprotocol include/itime include/isocket include/server)
 target_link_libraries(gomoku_server PUBLIC isocket iprotocol itime)
 target_link_libraries(gomoku_server PUBLIC ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(gomoku_server PUBLIC ${Boost_LIBRARIES})
+target_include_directories(gomoku_server PUBLIC ${Boost_INCLUDE_DIR})

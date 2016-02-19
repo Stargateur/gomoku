@@ -335,7 +335,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, uint8_t coord[8][4]) const
 	{
 		if (check_coord(stone->x + tab[k][0] * 3, stone->y + tab[k][1] * 3) && (*this)(stone->x + tab[k][0] * 3, stone->y + tab[k][1] * 3) == stone->color)
 		{
-			if ((*this)(stone->x + tab[k][0] * 2, stone->y + tab[k][1] * 2) == !(stone->color) && (*this)(stone->x + tab[k][0], stone->y + tab[k][1]) == !(stone->color))
+			if ((stone->x + tab[k][0] * 2, stone->y + tab[k][1] * 2) == !(stone->color) && (*this)(stone->x + tab[k][0], stone->y + tab[k][1]) == !(stone->color))
 			{
 				if (m_level.is_active(log_level::Capture))
 					std::cout << "capture between " << stone->x << " " << stone->y << " and " << stone->x + tab[k][0] * 3 << " " << stone->y + tab[k][1] * 3 << " (DEBUG : illo)" << std::endl;

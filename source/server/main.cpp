@@ -11,7 +11,13 @@
 #include    <iostream>
 #include    <csignal>
 #include	<chrono>
-#include	"Server.hpp"
+#include    <boost/program_options/options_description.hpp>
+#include    <boost/program_options/positional_options.hpp>
+#include    <boost/program_options/variables_map.hpp>
+#include    <boost/program_options/value_semantic.hpp>
+#include    <boost/program_options/parsers.hpp>
+#include    "Server.hpp"
+#include    "Options.hpp"
 
 static sig_atomic_t g_keep_running = 1;
 
@@ -21,11 +27,31 @@ static void    sigint(int)
     g_keep_running = 0;
 }
 
-int	main(void)
+int	main(int argc, char **argv)
 {
-  auto start = std::chrono::steady_clock::now();
-  Server	server;
-    std::signal(SIGINT, sigint);
+    Options options;
+    boost::program_options::options_description desc;
+    desc.add_options()
+        ("help,h", "produce help message")
+        ("port,p", boost::program_options::value<std::string>(&options.port), "the port used by the server (tcp)")
+    ;
+
+    boost::program_options::positional_options_description p;
+
+    boost::program_options::basic_command_line_parser<char> bclp(argc, argv);
+    bclp.options(desc).positional(p);
+    
+    boost::program_options::variables_map vm;
+    boost::program_options::store(bclp.run(), vm);
+    boost::program_options::notify(vm);
+    if (vm.count("help") != 0)
+    {
+        std::cout << desc << "\n";
+        return 1;
+    }
+    auto start = std::chrono::steady_clock::now();
+    Server	server;
+    std::signal(SIGINT, &sigint);
     while (g_keep_running != 0)
     try
     {
