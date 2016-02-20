@@ -20,10 +20,10 @@
 # include	"ISelect.hpp"
 
 template<typename T>
-class	TCP_protocol : public ITCP_protocol<T>
+class	TCP_protocol : public iprotocol::ITCP_protocol<T>
 {
 public:
-    TCP_protocol(typename ITCP_protocol<T>::Callback *callback, T *data) :
+    TCP_protocol(typename iprotocol::ITCP_protocol<T>::Callback *callback, T *data) :
         m_callback(callback),
         m_data(data)
     {
@@ -46,7 +46,7 @@ public:
     }
 
 public:
-    void	set_callback(typename ITCP_protocol<T>::Callback *callback)
+    void	set_callback(typename iprotocol::ITCP_protocol<T>::Callback *callback)
     {
         if (callback == nullptr)
             throw std::logic_error("callback can't be nullptr");
@@ -54,7 +54,7 @@ public:
     }
 
 public:
-    typename ITCP_protocol<T>::Callback	*get_callback(void) const
+    typename iprotocol::ITCP_protocol<T>::Callback	*get_callback(void) const
     {
         return (m_callback);
     }
@@ -217,7 +217,7 @@ public:
     }
 
 public:
-    void	send_result(typename ITCP_protocol<T>::Error error)
+    void	send_result(typename iprotocol::ITCP_protocol<T>::Error error)
     {
         TCP_packet_send	&to_send = get_to_send(ATCP_packet::Result);;
         to_send.put(error);
@@ -226,7 +226,7 @@ public:
 private:
     void	recv_result(void)
     {
-        typename ITCP_protocol<T>::Error	error;
+        typename iprotocol::ITCP_protocol<T>::Error	error;
         m_to_recv.get(error);
         m_callback->result(*this, error);
     }
@@ -290,7 +290,7 @@ private:
     }
 
 public:
-    void	send_create_game(typename ITCP_protocol<T>::Game const &game)
+    void	send_create_game(typename iprotocol::ITCP_protocol<T>::Game const &game)
     {
         set_rec(get_to_send(ATCP_packet::Create_game), *game.name);
     }
@@ -298,14 +298,14 @@ public:
 private:
     void	recv_create_game(void)
     {
-        typename ITCP_protocol<T>::Game	*game = new typename ITCP_protocol<T>::Game();
+        typename iprotocol::ITCP_protocol<T>::Game	*game = new typename iprotocol::ITCP_protocol<T>::Game();
         game->name = new std::string();
         get_rec(m_to_recv, *game->name);
         m_callback->create_game(*this, game);
     }
 
 public:
-    void	send_join_game(typename ITCP_protocol<T>::Game const &game)
+    void	send_join_game(typename iprotocol::ITCP_protocol<T>::Game const &game)
     {
         set_rec(get_to_send(ATCP_packet::Join_game), *game.name);
     }
@@ -313,7 +313,7 @@ public:
 private:
     void	recv_join_game(void)
     {
-        typename ITCP_protocol<T>::Game	*game = new typename ITCP_protocol<T>::Game();
+        typename iprotocol::ITCP_protocol<T>::Game	*game = new typename iprotocol::ITCP_protocol<T>::Game();
         game->name = new std::string();
         get_rec(m_to_recv, *game->name);
         m_callback->join_game(*this, game);
@@ -332,7 +332,7 @@ private:
     }
 
 public:
-    void	send_put_stone_game(typename ITCP_protocol<T>::Game_stone const &stone)
+    void	send_put_stone_game(typename iprotocol::ITCP_protocol<T>::Game_stone const &stone)
     {
         set_rec(get_to_send(ATCP_packet::Put_stone_game), stone.x, stone.y, stone.color);
     }
@@ -340,13 +340,13 @@ public:
 private:
     void	recv_put_stone_game(void)
     {
-        typename ITCP_protocol<T>::Game_stone *stone = new typename ITCP_protocol<T>::Game_stone();
+        typename iprotocol::ITCP_protocol<T>::Game_stone *stone = new typename iprotocol::ITCP_protocol<T>::Game_stone();
         get_rec(m_to_recv, stone->x, stone->y, stone->color);
         m_callback->put_stone_game(*this, stone);
     }
 
 public:
-    void    send_change_param_player_game(typename ITCP_protocol<T>::Game_player_param const &param)
+    void    send_change_param_player_game(typename iprotocol::ITCP_protocol<T>::Game_player_param const &param)
     {
         set_rec(get_to_send(ATCP_packet::Change_param_player_game), *param.name, *param.value);
     }
@@ -354,7 +354,7 @@ public:
 private:
     void    recv_change_param_player_game(void)
     {
-        typename ITCP_protocol<T>::Game_player_param *param = new typename ITCP_protocol<T>::Game_player_param;
+        typename iprotocol::ITCP_protocol<T>::Game_player_param *param = new typename iprotocol::ITCP_protocol<T>::Game_player_param;
         param->name = new std::string();
         param->value = new std::string();
         get_rec(m_to_recv, *param->name, *param->value);
@@ -362,7 +362,7 @@ private:
     }
 
 public:
-    void	send_change_param_game(typename ITCP_protocol<T>::Game_param const &param)
+    void	send_change_param_game(typename iprotocol::ITCP_protocol<T>::Game_param const &param)
     {
         set_rec(get_to_send(ATCP_packet::Change_param_game), *param.name, *param.value);
     }
@@ -370,7 +370,7 @@ public:
 private:
     void	recv_change_param_game(void)
     {
-        typename ITCP_protocol<T>::Game_param *param = new typename ITCP_protocol<T>::Game_param();
+        typename iprotocol::ITCP_protocol<T>::Game_param *param = new typename iprotocol::ITCP_protocol<T>::Game_param();
         param->name = new std::string();
         param->value = new std::string();
         get_rec(m_to_recv, *param->name, *param->value);
@@ -378,7 +378,7 @@ private:
     }
 
 public:
-    void    send_list_param_player_game(std::list<typename ITCP_protocol<T>::Game_player_param *> const &params)
+    void    send_list_param_player_game(std::list<typename iprotocol::ITCP_protocol<T>::Game_player_param *> const &params)
     {
         TCP_packet_send &to_send = get_to_send(ATCP_packet::List_param_player_game);
         to_send.put(static_cast<uint8_t>(params.size()));
@@ -389,12 +389,12 @@ public:
 private:
     void    recv_list_param_player_game(void)
     {
-        std::list<typename ITCP_protocol<T>::Game_player_param *> *params = new std::list<typename ITCP_protocol<T>::Game_player_param *>();
+        std::list<typename iprotocol::ITCP_protocol<T>::Game_player_param *> *params = new std::list<typename iprotocol::ITCP_protocol<T>::Game_player_param *>();
         uint8_t size;
         m_to_recv.get(size);
         for (uintmax_t i = 0; i < size; i++)
         {
-            typename ITCP_protocol<T>::Game_player_param *param = new typename ITCP_protocol<T>::Game_player_param();
+            typename iprotocol::ITCP_protocol<T>::Game_player_param *param = new typename iprotocol::ITCP_protocol<T>::Game_player_param();
             param->name = new std::string();
             param->value = new std::string();
             get_rec(m_to_recv, *param->name, *param->value);
@@ -404,7 +404,7 @@ private:
     }
 
 public:
-    void	send_list_param_game(std::list<typename ITCP_protocol<T>::Game_param *> const &params)
+    void	send_list_param_game(std::list<typename iprotocol::ITCP_protocol<T>::Game_param *> const &params)
     {
         TCP_packet_send &to_send = get_to_send(ATCP_packet::List_param_game);
         to_send.put(static_cast<uint8_t>(params.size()));
@@ -415,12 +415,12 @@ public:
 private:
     void	recv_list_param_game(void)
     {
-        std::list<typename ITCP_protocol<T>::Game_param *> *params = new std::list<typename ITCP_protocol<T>::Game_param *>();
+        std::list<typename iprotocol::ITCP_protocol<T>::Game_param *> *params = new std::list<typename iprotocol::ITCP_protocol<T>::Game_param *>();
         uint8_t	size;
         m_to_recv.get(size);
         for (uintmax_t i = 0; i < size; i++)
         {
-            typename ITCP_protocol<T>::Game_param *param = new typename ITCP_protocol<T>::Game_param();
+            typename iprotocol::ITCP_protocol<T>::Game_param *param = new typename iprotocol::ITCP_protocol<T>::Game_param();
             param->name = new std::string();
             param->value = new std::string();
             get_rec(m_to_recv, *param->name, *param->value);
@@ -430,7 +430,7 @@ private:
     }
 
 public:
-    void	send_game_created(typename ITCP_protocol<T>::Game const &game)
+    void	send_game_created(typename iprotocol::ITCP_protocol<T>::Game const &game)
     {
         TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_created);
         set_rec(to_send, *game.name);
@@ -439,7 +439,7 @@ public:
 private:
     void	recv_game_created(void)
     {
-        typename ITCP_protocol<T>::Game *game = new typename ITCP_protocol<T>::Game();
+        typename iprotocol::ITCP_protocol<T>::Game *game = new typename iprotocol::ITCP_protocol<T>::Game();
         game->name = new std::string();
         get_rec(m_to_recv, *game->name);
         m_callback->game_created(*this, game);
@@ -476,7 +476,7 @@ private:
     }
 
 public:
-    void    send_game_player_param_changed(typename ITCP_protocol<T>::Game_player_param const &param)
+    void    send_game_player_param_changed(typename iprotocol::ITCP_protocol<T>::Game_player_param const &param)
     {
         TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_player_param_changed);
         set_rec(to_send, *param.name, *param.value);
@@ -485,7 +485,7 @@ public:
 private:
     void    recv_game_player_param_changed(void)
     {
-        typename ITCP_protocol<T>::Game_player_param *param = new typename ITCP_protocol<T>::Game_player_param;
+        typename iprotocol::ITCP_protocol<T>::Game_player_param *param = new typename iprotocol::ITCP_protocol<T>::Game_player_param;
         param->name = new std::string();
         param->value = new std::string();
         get_rec(m_to_recv, *param->name, *param->value);
@@ -493,7 +493,7 @@ private:
     }
 
 public:
-    void	send_game_param_changed(typename ITCP_protocol<T>::Game_param const &param)
+    void	send_game_param_changed(typename iprotocol::ITCP_protocol<T>::Game_param const &param)
     {
         TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_param_changed);
         set_rec(to_send, *param.name, *param.value);
@@ -502,7 +502,7 @@ public:
 private:
     void	recv_game_param_changed(void)
     {
-        typename ITCP_protocol<T>::Game_param *param = new typename ITCP_protocol<T>::Game_param;
+        typename iprotocol::ITCP_protocol<T>::Game_param *param = new typename iprotocol::ITCP_protocol<T>::Game_param;
         param->name = new std::string();
         param->value = new std::string();
         get_rec(m_to_recv, *param->name, *param->value);
@@ -510,7 +510,7 @@ private:
     }
 
 public:
-    void	send_game_stone_put(typename ITCP_protocol<T>::Game_stone const &stone)
+    void	send_game_stone_put(typename iprotocol::ITCP_protocol<T>::Game_stone const &stone)
     {
         TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_stone_put);
         set_rec(to_send, stone.x, stone.y, stone.color);
@@ -519,13 +519,13 @@ public:
 private:
     void	recv_game_stone_put(void)
     {
-        typename ITCP_protocol<T>::Game_stone *stone = new typename ITCP_protocol<T>::Game_stone();
+        typename iprotocol::ITCP_protocol<T>::Game_stone *stone = new typename iprotocol::ITCP_protocol<T>::Game_stone();
         get_rec(m_to_recv, stone->x, stone->y, stone->color);
         m_callback->game_stone_put(*this, stone);
     }
 
 public:
-    void	send_game_deleted(typename ITCP_protocol<T>::Game const &game)
+    void	send_game_deleted(typename iprotocol::ITCP_protocol<T>::Game const &game)
     {
         TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_deleted);
         set_rec(to_send, game.name);
@@ -534,7 +534,7 @@ public:
 private:
     void	recv_game_deleted(void)
     {
-        typename ITCP_protocol<T>::Game *game = new typename ITCP_protocol<T>::Game();
+        typename iprotocol::ITCP_protocol<T>::Game *game = new typename iprotocol::ITCP_protocol<T>::Game();
         game->name = new std::string();
         get_rec(m_to_recv, game->name);
         m_callback->game_deleted(*this, game);
@@ -570,7 +570,7 @@ private:
     }
 
 public:
-    void	send_result_game(typename ITCP_protocol<T>::Game_result const &result)
+    void	send_result_game(typename iprotocol::ITCP_protocol<T>::Game_result const &result)
     {
         TCP_packet_send &to_send = get_to_send(ATCP_packet::Result_game);
         set_rec(to_send, result.winner);
@@ -579,14 +579,14 @@ public:
 private:
     void	recv_result_game(void)
     {
-        typename ITCP_protocol<T>::Game_result *result = new typename ITCP_protocol<T>::Game_result();
+        typename iprotocol::ITCP_protocol<T>::Game_result *result = new typename iprotocol::ITCP_protocol<T>::Game_result();
         result->winner = new std::string();
         get_rec(m_to_recv, result->winner);
         m_callback->result_game(*this, result);
     }
 
 public:
-    void	send_message(typename ITCP_protocol<T>::Message const &message)
+    void	send_message(typename iprotocol::ITCP_protocol<T>::Message const &message)
     {
         TCP_packet_send &to_send = get_to_send(ATCP_packet::Message);
         set_rec(to_send, *message.name, *message.message);
@@ -595,7 +595,7 @@ public:
 private:
     void	recv_message(void)
     {
-        typename ITCP_protocol<T>::Message *message = new typename ITCP_protocol<T>::Message();
+        typename iprotocol::ITCP_protocol<T>::Message *message = new typename iprotocol::ITCP_protocol<T>::Message();
         message->name = new std::string();
         message->message = new std::string();
         get_rec(m_to_recv, *message->name, *message->message);
@@ -631,7 +631,7 @@ private:
     }
 
 private:
-    typename ITCP_protocol<T>::Callback	*m_callback;
+    typename iprotocol::ITCP_protocol<T>::Callback	*m_callback;
     T	*m_data;
     TCP_packet_recv	m_to_recv;
     std::list<TCP_packet_send *>	m_to_send;

@@ -22,8 +22,8 @@ public:
 	void			unlock(void);
 
 public:
-	std::list<ITCP_protocol<ITCP_client>::Game_stone *>	mHisto;
-	ITCP_protocol<ITCP_client>::Game_stone::Color		mPlate[19][19];
+	std::list<iprotocol::ITCP_protocol<ITCP_client>::Game_stone *>	mHisto;
+	iprotocol::ITCP_protocol<ITCP_client>::Game_stone::Color		mPlate[19][19];
 	size_t											mSpecs;
 	std::string										mOpponent;
 	bool											mGameEnd;

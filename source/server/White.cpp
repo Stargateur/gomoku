@@ -10,7 +10,7 @@
 
 #include	"White.hpp"
 
-White::White(typename ITCP_protocol<Client>::Callback &callback) :
+White::White(typename iprotocol::ITCP_protocol<Client>::Callback &callback) :
     ACallback(callback),
     m_is_ready(false)
 {
@@ -25,13 +25,13 @@ bool	White::is_ready(void) const
     return (m_is_ready);
 }
 
-void	White::put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone)
+void	White::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_stone *stone)
 {
-    stone->color = ITCP_protocol<Client>::Game_stone::Color::White;
+    stone->color = iprotocol::ITCP_protocol<Client>::Game_stone::Color::White;
     m_callback.put_stone_game(itcp_protocol, stone);
 }
 
-void	White::ready_game(ITCP_protocol<Client> &, bool ready)
+void	White::ready_game(iprotocol::ITCP_protocol<Client> &, bool ready)
 {
     m_is_ready = ready;
 }

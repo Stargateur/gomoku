@@ -39,7 +39,7 @@ public:
 	STATE									mDisconnect;
 	STATE									mConnect;
 	STATE									mWantPlay;
-	ITCP_protocol<ITCP_client>::Game_stone	mLastPlay;
+	iprotocol::ITCP_protocol<ITCP_client>::Game_stone	mLastPlay;
 };
 
 #endif // !PLAYERINFO_HPP__

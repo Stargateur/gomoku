@@ -20,6 +20,8 @@
 # include	"TCP_packet_recv.hpp"
 # include	"TCP_packet_send.hpp"
 
+namespace iprotocol
+{
 template<typename T>
 class	ITCP_protocol
 {
@@ -245,6 +247,7 @@ template<typename T>
 std::ostream    &operator<<(std::ostream &os, typename ITCP_protocol<T>::Error error)
 {
     return (os << ITCP_protocol<T>::get_str_error(error));
+}
 }
 
 #endif		/* !ITCP_PROTOCOL_HPP_ */

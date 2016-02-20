@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "Arbitre.hpp"
 
-using prot = ITCP_protocol<Client>;
+using prot = iprotocol::ITCP_protocol<Client>;
 
 #pragma region Log
 
@@ -63,7 +63,7 @@ int				Arbitre::log_level::log_to_int(Arbitre::log_level::log l) const
 
 #pragma region Constructeur
 
-Arbitre::Arbitre(ITCP_protocol<Client>::Callback &itcp_protocol) :
+Arbitre::Arbitre(iprotocol::ITCP_protocol<Client>::Callback &itcp_protocol) :
 	ACallback(itcp_protocol),
 	m_board(),
 	m_empty_square(),
@@ -124,7 +124,7 @@ void Arbitre::set_log_level(log_level l)
 	m_level = l;
 }
 
-void Arbitre::Welcome(ITCP_protocol<Client> &itcp_protocol)
+void Arbitre::Welcome(iprotocol::ITCP_protocol<Client> &itcp_protocol)
 {
 	prot::Game_stone	stone;
 
@@ -179,7 +179,7 @@ bool Arbitre::check_stone_libre(int x, int y) const
 	return (true);
 }
 
-void Arbitre::check_victory_five(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone *stone)
+void Arbitre::check_victory_five(iprotocol::ITCP_protocol<Client> &itcp_protocol, prot::Game_stone *stone)
 {
 	int tab[4][2] =
 	{
@@ -233,7 +233,7 @@ void Arbitre::check_victory_five(ITCP_protocol<Client> &itcp_protocol, prot::Gam
 	}
 }
 
-void Arbitre::check_victory(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
+void Arbitre::check_victory(iprotocol::ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
 {
 	if (m_black_loose >= 10)
 	{
@@ -254,7 +254,7 @@ void Arbitre::check_victory(ITCP_protocol<Client> &itcp_protocol, prot::Game_sto
 
 #pragma region put_stone
 
-void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
+void Arbitre::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
 {
 	uint8_t capture[8][4] = {
 		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
@@ -355,7 +355,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, uint8_t coord[8][4]) const
 #pragma region Can_play
 
 
-bool Arbitre::can_put_stone(ITCP_protocol<Client>::Game_stone * stone) const
+bool Arbitre::can_put_stone(iprotocol::ITCP_protocol<Client>::Game_stone * stone) const
 {
 	if (m_is_black_turn && stone->color != prot::Game_stone::Color::Black)
 	{
@@ -400,7 +400,7 @@ bool Arbitre::can_put_stone(ITCP_protocol<Client>::Game_stone * stone) const
 
 #pragma region Double_three
 
-bool Arbitre::is_three_line(ITCP_protocol<Client>::Game_stone * stone, const std::pair<int, int> &coeff, std::array<std::pair<int, int>, 2> &coords) const
+bool Arbitre::is_three_line(iprotocol::ITCP_protocol<Client>::Game_stone * stone, const std::pair<int, int> &coeff, std::array<std::pair<int, int>, 2> &coords) const
 {
 	std::array<int, 3>	tab = {0, 1, 0};
 	int i = coeff.first;
@@ -483,7 +483,7 @@ bool Arbitre::is_three_line(ITCP_protocol<Client>::Game_stone * stone, const std
 	return (false);
 }
 
-bool Arbitre::is_three(ITCP_protocol<Client>::Game_stone * stone) const
+bool Arbitre::is_three(iprotocol::ITCP_protocol<Client>::Game_stone * stone) const
 {
 	std::array<std::pair<int, int>, 4> coeff =
 	{
@@ -503,7 +503,7 @@ bool Arbitre::is_three(ITCP_protocol<Client>::Game_stone * stone) const
 			int k = coeff[i].second;
 			while (coords[0].first + j != coords[1].first || coords[0].second + k != coords[1].second)
 			{
-				ITCP_protocol<Client>::Game_stone new_stone;
+				iprotocol::ITCP_protocol<Client>::Game_stone new_stone;
 				new_stone.x = coords[0].first + j;
 				new_stone.y = coords[0].second + k;
 				if (stone->x == new_stone.x && stone->y == new_stone.y)
@@ -541,12 +541,12 @@ bool Arbitre::check_coord(int x, int y) const
 		return false;
 	return true;
 }
-const ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y) const
+const iprotocol::ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y) const
 {
 	return (m_board[x * Arbitre::board_size + y]);
 }
 
-ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y)
+iprotocol::ITCP_protocol<Client>::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y)
 {
 	return (m_board[x * Arbitre::board_size + y]);
 }

@@ -23,28 +23,28 @@
 class	Game : public ACallback<Client>
 {
 public:
-    Game(typename ITCP_protocol<Client>::Callback &callback, std::string *name);
+    Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::string *name);
     ~Game(void);
     void    pre_run(ISelect &iselect);
     void	run(ISelect &iselect, ITime &itime);
-    void    add_player(ITCP_protocol<Client>  *player);
+    void    add_player(iprotocol::ITCP_protocol<Client>  *player);
 private:
-    void    delete_player(std::list<ITCP_protocol<Client> *>::iterator &it);
+    void    delete_player(std::list<iprotocol::ITCP_protocol<Client> *>::iterator &it);
     void    set_name(std::string *name);
 public:
-    std::list<ITCP_protocol<Client> *> const    &get_players(void) const;
+    std::list<iprotocol::ITCP_protocol<Client> *> const    &get_players(void) const;
     std::string const	&get_name(void) const;
-    void    send_game_created(ITCP_protocol<Client> &itcp_protocol) const;
-    void    send_game_deleted(ITCP_protocol<Client> &itcp_protocol) const;
-    void	create_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game);
-    void	join_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game *game);
-    void	leave_game(ITCP_protocol<Client> &itcp_protocol);
-    void	put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone);
-    void    change_param_player_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_player_param *param);
-    void    change_param_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_param *param);
-    void	start_game(ITCP_protocol<Client> &itcp_protocol);
-    void	ready_game(ITCP_protocol<Client> &itcp_protocol, bool ready);
-    void    result_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_result *game_result);
+    void    send_game_created(iprotocol::ITCP_protocol<Client> &itcp_protocol) const;
+    void    send_game_deleted(iprotocol::ITCP_protocol<Client> &itcp_protocol) const;
+    void	create_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game *game);
+    void	join_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game *game);
+    void	leave_game(iprotocol::ITCP_protocol<Client> &itcp_protocol);
+    void	put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_stone *stone);
+    void    change_param_player_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_player_param *param);
+    void    change_param_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_param *param);
+    void	start_game(iprotocol::ITCP_protocol<Client> &itcp_protocol);
+    void	ready_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, bool ready);
+    void    result_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_result *game_result);
 private:
     bool	m_is_start;
     std::string	*m_name;
@@ -52,11 +52,11 @@ private:
     Black	m_black;
     White   m_white;
     ITime   *m_timeout;
-    std::list<ITCP_protocol<Client>::Game_param *>  m_param;
-    std::list<ITCP_protocol<Client>::Game_player_param *>  m_param_player;
+    std::list<iprotocol::ITCP_protocol<Client>::Game_param *>  m_param;
+    std::list<iprotocol::ITCP_protocol<Client>::Game_player_param *>  m_param_player;
 private:
-    std::list<ITCP_protocol<Client> *>  m_itcp_protocols;
-    std::list<ITCP_protocol<Client> *>  m_disconnecteds;
+    std::list<iprotocol::ITCP_protocol<Client> *>  m_itcp_protocols;
+    std::list<iprotocol::ITCP_protocol<Client> *>  m_disconnecteds;
 };
 
 class   AGame_exception : public std::exception
@@ -72,13 +72,13 @@ public:
 class   Game_exception_client_transfer : public AGame_exception
 {
 public:
-    Game_exception_client_transfer(ITCP_protocol<Client> *client) noexcept;
+    Game_exception_client_transfer(iprotocol::ITCP_protocol<Client> *client) noexcept;
     Game_exception_client_transfer(Game_exception_client_transfer const &) noexcept;
     ~Game_exception_client_transfer(void) noexcept;
     char const  *what(void) const noexcept;
     Game_exception_client_transfer    &operator=(Game_exception_client_transfer const &) noexcept;
 public:
-    ITCP_protocol<Client>    *m_client;
+    iprotocol::ITCP_protocol<Client>    *m_client;
 };
 
 #endif		/* !GAME_HPP_ */

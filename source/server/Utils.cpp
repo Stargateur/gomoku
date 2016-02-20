@@ -1,7 +1,7 @@
 #include    <iostream>
 #include    "Utils.hpp"
 
-void    Utils::timeout(ITCP_protocol<Client> &itcp_protocol, ITime &timeout)
+void    Utils::timeout(iprotocol::ITCP_protocol<Client> &itcp_protocol, ITime &timeout)
 {
     Client  &client = *itcp_protocol.get_data();
     ITime       &last = *client.get_last();

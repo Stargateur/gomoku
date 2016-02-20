@@ -22,14 +22,14 @@ Client::Client(void) :
     m_iselect(new Select)
 {
     m_itcp_protocol->send_connect("test", "test");
-	ITCP_protocol<ITCP_client>::Game game;
+	iprotocol::ITCP_protocol<ITCP_client>::Game game;
 	game.name = new std::string("mdr");
 	PlayerInfo::getInstance().lock();
 	if (PlayerInfo::getInstance().mColor.compare("black") == 0)
 		m_itcp_protocol->send_create_game(game);
 	else
 		m_itcp_protocol->send_join_game(game);
-	ITCP_protocol<ITCP_client>::Game_player_param params;
+	iprotocol::ITCP_protocol<ITCP_client>::Game_player_param params;
 	params.name = new std::string("color");
 	params.value = new std::string(PlayerInfo::getInstance().mColor);
 	PlayerInfo::getInstance().unlock();
@@ -70,88 +70,88 @@ void	Client::run(void)
     }
 }
 
-void	Client::result(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Error error)
+void	Client::result(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Error error)
 {
-    std::cout << ITCP_protocol<ITCP_client>::get_str_error(error) << std::endl;
+    std::cout << iprotocol::ITCP_protocol<ITCP_client>::get_str_error(error) << std::endl;
 }
 
-void	Client::connect(ITCP_protocol<ITCP_client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)
-{
-	PlayerInfo::getInstance().lock();
-	PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
-	PlayerInfo::getInstance().unlock();
-}
-
-void	Client::disconnect(ITCP_protocol<ITCP_client> &itcp_protocol)
+void	Client::connect(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)
 {
 	PlayerInfo::getInstance().lock();
 	PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
 	PlayerInfo::getInstance().unlock();
 }
 
-void	Client::ping(ITCP_protocol<ITCP_client> &itcp_protocol)
+void	Client::disconnect(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
+{
+	PlayerInfo::getInstance().lock();
+	PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
+	PlayerInfo::getInstance().unlock();
+}
+
+void	Client::ping(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
 {
     itcp_protocol.send_pong();
 }
 
-void	Client::pong(ITCP_protocol<ITCP_client> &itcp_protocol)
+void	Client::pong(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
 {
 }
 
-void	Client::create_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game *game)
+void	Client::create_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Game *game)
 {
 }
 
-void	Client::join_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game *game)
+void	Client::join_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Game *game)
 {
 }
 
-void	Client::leave_game(ITCP_protocol<ITCP_client> &itcp_protocol)
+void	Client::leave_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
 {
 }
 
-void	Client::put_stone_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_stone *stone)
+void	Client::put_stone_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Game_stone *stone)
 {
 }
 
-void	Client::change_param_player_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_player_param *param)
+void	Client::change_param_player_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Game_player_param *param)
 {
 }
 
-void    Client::change_param_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_param *param)
+void    Client::change_param_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Game_param *param)
 {
 }
 
-void    Client::list_param_game(ITCP_protocol<ITCP_client> &itcp_protocol, std::list<typename ITCP_protocol<ITCP_client>::Game_param *> *params)
+void    Client::list_param_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, std::list<typename iprotocol::ITCP_protocol<ITCP_client>::Game_param *> *params)
 {
 }
 
-void    Client::list_param_player_game(ITCP_protocol<ITCP_client> &itcp_protocol, std::list<typename ITCP_protocol<ITCP_client>::Game_player_param *> *params)
+void    Client::list_param_player_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, std::list<typename iprotocol::ITCP_protocol<ITCP_client>::Game_player_param *> *params)
 {
 }
 
-void	Client::game_created(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game *game)
+void	Client::game_created(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Game *game)
 {
 	mRoomlist.push_back(game);
 }
 
-void	Client::game_player_joined(ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
+void	Client::game_player_joined(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
 {
 }
 
-void	Client::game_player_left(ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
+void	Client::game_player_left(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
 {
 }
 
-void    Client::game_player_param_changed(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_player_param *param)
+void    Client::game_player_param_changed(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Game_player_param *param)
 {
 }
 
-void	Client::game_param_changed(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_param *param)
+void	Client::game_param_changed(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Game_param *param)
 {
 }
 
-void	Client::game_stone_put(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_stone *stone)
+void	Client::game_stone_put(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Game_stone *stone)
 {
 	GameInfo::getInstance().lock();
 	if (stone != nullptr)
@@ -162,27 +162,27 @@ void	Client::game_stone_put(ITCP_protocol<ITCP_client> &itcp_protocol, typename 
 	GameInfo::getInstance().unlock();
 }
 
-void	Client::game_deleted(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game *game)
+void	Client::game_deleted(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Game *game)
 {
 	mRoomlist.remove(game);
 }
 
-void	Client::start_game(ITCP_protocol<ITCP_client> &itcp_protocol)
+void	Client::start_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
 {
 }
 
-void	Client::ready_game(ITCP_protocol<ITCP_client> &itcp_protocol, bool ready)
+void	Client::ready_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, bool ready)
 {
 }
 
-void	Client::result_game(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Game_result *game_result)
+void	Client::result_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Game_result *game_result)
 {
 	PlayerInfo::getInstance().lock();
 	PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
 	PlayerInfo::getInstance().unlock();
 }
 
-void	Client::message(ITCP_protocol<ITCP_client> &itcp_protocol, typename ITCP_protocol<ITCP_client>::Message *message)
+void	Client::message(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Message *message)
 {
 }
 

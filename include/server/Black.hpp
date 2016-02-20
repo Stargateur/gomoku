@@ -18,12 +18,12 @@
 class	Black : public ACallback<Client>
 {
 public:
-    Black(typename ITCP_protocol<Client>::Callback &callback);
+    Black(typename iprotocol::ITCP_protocol<Client>::Callback &callback);
     ~Black(void);
     void	run(void);
     bool	is_ready(void) const;
-    void	put_stone_game(ITCP_protocol<Client> &itcp_protocol, typename ITCP_protocol<Client>::Game_stone *stone);
-    void	ready_game(ITCP_protocol<Client> &itcp_protocol, bool ready);
+    void	put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_stone *stone);
+    void	ready_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, bool ready);
 private:
     bool	m_is_ready;
 };

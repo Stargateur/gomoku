@@ -5,5 +5,5 @@
 class Utils
 {
 public:
-    static void    timeout(ITCP_protocol<Client> &itcp_protocol, ITime &timeout);
+    static void    timeout(iprotocol::ITCP_protocol<Client> &itcp_protocol, ITime &timeout);
 };

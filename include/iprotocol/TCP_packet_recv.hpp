@@ -29,7 +29,7 @@ public:
             data[i] = m_packet.data[m_packet.size++];
     }
     void	get(std::string &string);
-    //  void	get(ITCP_protocol::Error &error);
+    //  void	get(iprotocol::ITCP_protocol::Error &error);
     bool	recv(ITCP_client const &socket);
 private:
     uintmax_t	m_recv;
