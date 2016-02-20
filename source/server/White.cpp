@@ -25,9 +25,9 @@ bool	White::is_ready(void) const
     return (m_is_ready);
 }
 
-void	White::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_stone *stone)
+void	White::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone)
 {
-    stone->color = iprotocol::ITCP_protocol<Client>::Game_stone::Color::White;
+    stone->color = iprotocol::Game_stone::Color::White;
     m_callback.put_stone_game(itcp_protocol, stone);
 }
 

@@ -42,11 +42,11 @@ public:
 
 	void set_log_level(log_level l);
 
-	void	put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::ITCP_protocol<Client>::Game_stone *stone);
+	void	put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone);
 
 	static const uint8_t board_size = 19;
 private:
-	std::array<iprotocol::ITCP_protocol<Client>::Game_stone::Color, board_size * board_size>	m_board;
+	std::array<iprotocol::Game_stone::Color, board_size * board_size>	m_board;
 	std::list<std::pair<int, int> > m_empty_square;
 	int			m_white_loose;
 	int			m_black_loose;
@@ -57,19 +57,19 @@ private:
 
 	bool check_stone_libre(int x, int y) const;
 
-	void check_victory_five(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::ITCP_protocol<Client>::Game_stone * stone);
+	void check_victory_five(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone * stone);
 
-	void	check_victory(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::ITCP_protocol<Client>::Game_stone *stone);
+	void	check_victory(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone);
 
-	bool	can_capture(iprotocol::ITCP_protocol<Client>::Game_stone * stone, uint8_t coord[8][4]) const;
+	bool	can_capture(iprotocol::Game_stone * stone, uint8_t coord[8][4]) const;
 
-	bool	can_put_stone(iprotocol::ITCP_protocol<Client>::Game_stone *stone) const;
+	bool	can_put_stone(iprotocol::Game_stone *stone) const;
 
-	bool is_three_line(iprotocol::ITCP_protocol<Client>::Game_stone * stone, const std::pair<int, int>& coeff, std::array<std::pair<int, int>, 2> &coords) const;
+	bool is_three_line(iprotocol::Game_stone * stone, const std::pair<int, int>& coeff, std::array<std::pair<int, int>, 2> &coords) const;
 
-	bool is_three(iprotocol::ITCP_protocol<Client>::Game_stone * stone) const;
+	bool is_three(iprotocol::Game_stone * stone) const;
 
-	const iprotocol::ITCP_protocol<Client>::Game_stone::Color& operator()(unsigned int x, unsigned int y) const;
+	const iprotocol::Game_stone::Color& operator()(unsigned int x, unsigned int y) const;
 
-	iprotocol::ITCP_protocol<Client>::Game_stone::Color& operator()(unsigned int x, unsigned int y);
+	iprotocol::Game_stone::Color& operator()(unsigned int x, unsigned int y);
 };

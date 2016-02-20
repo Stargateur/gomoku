@@ -22,7 +22,7 @@ Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::s
     m_white(m_arbitre),
     m_timeout(new Time(5))
 {
-    iprotocol::ITCP_protocol<Client>::Game_player_param *game_player_param = new iprotocol::ITCP_protocol<Client>::Game_player_param;
+    iprotocol::Game_player_param *game_player_param = new iprotocol::Game_player_param;
 
     game_player_param->name = new std::string("color");
     game_player_param->value = new std::string("none");
@@ -169,19 +169,19 @@ std::string const	&Game::get_name(void) const
 
 void    Game::send_game_created(iprotocol::ITCP_protocol<Client> &itcp_protocol) const
 {
-    iprotocol::ITCP_protocol<Client>::Game info;
+    iprotocol::Game info;
     info.name = m_name;
     itcp_protocol.send_game_created(info);
 }
 
 void    Game::send_game_deleted(iprotocol::ITCP_protocol<Client> &itcp_protocol) const
 {
-    iprotocol::ITCP_protocol<Client>::Game info;
+    iprotocol::Game info;
     info.name = m_name;
     itcp_protocol.send_game_deleted(info);
 }
 
-void	Game::create_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game *game)
+void	Game::create_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game *game)
 {
     delete game->name;
     delete game;
@@ -189,7 +189,7 @@ void	Game::create_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename
     throw std::logic_error("You are already in game");
 }
 
-void	Game::join_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game *game)
+void	Game::join_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game *game)
 {
     delete game->name;
     delete game;
@@ -202,7 +202,7 @@ void	Game::leave_game(iprotocol::ITCP_protocol<Client> &)
     throw Game_exception_client_transfer(nullptr);
 }
 
-void	Game::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_stone *stone)
+void	Game::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone)
 {
 	if (itcp_protocol.get_callback() != &m_white && itcp_protocol.get_callback() != &m_black)
 	{
@@ -214,7 +214,7 @@ void	Game::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typen
 		it->send_game_stone_put(*stone);
 }
 
-void    Game::change_param_player_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_player_param *param)
+void    Game::change_param_player_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_player_param *param)
 {
     if (*param->name == "color")
     {
@@ -230,7 +230,7 @@ void    Game::change_param_player_game(iprotocol::ITCP_protocol<Client> &itcp_pr
     delete param;
 }
 
-void    Game::change_param_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_param *param)
+void    Game::change_param_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_param *param)
 {
     delete param->value;
     delete param->name;
@@ -251,7 +251,7 @@ void	Game::ready_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, bool)
     itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
 }
 
-void    Game::result_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_result *game_result)
+void    Game::result_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_result *game_result)
 {
     if (itcp_protocol.get_callback() != &m_white && itcp_protocol.get_callback() != &m_black)
     {

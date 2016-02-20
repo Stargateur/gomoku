@@ -48,68 +48,53 @@ namespace iprotocol
         Game_stone_not_your_turn,
     };
     char const   *get_str_error(Error error);
+    struct  Game
+    {
+        std::string *name;
+    };
+
+    struct  Message
+    {
+        std::string *name;
+        std::string *message;
+    };
+
+    struct  Game_result
+    {
+        std::string *winner;
+    };
+
+    struct  Game_param
+    {
+        std::string *name;
+        std::string *value;
+    };
+
+    struct  Game_player_param
+    {
+        std::string *name;
+        std::string *value;
+    };
+
+    struct  Game_stone
+    {
+        uint8_t x;
+        uint8_t y;
+        enum    Color : uint8_t
+        {
+            White = 0,
+            Black,
+            None
+        }       color;
+      Game_stone(uint8_t _x, uint8_t _y, Color _color);
+      Game_stone(void);
+      Color operator!(void);
+    };
     template<typename T>
     class	ITCP_protocol
     {
     public:
-        struct	Game
-        {
-            std::string	*name;
-        };
 
-        struct	Message
-        {
-            std::string	*name;
-            std::string	*message;
-        };
-
-        struct	Game_result
-        {
-            std::string *winner;
-        };
-
-        struct	Game_param
-        {
-            std::string	*name;
-            std::string	*value;
-        };
-
-        struct  Game_player_param
-        {
-            std::string *name;
-            std::string *value;
-        };
-
-        struct	Game_stone
-        {
-            uint8_t	x;
-            uint8_t	y;
-            enum	Color : uint8_t
-            {
-                White = 0,
-                Black,
-                None
-            }		color;
-          Game_stone(uint8_t _x, uint8_t _y, Color _color) :
-    	x(_x),
-    	y(_y),
-    	color(_color)
-          {
-          }
-          Game_stone(void) :
-    	Game_stone(0, 0, None)
-          {
-          }
-          Color	operator!(void)
-          {
-    	if (color == Black)
-    	  return White;
-    	else if (color == White)
-    	  return Black;
-    	else
-    	  return None;
-          }
-        };
 
         class	Callback
         {

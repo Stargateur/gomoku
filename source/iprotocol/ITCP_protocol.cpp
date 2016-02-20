@@ -73,3 +73,24 @@ char const   *get_str_error(iprotocol::Error error)
     };
     throw std::logic_error("Unknown error code");
 }
+iprotocol::Game_stone::Game_stone(uint8_t _x, uint8_t _y, Color _color) :
+	x(_x),
+	y(_y),
+	color(_color)
+{
+}
+
+iprotocol::Game_stone::Game_stone(void) :
+	Game_stone(0, 0, None)
+{
+}
+
+iprotocol::Game_stone::Color    iprotocol::Game_stone::operator!(void)
+{
+	if (color == Black)
+		return White;
+	else if (color == White)
+		return Black;
+	else
+		return None;
+}

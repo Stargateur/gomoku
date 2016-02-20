@@ -36,15 +36,15 @@ public:
     std::string const	&get_name(void) const;
     void    send_game_created(iprotocol::ITCP_protocol<Client> &itcp_protocol) const;
     void    send_game_deleted(iprotocol::ITCP_protocol<Client> &itcp_protocol) const;
-    void	create_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game *game);
-    void	join_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game *game);
+    void	create_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game *game);
+    void	join_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game *game);
     void	leave_game(iprotocol::ITCP_protocol<Client> &itcp_protocol);
-    void	put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_stone *stone);
-    void    change_param_player_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_player_param *param);
-    void    change_param_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_param *param);
+    void	put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone);
+    void    change_param_player_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_player_param *param);
+    void    change_param_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_param *param);
     void	start_game(iprotocol::ITCP_protocol<Client> &itcp_protocol);
     void	ready_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, bool ready);
-    void    result_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_result *game_result);
+    void    result_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_result *game_result);
 private:
     bool	m_is_start;
     std::string	*m_name;
@@ -52,8 +52,8 @@ private:
     Black	m_black;
     White   m_white;
     ITime   *m_timeout;
-    std::list<iprotocol::ITCP_protocol<Client>::Game_param *>  m_param;
-    std::list<iprotocol::ITCP_protocol<Client>::Game_player_param *>  m_param_player;
+    std::list<iprotocol::Game_param *>  m_param;
+    std::list<iprotocol::Game_player_param *>  m_param_player;
 private:
     std::list<iprotocol::ITCP_protocol<Client> *>  m_itcp_protocols;
     std::list<iprotocol::ITCP_protocol<Client> *>  m_disconnecteds;

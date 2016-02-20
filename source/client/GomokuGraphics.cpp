@@ -149,15 +149,15 @@ void GomokuGraphics::affStone()
 	{
 		for (size_t y = 0; y < 19; y++)
 		{
-			if (GameInfo::getInstance().mPlate[x][y] == iprotocol::ITCP_protocol<ITCP_client>::Game_stone::Color::Black ||
-				GameInfo::getInstance().mPlate[x][y] == iprotocol::ITCP_protocol<ITCP_client>::Game_stone::Color::White)
+			if (GameInfo::getInstance().mPlate[x][y] == iprotocol::Game_stone::Color::Black ||
+				GameInfo::getInstance().mPlate[x][y] == iprotocol::Game_stone::Color::White)
 			{
 				if (mStones[x][y] == nullptr)
 				{
 					GVOButton<int> *button = nullptr;
-					if (GameInfo::getInstance().mPlate[x][y] == iprotocol::ITCP_protocol<ITCP_client>::Game_stone::Color::Black)
+					if (GameInfo::getInstance().mPlate[x][y] == iprotocol::Game_stone::Color::Black)
 						button = new GVOButton<int>(sf::Vector2f(225 + x * 33.5, 80 + y * 33.5), mBlackTexture, sf::Vector2f(0.8, 0.8));
-					if (GameInfo::getInstance().mPlate[x][y] == iprotocol::ITCP_protocol<ITCP_client>::Game_stone::Color::White)
+					if (GameInfo::getInstance().mPlate[x][y] == iprotocol::Game_stone::Color::White)
 						button = new GVOButton<int>(sf::Vector2f(225 + x * 33.5, 80 + y * 33.5), mWhiteTexture, sf::Vector2f(0.8, 0.8));
 					mStones[x][y] = button;
 					mGameView.pushObject(button);
