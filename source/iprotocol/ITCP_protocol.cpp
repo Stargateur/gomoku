@@ -22,7 +22,7 @@ char const  *iprotocol::ITCP_protocol_exception::what(void) const noexcept
     return ("ITCP_protocol_exception");
 }
 
-char const   *get_str_error(iprotocol::Error error)
+char const   *iprotocol::get_str_error(iprotocol::Error error)
 {
     switch (error)
     {
@@ -93,4 +93,9 @@ iprotocol::Game_stone::Color    iprotocol::Game_stone::operator!(void)
 		return Black;
 	else
 		return None;
+}
+
+std::ostream    &iprotocol::operator<<(std::ostream &os, Error error)
+{
+    return os << get_str_error(error);
 }

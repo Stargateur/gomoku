@@ -22,7 +22,7 @@
 
 namespace iprotocol
 {
-        enum    Error : uint8_t
+    enum    Error : uint8_t
     {
         None = 0,
         Ignore,
@@ -48,6 +48,7 @@ namespace iprotocol
         Game_stone_not_your_turn,
     };
     char const   *get_str_error(Error error);
+    std::ostream    &operator<<(std::ostream &os, Error error);
     struct  Game
     {
         std::string *name;
