@@ -20,7 +20,7 @@
 # include   "Arbitre.hpp"
 # include	"ACallback.hpp"
 
-class	Game : public ACallback<Client>
+class	Game : public iprotocol::ACallback<Client>
 {
 public:
     Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::string *name);

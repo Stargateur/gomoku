@@ -15,7 +15,7 @@
 # include	"Client.hpp"
 # include	"ACallback.hpp"
 
-class	White : public ACallback<Client>
+class	White : public iprotocol::ACallback<Client>
 {
 public:
     White(typename iprotocol::ITCP_protocol<Client>::Callback &callback);

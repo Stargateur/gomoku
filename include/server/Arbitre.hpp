@@ -6,7 +6,7 @@
 #include "ITCP_protocol.hpp"
 #include "Client.hpp"
 
-class Arbitre : public ACallback<Client>
+class Arbitre : public iprotocol::ACallback<Client>
 {
 public:
 	class log_level

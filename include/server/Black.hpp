@@ -15,7 +15,7 @@
 # include	"Client.hpp"
 # include	"ACallback.hpp"
 
-class	Black : public ACallback<Client>
+class	Black : public iprotocol::ACallback<Client>
 {
 public:
     Black(typename iprotocol::ITCP_protocol<Client>::Callback &callback);

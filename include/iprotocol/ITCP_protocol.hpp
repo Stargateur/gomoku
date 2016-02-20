@@ -91,12 +91,11 @@ namespace iprotocol
       Game_stone(void);
       Color operator!(void);
     };
+
     template<typename T>
     class	ITCP_protocol
     {
     public:
-
-
         class	Callback
         {
         public:
@@ -128,6 +127,7 @@ namespace iprotocol
             virtual void    result_game(ITCP_protocol &itcp_protocol, Game_result *game_result) = 0;
             virtual void	message(ITCP_protocol &itcp_protocol, Message *message) = 0;
         };
+
     public:
         virtual ~ITCP_protocol(void)
         {
