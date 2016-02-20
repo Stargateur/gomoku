@@ -15,6 +15,8 @@
 # include	<cstring>
 # include	"ATCP_packet.hpp"
 
+namespace iprotocol
+{
 class	TCP_packet_recv : public ATCP_packet
 {
 public:
@@ -34,5 +36,6 @@ public:
 private:
     uintmax_t	m_recv;
 };
+}
 
 #endif		/* !TCP_PACKET_RECV_HPP_ */

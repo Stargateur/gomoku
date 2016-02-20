@@ -18,7 +18,7 @@
 #include	"Time.hpp"
 
 Client::Client(void) :
-    m_itcp_protocol(new TCP_protocol<ITCP_client>(this, new TCP_client("localhost", "4242"))),
+    m_itcp_protocol(new iprotocol::TCP_protocol<ITCP_client>(this, new TCP_client("localhost", "4242"))),
     m_iselect(new Select)
 {
     m_itcp_protocol->send_connect("test", "test");

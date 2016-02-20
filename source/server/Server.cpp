@@ -108,7 +108,7 @@ void	Server::run(void)
 			#ifndef NDEBUG
 			std::cerr << "Un client vient d'être accepté" << std::endl;
 			#endif
-			m_itcp_protocols.push_back(new TCP_protocol<Client>(this, client));
+			m_itcp_protocols.push_back(new iprotocol::TCP_protocol<Client>(this, client));
 		}
 		catch (std::exception &e)
 		{

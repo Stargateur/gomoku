@@ -12,38 +12,38 @@
 #include    <stdexcept>
 #include	"TCP_packet_recv.hpp"
 
-TCP_packet_recv::TCP_packet_recv(void) :
-    ATCP_packet(),
+iprotocol::TCP_packet_recv::TCP_packet_recv(void) :
+    iprotocol::ATCP_packet(),
     m_recv(0)
 {
 }
 
-TCP_packet_recv::~TCP_packet_recv(void)
+iprotocol::TCP_packet_recv::~TCP_packet_recv(void)
 {
 }
 
-bool	TCP_packet_recv::recv(ITCP_client const &socket)
+bool	iprotocol::TCP_packet_recv::recv(ITCP_client const &socket)
 {
     if (m_recv >= sizeof(m_buffer))
-        throw ATCP_packet_exception();
+        throw iprotocol::ATCP_packet_exception();
     uintmax_t	ret;
     if (m_recv < m_size_header)
 	{
         ret = socket.recv(m_buffer[m_recv], m_size_header - m_recv);
 		    if (ret > m_size_header - m_recv)
-        throw ATCP_packet_exception();
+        throw iprotocol::ATCP_packet_exception();
 	}
     else
 	{
         ret = socket.recv(m_buffer[m_recv], m_size_header + get_size() - m_recv);
     if (ret > m_size_header + get_size() - m_recv)
-        throw ATCP_packet_exception();
+        throw iprotocol::ATCP_packet_exception();
 	}
 	#ifndef NDEBUG
     std::cerr << "Nombre d'octect lu " << ret << std::endl;
 	#endif
     if (ret == 0)
-        throw ATCP_packet_exception();
+        throw iprotocol::ATCP_packet_exception();
     m_recv += ret;
     if (m_recv < m_size_header)
         return (false);
@@ -54,7 +54,7 @@ bool	TCP_packet_recv::recv(ITCP_client const &socket)
     return (true);
 }
 
-void	TCP_packet_recv::get(std::string &string)
+void	iprotocol::TCP_packet_recv::get(std::string &string)
 {
     uint8_t       size;
 
