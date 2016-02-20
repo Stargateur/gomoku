@@ -30,7 +30,7 @@ public:
     ~Server(void);
     void    pre_run(void);
     void	run(void);
-    void	result(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Error error);
+    void	result(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Error error);
     void	connect(iprotocol::ITCP_protocol<Client> &itcp_protocol, uint8_t version, std::string *login, std::string *password);
     void	disconnect(iprotocol::ITCP_protocol<Client> &itcp_protocol);
     void	ping(iprotocol::ITCP_protocol<Client> &itcp_protocol);

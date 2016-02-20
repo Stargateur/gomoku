@@ -58,9 +58,9 @@ void	Client::run(void)
 	}
 }
 
-void	Client::result(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::ITCP_protocol<ITCP_client>::Error error)
+void	Client::result(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, iprotocol::Error error)
 {
-    std::cout << iprotocol::ITCP_protocol<ITCP_client>::get_str_error(error) << std::endl;
+    std::cout << error << std::endl;
 }
 
 void	Client::connect(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, uint8_t version, std::string *login, std::string *password)

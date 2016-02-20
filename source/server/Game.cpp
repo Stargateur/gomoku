@@ -185,7 +185,7 @@ void	Game::create_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename
 {
     delete game->name;
     delete game;
-    itcp_protocol.send_result(iprotocol::ITCP_protocol<Client>::Error::Already_in_game);
+    itcp_protocol.send_result(iprotocol::Error::Already_in_game);
     throw std::logic_error("You are already in game");
 }
 
@@ -193,7 +193,7 @@ void	Game::join_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename i
 {
     delete game->name;
     delete game;
-    itcp_protocol.send_result(iprotocol::ITCP_protocol<Client>::Error::Already_in_game);
+    itcp_protocol.send_result(iprotocol::Error::Already_in_game);
     throw std::logic_error("You are already in game");
 }
 
@@ -206,7 +206,7 @@ void	Game::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typen
 {
 	if (itcp_protocol.get_callback() != &m_white && itcp_protocol.get_callback() != &m_black)
 	{
-        itcp_protocol.send_result(iprotocol::ITCP_protocol<Client>::Error::Packet_not_allowed);
+        itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
         delete stone;
 		throw std::logic_error("you are you ?");
 	}
@@ -224,7 +224,7 @@ void    Game::change_param_player_game(iprotocol::ITCP_protocol<Client> &itcp_pr
             itcp_protocol.set_callback(&m_black);
     }
     else
-        itcp_protocol.send_result(iprotocol::ITCP_protocol<Client>::Error::Game_player_param_not_exist);
+        itcp_protocol.send_result(iprotocol::Error::Game_player_param_not_exist);
     delete param->name;
     delete param->value;
     delete param;
@@ -235,27 +235,27 @@ void    Game::change_param_game(iprotocol::ITCP_protocol<Client> &itcp_protocol,
     delete param->value;
     delete param->name;
     delete param;
-    itcp_protocol.send_result(iprotocol::ITCP_protocol<Client>::Error::Game_param_not_exist);
+    itcp_protocol.send_result(iprotocol::Error::Game_param_not_exist);
 }
 
 void	Game::start_game(iprotocol::ITCP_protocol<Client> &itcp_protocol)
 {
     if (m_white.is_ready() == false || m_black.is_ready() == false)
-        itcp_protocol.send_result(iprotocol::ITCP_protocol<Client>::Error::All_player_are_not_ready);
+        itcp_protocol.send_result(iprotocol::Error::All_player_are_not_ready);
     else
         m_is_start = true;
 }
 
 void	Game::ready_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, bool)
 {
-    itcp_protocol.send_result(iprotocol::ITCP_protocol<Client>::Error::Packet_not_allowed);
+    itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
 }
 
 void    Game::result_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, typename iprotocol::ITCP_protocol<Client>::Game_result *game_result)
 {
     if (itcp_protocol.get_callback() != &m_white && itcp_protocol.get_callback() != &m_black)
     {
-        itcp_protocol.send_result(iprotocol::ITCP_protocol<Client>::Error::Packet_not_allowed);
+        itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
         delete game_result->winner;
         delete game_result;
     }

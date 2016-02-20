@@ -217,7 +217,7 @@ public:
     }
 
 public:
-    void	send_result(typename iprotocol::ITCP_protocol<T>::Error error)
+    void	send_result(iprotocol::Error error)
     {
         TCP_packet_send	&to_send = get_to_send(ATCP_packet::Result);;
         to_send.put(error);
@@ -226,7 +226,7 @@ public:
 private:
     void	recv_result(void)
     {
-        typename iprotocol::ITCP_protocol<T>::Error	error;
+        iprotocol::Error	error;
         m_to_recv.get(error);
         m_callback->result(*this, error);
     }

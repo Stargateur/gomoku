@@ -31,7 +31,7 @@ public:
     {
     }
 
-    virtual void	result(iprotocol::ITCP_protocol<T> &itcp_protocol, typename iprotocol::ITCP_protocol<T>::Error error)
+    virtual void	result(iprotocol::ITCP_protocol<T> &itcp_protocol, iprotocol::Error error)
     {
         m_callback.result(itcp_protocol, error);
     }
