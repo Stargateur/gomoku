@@ -104,7 +104,7 @@ void    Select::select(void)
     if (ret == -1)
     {
         std::cerr << GetLastError() << std::endl;
-        throw Select_exception("nique sa mère windows");
+        throw Select_exception("WSA error numero : " + std::to_string(GetLastError()));
     }
 #else
     int ret = pselect(m_nfds + 1, &m_readfds, &m_writefds, NULL, NULL, NULL);
@@ -113,18 +113,24 @@ void    Select::select(void)
 #endif
 }
 
-void    Select::select(ITime const &timeout)
+void    Select::select(std::chrono::nanoseconds const &timeout)
 {
 #ifdef      _WIN32
-    struct timeval   time = { static_cast<long>(timeout.get_second()), static_cast<long>(timeout.get_nano()) / 1000};
+    auto second = std::chrono::duration_cast<std::chrono::seconds>(timeout);
+    auto mili = std::chrono::duration_cast<std::chrono::miliseconds>(timeout);
+    mili -= second;
+    struct timeval   time = {static_cast<long>(second.count()),static_cast<long>(mili.count()};
     int ret = ::select(m_nfds + 1, &m_readfds, &m_writefds, NULL, &time);
     if (ret == -1)
     {
         std::cerr << GetLastError() << std::endl;
-        throw Select_exception("nique sa mère windows");
+        throw Select_exception("WSA error numero : " + std::to_string(GetLastError()));
     }
 #else
-    struct timespec   time = {timeout.get_second(), timeout.get_nano()};
+    auto second = std::chrono::duration_cast<std::chrono::seconds>(timeout);
+    auto nano = std::chrono::duration_cast<std::chrono::nanoseconds>(timeout);
+    nano -= second;
+    struct timespec   time = {static_cast<long>(second.count()),static_cast<long>(nano.count())};
     int ret = pselect(m_nfds + 1, &m_readfds, &m_writefds, NULL, &time, NULL);
     if (ret == -1)
         throw Select_exception(strerror(errno));

@@ -16,8 +16,8 @@
 #include	"Time.hpp"
 #include    "Utils.hpp"
 
-Server::Server(void) try :
-    Server(new TCP_server("4242"))
+Server::Server(Options const &options) try :
+    Server(new TCP_server(options.port))
 {
 }
 catch (...)

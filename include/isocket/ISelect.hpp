@@ -11,6 +11,7 @@
 #ifndef		ISELECT_HPP_
 # define	ISELECT_HPP_
 
+# include   <chrono>
 # include	"ISocket.hpp"
 # include	"ITime.hpp"
 
@@ -19,7 +20,7 @@ class	ISelect
 public:
     virtual ~ISelect(void);
     virtual void	select(void) = 0;
-    virtual void    select(ITime const &timeout) = 0;
+    virtual void    select(std::chrono::nanoseconds const &timeout) = 0;
     virtual void    reset(void) = 0;
     virtual void    reset_read(ISocket const &socket) = 0;
     virtual void    reset_write(ISocket const &socket) = 0;

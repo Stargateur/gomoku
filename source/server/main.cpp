@@ -36,21 +36,22 @@ int	main(int argc, char **argv)
         ("port,p", boost::program_options::value<std::string>(&options.port), "the port used by the server (tcp)")
     ;
 
-    boost::program_options::positional_options_description p;
+    boost::program_options::positional_options_description pos_desc;
 
     boost::program_options::basic_command_line_parser<char> bclp(argc, argv);
-    bclp.options(desc).positional(p);
+    bclp.options(desc).positional(pos_desc);
     
     boost::program_options::variables_map vm;
     boost::program_options::store(bclp.run(), vm);
     boost::program_options::notify(vm);
     if (vm.count("help") != 0)
     {
-        std::cout << desc << "\n";
+        std::cout << desc << std::endl;
         return 1;
     }
+
     auto start = std::chrono::steady_clock::now();
-    Server	server;
+    Server	server(options);
     std::signal(SIGINT, &sigint);
     while (g_keep_running != 0)
     try

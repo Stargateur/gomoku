@@ -17,12 +17,13 @@
 # include	"ITCP_protocol.hpp"
 # include	"Select.hpp"
 # include	"Client.hpp"
+# include   "Options.hpp"
 # include	"Game.hpp"
 
 class	Server : public iprotocol::ITCP_protocol<Client>::Callback
 {
 public:
-    Server(void);
+    Server(Options const &options);
 private:
     Server(ITCP_server *);
     Server(ITCP_server *, ISelect *);
