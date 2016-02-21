@@ -25,7 +25,8 @@ catch (...)
 
 Server::Server(ITCP_server *itcp_server) try :
     m_itcp_server(itcp_server),
-    m_iselect(new Select())
+    m_iselect(new Select()),
+    m_timeout(5)
 {
 }
 catch (...)
