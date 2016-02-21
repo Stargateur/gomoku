@@ -12,9 +12,9 @@
 # define	GAME_HPP_
 
 # include   <map>
+# include   <chrono>
 # include   "ISelect.hpp"
 # include	"Client.hpp"
-# include   "ITime.hpp"
 # include	"White.hpp"
 # include   "Black.hpp"
 # include   "Arbitre.hpp"
@@ -26,7 +26,7 @@ public:
     Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::string *name);
     ~Game(void);
     void    pre_run(ISelect &iselect);
-    void	run(ISelect &iselect, ITime &itime);
+    void	run(ISelect &iselect);
     void    add_player(iprotocol::ITCP_protocol<Client>  *player);
 private:
     void    delete_player(std::list<iprotocol::ITCP_protocol<Client> *>::iterator &it);
@@ -51,7 +51,7 @@ private:
     Arbitre m_arbitre;
     Black	m_black;
     White   m_white;
-    ITime   *m_timeout;
+    std::chrono::seconds   m_timeout;
     std::list<iprotocol::Game_param *>  m_param;
     std::list<iprotocol::Game_player_param *>  m_param_player;
 private:

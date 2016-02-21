@@ -11,13 +11,13 @@
 #ifndef		CLIENT_HPP_
 # define	CLIENT_HPP_
 
+# include   <chrono>
 # include	"ITCP_client.hpp"
-# include	"ITime.hpp"
 
 class	Client
 {
 public:
-	Client(ITCP_client *itcp_client, std::string *login, ITime *last, bool wait_pong);
+	Client(ITCP_client *itcp_client, std::string *login, bool wait_pong);
     ~Client(void);
     void	set_itcp_client(ITCP_client *itcp_client);
     ITCP_client const	*get_itcp_client(void) const;
@@ -25,15 +25,14 @@ public:
     void	set_login(std::string *login);
     std::string const	*get_login(void) const;
     std::string	*get_login(void);
-    void	set_last(ITime *last);
-    ITime const	*get_last(void) const;
-    ITime	*get_last(void);
+    std::chrono::steady_clock::time_point const	&get_last(void) const;
+    std::chrono::steady_clock::time_point	&get_last(void);
     void	set_wait_pong(bool wait_pong);
     bool	get_wait_pong(void) const;
 private:
     ITCP_client	*m_itcp_client;
     std::string	*m_login;
-    ITime		*m_last;
+    std::chrono::steady_clock::time_point		m_last;
     bool		m_wait_pong;
 };
 

@@ -10,10 +10,9 @@
 
 #include	"Client.hpp"
 
-Client::Client(ITCP_client *itcp_client, std::string *login, ITime *last, bool wait_pong) :
+Client::Client(ITCP_client *itcp_client, std::string *login, bool wait_pong) :
 	m_itcp_client(itcp_client),
 	m_login(login),
-	m_last(last),
 	m_wait_pong(wait_pong)
 {
 }
@@ -22,7 +21,6 @@ Client::~Client(void)
 {
     delete m_itcp_client;
     delete m_login;
-    delete m_last;
 }
 
 void	Client::set_itcp_client(ITCP_client *itcp_client)
@@ -57,18 +55,12 @@ std::string	*Client::get_login(void)
 	return (m_login);
 }
 
-void	Client::set_last(ITime *last)
-{
-	delete m_last;
-	m_last = last;
-}
-
-ITime const	*Client::get_last(void) const
+std::chrono::steady_clock::time_point const	&Client::get_last(void) const
 {
 	return (m_last);
 }
 
-ITime	*Client::get_last(void)
+std::chrono::steady_clock::time_point	&Client::get_last(void)
 {
 	return (m_last);
 }

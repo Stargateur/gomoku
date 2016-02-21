@@ -12,7 +12,8 @@
 # define	SERVER_HPP_
 
 # include	<list>
-# include	<string>
+# include   <string>
+# include   <chrono>
 # include	"ITCP_server.hpp"
 # include	"ITCP_protocol.hpp"
 # include	"Select.hpp"
@@ -26,7 +27,6 @@ public:
     Server(Options const &options);
 private:
     Server(ITCP_server *);
-    Server(ITCP_server *, ISelect *);
 public:
     ~Server(void);
     void    pre_run(void);
@@ -58,7 +58,7 @@ public:
 private:
     ITCP_server const   *m_itcp_server;
     ISelect	*m_iselect;
-    ITime	*m_timeout;
+    std::chrono::seconds	m_timeout;
     std::list<Game *>	m_games;
     std::list<iprotocol::ITCP_protocol<Client> *>  m_itcp_protocols;
     std::list<iprotocol::ITCP_protocol<Client> *>  m_disconnecteds;

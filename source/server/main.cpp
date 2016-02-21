@@ -51,6 +51,7 @@ int	main(int argc, char **argv)
     }
 
     auto start = std::chrono::steady_clock::now();
+
     Server	server(options);
     std::signal(SIGINT, &sigint);
     while (g_keep_running != 0)
@@ -63,10 +64,12 @@ int	main(int argc, char **argv)
     {
         std::cerr << e.what() << std::endl;
     }
+
 	auto end = std::chrono::steady_clock::now();
 	auto diff = end - start;
 	auto lol = std::chrono::duration_cast<std::chrono::seconds>(diff);
 	diff -= lol;
 	std::cout << lol.count() << " s" << std::chrono::duration_cast<std::chrono::nanoseconds>(diff).count() << " n" << std::endl;
+    
     return 0;
 }

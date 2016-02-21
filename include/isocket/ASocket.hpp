@@ -12,7 +12,6 @@
 # define	ASOCKET_HPP_
 
 # include	"ISocket.hpp"
-# include	"ITime.hpp"
 
 class	ASocket : virtual public ISocket
 {

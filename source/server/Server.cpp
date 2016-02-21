@@ -13,7 +13,6 @@
 #include	"TCP_server.hpp"
 #include	"TCP_client.hpp"
 #include	"Server.hpp"
-#include	"Time.hpp"
 #include    "Utils.hpp"
 
 Server::Server(Options const &options) try :
@@ -25,23 +24,13 @@ catch (...)
 }
 
 Server::Server(ITCP_server *itcp_server) try :
-    Server(itcp_server, new Select())
+    m_itcp_server(itcp_server),
+    m_iselect(new Select())
 {
 }
 catch (...)
 {
     delete itcp_server;
-}
-
-Server::Server(ITCP_server *itcp_server, ISelect *iselect) try :
-    m_itcp_server(itcp_server),
-    m_iselect(iselect),
-    m_timeout(new Time(5))
-{
-}
-catch (...)
-{
-    delete iselect;
 }
 
 Server::~Server(void)
@@ -52,7 +41,6 @@ Server::~Server(void)
     for (auto game : m_games)
         delete game;
     delete m_iselect;
-    delete m_timeout;
 }
 
 void    Server::pre_run(void)
@@ -104,7 +92,7 @@ void	Server::run(void)
 		try
 		{
 			m_iselect->reset_read(*m_itcp_server);
-			Client	*client = new Client(&m_itcp_server->accept(), nullptr, new Time(), false);
+			Client	*client = new Client(&m_itcp_server->accept(), nullptr, false);
 			#ifndef NDEBUG
 			std::cerr << "Un client vient d'être accepté" << std::endl;
 			#endif
@@ -146,12 +134,12 @@ void	Server::run(void)
 			Client &client = *itcp_protocol->get_data();
             if (m_iselect->can_read(*client.get_itcp_client()))
             {
-                itcp_protocol->get_data()->get_last()->now();
+                itcp_protocol->get_data()->get_last() = std::chrono::steady_clock::now();
                 m_iselect->reset_read(*client.get_itcp_client());
                 itcp_protocol->recv(*client.get_itcp_client());
             }
             else
-                Utils::timeout(*itcp_protocol, *m_timeout);
+                Utils::timeout(*itcp_protocol, m_timeout);
 
             if (m_iselect->can_write(*client.get_itcp_client()))
             {
@@ -178,8 +166,7 @@ void	Server::run(void)
         Game *game = *it_game;
         try
         {
-            Time lol;
-            game->run(*m_iselect, lol);
+            game->run(*m_iselect);
             it_game++;
         }
         catch (Game_exception_client_transfer &e)

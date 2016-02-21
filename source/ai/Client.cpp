@@ -13,7 +13,6 @@
 #include	"TCP_protocol.hpp"
 #include	"TCP_client.hpp"
 #include	"Select.hpp"
-#include	"Time.hpp"
 
 Client::Client(void) :
     m_itcp_protocol(new iprotocol::TCP_protocol<ITCP_client>(this, new TCP_client("localhost", "4242"))),

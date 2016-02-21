@@ -10,7 +10,6 @@
 
 #include    <iostream>
 #include    "Game.hpp"
-#include    "Time.hpp"
 #include    "Utils.hpp"
 
 Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::string *name) :
@@ -20,7 +19,7 @@ Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::s
     m_arbitre(*this),
     m_black(m_arbitre),
     m_white(m_arbitre),
-    m_timeout(new Time(5))
+    m_timeout((5))
 {
     iprotocol::Game_player_param *game_player_param = new iprotocol::Game_player_param;
 
@@ -31,7 +30,6 @@ Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::s
 
 Game::~Game(void)
 {
-    delete m_timeout;
     delete m_name;
 }
 
@@ -67,7 +65,7 @@ void    Game::pre_run(ISelect &iselect)
 	}
 }
 
-void    Game::run(ISelect &iselect, ITime &)
+void    Game::run(ISelect &iselect)
 {
     if (m_itcp_protocols.size() == 0 && m_disconnecteds.size() == 0)
         throw AGame_exception();
@@ -104,12 +102,12 @@ void    Game::run(ISelect &iselect, ITime &)
         {
             if (iselect.can_read(*client.get_itcp_client()))
             {
-                itcp_protocol->get_data()->get_last()->now();
+                itcp_protocol->get_data()->get_last() = std::chrono::steady_clock::now();
                 iselect.reset_read(*client.get_itcp_client());
                 itcp_protocol->recv(*client.get_itcp_client());
             }
             else
-                Utils::timeout(*itcp_protocol, *m_timeout);
+                Utils::timeout(*itcp_protocol, m_timeout);
 
             if (iselect.can_write(*client.get_itcp_client()))
             {

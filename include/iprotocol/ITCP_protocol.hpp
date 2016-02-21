@@ -15,7 +15,6 @@
 # include	<string>
 # include	<list>
 # include   <stdexcept>
-# include	"ITime.hpp"
 # include	"ITCP_client.hpp"
 # include	"TCP_packet_recv.hpp"
 # include	"TCP_packet_send.hpp"
