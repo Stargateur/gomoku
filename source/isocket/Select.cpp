@@ -10,6 +10,7 @@
 
 #include	<algorithm>
 #include	<cstring>
+#include	<string>
 #include	<cerrno>
 #include	<iostream>
 #include	"Select.hpp"
@@ -117,9 +118,9 @@ void    Select::select(std::chrono::nanoseconds const &timeout)
 {
 #ifdef      _WIN32
     auto second = std::chrono::duration_cast<std::chrono::seconds>(timeout);
-    auto mili = std::chrono::duration_cast<std::chrono::miliseconds>(timeout);
+    auto mili = std::chrono::duration_cast<std::chrono::milliseconds>(timeout);
     mili -= second;
-    struct timeval   time = {static_cast<long>(second.count()),static_cast<long>(mili.count()};
+    struct timeval   time = {static_cast<long>(second.count()),static_cast<long>(mili.count())};
     int ret = ::select(m_nfds + 1, &m_readfds, &m_writefds, NULL, &time);
     if (ret == -1)
     {
@@ -142,7 +143,12 @@ Select_exception::Select_exception(char const *what) :
 {
 }
 
+Select_exception::Select_exception(std::string const &what) :
+	m_what(what)
+{
+}
+
 char const	*Select_exception::what(void) const noexcept
 {
-    return (m_what);
+    return (m_what.c_str());
 }

@@ -42,10 +42,11 @@ private:
 class	Select_exception : public ISelect_exception
 {
 public:
-    Select_exception(char const *what);
-    char const	*what(void) const noexcept;
+	Select_exception(char const *what);
+	Select_exception(std::string const &what);
+	char const	*what(void) const noexcept;
 private:
-    char const	*m_what;
+    std::string const	m_what;
 };
 
 #endif		/* !SELECT_HPP_ */
