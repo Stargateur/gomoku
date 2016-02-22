@@ -30,7 +30,6 @@ public:
     void    add_player(iprotocol::ITCP_protocol<Client>  *player);
 private:
     void    delete_player(std::list<iprotocol::ITCP_protocol<Client> *>::iterator &it);
-    void    set_name(std::string *name);
 public:
     std::list<iprotocol::ITCP_protocol<Client> *> const    &get_players(void) const;
     std::list<iprotocol::ITCP_protocol<Client> *>   &get_players(void);
@@ -53,7 +52,7 @@ private:
     Black	m_black;
     White   m_white;
     std::chrono::seconds   m_timeout;
-    std::list<iprotocol::Game_param *>  m_param;
+    std::list<iprotocol::Game_param *>  m_params;
     std::list<iprotocol::Game_player_param *>  m_param_player;
 private:
     std::list<iprotocol::ITCP_protocol<Client> *>  m_itcp_protocols;

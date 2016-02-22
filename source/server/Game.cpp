@@ -26,10 +26,30 @@ Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::s
     game_player_param->name = new std::string("color");
     game_player_param->value = new std::string("none");
     m_param_player.push_back(game_player_param);
+    iprotocol::Game_param *game_param = new iprotocol::Game_param;
+
+    game_param->name = new std::string("double trois");
+    game_param->value = new std::string("true");
+    m_params.push_back(game_param);
+    game_param->name = new std::string("victoire spécial");
+    game_param->value = new std::string("true");
+    m_params.push_back(game_param);
 }
 
 Game::~Game(void)
 {
+    for (iprotocol::Game_param *game_param : m_params)
+    {
+        delete game_param->name;
+        delete game_param->value;
+        delete game_param;
+    }
+    for (iprotocol::Game_player_param *game_player_param : m_param_player)
+    {
+        delete game_player_param->name;
+        delete game_player_param->value;
+        delete game_player_param;
+    }
     delete m_name;
 }
 
@@ -122,6 +142,18 @@ void    Game::run(ISelect &iselect)
             delete_player(it);
             throw;
         }
+        catch (AGame_exception &e)
+        {
+            client.add_error();
+            if (client.get_error() > 10)
+            {
+                it = m_itcp_protocols.erase(it);
+                m_disconnecteds.push_back(itcp_protocol);
+                #ifndef NDEBUG
+                std::cerr << client << " has too many error" << std::endl;
+                #endif
+            }
+        }
         catch (std::exception &e)
         {
             std::cerr << e.what() << std::endl;
@@ -131,18 +163,12 @@ void    Game::run(ISelect &iselect)
     }
 }
 
-void    Game::set_name(std::string *name)
-{
-    delete m_name;
-    m_name = name;
-}
-
 void    Game::add_player(iprotocol::ITCP_protocol<Client> *player)
 {
     for (iprotocol::ITCP_protocol<Client> *itcp_protocol : m_itcp_protocols)
         itcp_protocol->send_game_player_joined(*player->get_data()->get_login());
     player->set_callback(this);
-    player->send_list_param_game(m_param);
+    player->send_list_param_game(m_params);
     player->send_list_param_player_game(m_param_player);
     m_itcp_protocols.push_back(player);
 }
@@ -189,7 +215,7 @@ void	Game::create_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotoco
     delete game->name;
     delete game;
     itcp_protocol.send_result(iprotocol::Error::Already_in_game);
-    throw std::logic_error("You are already in game");
+    throw AGame_exception();
 }
 
 void	Game::join_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game *game)
@@ -197,7 +223,7 @@ void	Game::join_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol:
     delete game->name;
     delete game;
     itcp_protocol.send_result(iprotocol::Error::Already_in_game);
-    throw std::logic_error("You are already in game");
+    throw AGame_exception();
 }
 
 void	Game::leave_game(iprotocol::ITCP_protocol<Client> &)
@@ -211,7 +237,7 @@ void	Game::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprot
 	{
         itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
         delete stone;
-		throw std::logic_error("you are you ?");
+		throw AGame_exception();
 	}
 	for (iprotocol::ITCP_protocol<Client> *it : m_itcp_protocols)
 		it->send_game_stone_put(*stone);
@@ -239,6 +265,7 @@ void    Game::change_param_game(iprotocol::ITCP_protocol<Client> &itcp_protocol,
     delete param->name;
     delete param;
     itcp_protocol.send_result(iprotocol::Error::Game_param_not_exist);
+    throw AGame_exception();
 }
 
 void	Game::start_game(iprotocol::ITCP_protocol<Client> &itcp_protocol)
@@ -252,6 +279,7 @@ void	Game::start_game(iprotocol::ITCP_protocol<Client> &itcp_protocol)
 void	Game::ready_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, bool)
 {
     itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
+    throw AGame_exception();
 }
 
 void    Game::result_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_result *game_result)
@@ -261,6 +289,7 @@ void    Game::result_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprot
         itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
         delete game_result->winner;
         delete game_result;
+        throw AGame_exception();
     }
     for (iprotocol::ITCP_protocol<Client> *it : m_itcp_protocols)
         it->send_result_game(*game_result);
