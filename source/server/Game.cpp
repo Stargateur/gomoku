@@ -19,7 +19,7 @@ Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::s
     m_arbitre(*this),
     m_black(m_arbitre),
     m_white(m_arbitre),
-    m_timeout((5))
+    m_timeout(5)
 {
     iprotocol::Game_player_param *game_player_param = new iprotocol::Game_player_param;
 
@@ -35,7 +35,7 @@ Game::~Game(void)
 
 void    Game::pre_run(ISelect &iselect)
 {
-    for (auto *itcp_protocol : m_itcp_protocols)
+    for (iprotocol::ITCP_protocol<Client> *itcp_protocol : m_itcp_protocols)
     {
         Client &client = *itcp_protocol->get_data();
 
@@ -49,7 +49,7 @@ void    Game::pre_run(ISelect &iselect)
 	auto disconnect = m_disconnecteds.begin();
 	while (disconnect != m_disconnecteds.end())
 	{
-		auto itcp_protocol = *disconnect;
+		iprotocol::ITCP_protocol<Client> *itcp_protocol = *disconnect;
 		Client &client = *itcp_protocol->get_data();
 
 		if (itcp_protocol->want_send())
@@ -72,7 +72,7 @@ void    Game::run(ISelect &iselect)
     auto disconnect = m_disconnecteds.begin();
     while (disconnect != m_disconnecteds.end())
     {
-        auto itcp_protocol = *disconnect;
+        iprotocol::ITCP_protocol<Client> *itcp_protocol = *disconnect;
         Client &client = *itcp_protocol->get_data();
         try
         {
@@ -95,7 +95,7 @@ void    Game::run(ISelect &iselect)
     auto it = m_itcp_protocols.begin();
     while (it != m_itcp_protocols.end())
     {
-        auto itcp_protocol = *it;
+        iprotocol::ITCP_protocol<Client> *itcp_protocol = *it;
         Client &client = *itcp_protocol->get_data();
 
         try
@@ -139,7 +139,7 @@ void    Game::set_name(std::string *name)
 
 void    Game::add_player(iprotocol::ITCP_protocol<Client> *player)
 {
-    for (auto itcp_protocol : m_itcp_protocols)
+    for (iprotocol::ITCP_protocol<Client> *itcp_protocol : m_itcp_protocols)
         itcp_protocol->send_game_player_joined(*player->get_data()->get_login());
     player->set_callback(this);
     player->send_list_param_game(m_param);
@@ -151,11 +151,16 @@ void    Game::delete_player(std::list<iprotocol::ITCP_protocol<Client> *>::itera
 {
     Client  *client = (*it)->get_data();
     it = m_itcp_protocols.erase(it);
-    for (auto itcp_protocol : m_itcp_protocols)
+    for (iprotocol::ITCP_protocol<Client> *itcp_protocol : m_itcp_protocols)
         itcp_protocol->send_game_player_left(*client->get_login());
 }
 
 std::list<iprotocol::ITCP_protocol<Client> *> const   &Game::get_players(void) const
+{
+    return (m_itcp_protocols);
+}
+
+std::list<iprotocol::ITCP_protocol<Client> *>   &Game::get_players(void)
 {
     return (m_itcp_protocols);
 }
@@ -208,7 +213,7 @@ void	Game::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprot
         delete stone;
 		throw std::logic_error("you are you ?");
 	}
-	for (auto it : m_itcp_protocols)
+	for (iprotocol::ITCP_protocol<Client> *it : m_itcp_protocols)
 		it->send_game_stone_put(*stone);
 }
 
@@ -257,7 +262,7 @@ void    Game::result_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprot
         delete game_result->winner;
         delete game_result;
     }
-    for (auto it : m_itcp_protocols)
+    for (iprotocol::ITCP_protocol<Client> *it : m_itcp_protocols)
         it->send_result_game(*game_result);
 }
 

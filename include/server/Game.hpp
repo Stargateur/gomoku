@@ -33,6 +33,7 @@ private:
     void    set_name(std::string *name);
 public:
     std::list<iprotocol::ITCP_protocol<Client> *> const    &get_players(void) const;
+    std::list<iprotocol::ITCP_protocol<Client> *>   &get_players(void);
     std::string const	&get_name(void) const;
     void    send_game_created(iprotocol::ITCP_protocol<Client> &itcp_protocol) const;
     void    send_game_deleted(iprotocol::ITCP_protocol<Client> &itcp_protocol) const;
