@@ -586,6 +586,21 @@ namespace iprotocol
             get_rec(m_to_recv, result->winner);
             m_callback->result_game(*this, result);
         }
+    
+    public:
+        void    send_score_game(Game_score const &score)
+        {
+            TCP_packet_send &to_send = get_to_send(ATCP_packet::Score_game);
+            set_rec(to_send, score.white_stone_taken, score.black_stone_taken);
+        }
+
+    private:
+        void    recv_score_game(void)
+        {
+            Game_score *score = new Game_score();
+            get_rec(m_to_recv, score->white_stone_taken, score->black_stone_taken);
+            m_callback->score_game(*this, score);
+        }
 
     public:
         void	send_message(Message const &message)

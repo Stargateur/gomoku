@@ -91,6 +91,12 @@ namespace iprotocol
       Color operator!(void);
     };
 
+    struct  Game_score
+    {
+        uint8_t white_stone_taken;
+        uint8_t black_stone_taken;
+    };
+
     template<typename T>
     class	ITCP_protocol
     {
@@ -123,6 +129,7 @@ namespace iprotocol
             virtual void	game_deleted(ITCP_protocol &itcp_protocol, Game *game) = 0;
             virtual void	start_game(ITCP_protocol &itcp_protocol) = 0;
             virtual void	ready_game(ITCP_protocol &itcp_protocol, bool ready) = 0;
+            virtual void    score_game(ITCP_protocol &itcp_protocol, Game_score *game_score) = 0;
             virtual void    result_game(ITCP_protocol &itcp_protocol, Game_result *game_result) = 0;
             virtual void	message(ITCP_protocol &itcp_protocol, Message *message) = 0;
         };
@@ -163,7 +170,8 @@ namespace iprotocol
         virtual void	send_game_deleted(Game const &game) = 0;
         virtual void	send_start_game(void) = 0;
         virtual void	send_ready_game(bool ready) = 0;
-        virtual void	send_result_game(Game_result const &result) = 0;
+        virtual void    send_score_game(Game_score const &score) = 0;
+        virtual void    send_result_game(Game_result const &result) = 0;
         virtual void	send_message(Message const &message) = 0;
 
     };

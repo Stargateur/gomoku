@@ -12,8 +12,9 @@
 #include	"ATCP_packet.hpp"
 
 iprotocol::ATCP_packet::ATCP_packet(void) :
-    m_packet({})
+    m_packet()
 {
+    set_size(0);
 }
 
 iprotocol::ATCP_packet::~ATCP_packet(void)
@@ -88,6 +89,8 @@ char const	*iprotocol::ATCP_packet::get_str_opcode(iprotocol::ATCP_packet::Opcod
         return ("Start_game");
     case iprotocol::ATCP_packet::Ready_game:
         return ("Ready_game");
+    case iprotocol::ATCP_packet::Score_game:
+        return ("Score_game");
     case iprotocol::ATCP_packet::Result_game:
         return ("Result_game");
     case iprotocol::ATCP_packet::Message:

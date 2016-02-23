@@ -44,6 +44,7 @@ namespace iprotocol
             Game_deleted,
             Start_game,
             Ready_game,
+            Score_game,
             Result_game,
             Message,
         };

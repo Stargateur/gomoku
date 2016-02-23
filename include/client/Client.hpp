@@ -43,7 +43,8 @@ public:
     void	game_deleted(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game *game);
     void	start_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol);
     void	ready_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, bool ready);
-    void	result_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game_result *game_result);
+    void    score_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game_score *game_score);
+    void    result_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game_result *game_result);
     void	message(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Message *message);
 private:
     iprotocol::ITCP_protocol<ITCP_client>						*m_itcp_protocol;

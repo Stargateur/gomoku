@@ -459,6 +459,13 @@ void	Server::ready_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, bool)
 	throw AServer_exception();
 }
 
+void    Server::score_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_score *game_score)
+{
+    delete game_score;
+    itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
+    throw AServer_exception();
+}
+
 void	Server::result_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_result *game_result)
 {
     delete game_result->winner;

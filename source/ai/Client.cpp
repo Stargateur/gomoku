@@ -153,6 +153,10 @@ void	Client::ready_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, bo
 {
 }
 
+void    Client::score_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game_score *game_score)
+{
+}
+
 void	Client::result_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game_result *game_result)
 {
 }

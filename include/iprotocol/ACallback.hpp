@@ -142,6 +142,11 @@ namespace iprotocol
         {
             m_callback.ready_game(itcp_protocol, ready);
         }
+        
+        virtual void    score_game(ITCP_protocol<T> &itcp_protocol, Game_score *game_score)
+        {
+            m_callback.score_game(itcp_protocol, game_score);
+        }
 
         virtual void	result_game(ITCP_protocol<T> &itcp_protocol, Game_result *game_result)
         {
