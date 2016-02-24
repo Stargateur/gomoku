@@ -88,6 +88,7 @@ add_executable(gomoku_server
 	source/server/Black.cpp
 	source/server/White.cpp
 	source/server/Client.cpp
+	source/server/AI.cpp
 	source/server/Game.cpp
 	source/server/Server.cpp
 	source/server/Options.cpp
@@ -97,6 +98,7 @@ add_executable(gomoku_server
 	include/server/Black.hpp
 	include/server/White.hpp
 	include/server/Client.hpp
+	include/server/AI.hpp
 	include/server/Game.hpp
 	include/server/Server.hpp
 	include/server/Options.hpp
