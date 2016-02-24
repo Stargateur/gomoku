@@ -1,13 +1,3 @@
-//
-// main.cpp for main in /home/plasko_a/projet/gomoku/source/server
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Mon Jan 25 18:31:09 2016 Antoine Plaskowski
-// Last update Sat Feb 13 02:24:46 2016 Antoine Plaskowski
-//
-
 #include    <iostream>
 #include    <csignal>
 #include	<chrono>
@@ -34,6 +24,7 @@ int	main(int argc, char **argv)
     desc.add_options()
         ("help,h", "produce help message")
         ("port,p", boost::program_options::value<std::string>(&options.port), "the port used by the server (tcp)")
+        ("verbose,v", boost::program_options::bool_switch(&options.verbose), "verbose")
     ;
 
     boost::program_options::positional_options_description pos_desc;
@@ -52,7 +43,7 @@ int	main(int argc, char **argv)
 
     auto start = std::chrono::steady_clock::now();
 
-    Server	server(options);
+    Server	server(options.port);
     std::signal(SIGINT, &sigint);
     while (g_keep_running != 0)
     try
@@ -67,9 +58,8 @@ int	main(int argc, char **argv)
 
 	auto end = std::chrono::steady_clock::now();
 	auto diff = end - start;
-	auto lol = std::chrono::duration_cast<std::chrono::seconds>(diff);
-	diff -= lol;
-	std::cout << lol.count() << " s" << std::chrono::duration_cast<std::chrono::nanoseconds>(diff).count() << " n" << std::endl;
-    
+	auto duree_execution = std::chrono::duration_cast<std::chrono::seconds>(diff);
+    if (options.verbose)
+    	std::cout << "Temps d'éxécution " << duree_execution.count() << " s" << std::endl;
     return 0;
 }

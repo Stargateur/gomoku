@@ -1,13 +1,3 @@
-//
-// Game.cpp for Game in /home/plasko_a/projet/gomoku
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Wed Jan 27 15:21:28 2016 Antoine Plaskowski
-// Last update Wed Feb 17 14:21:19 2016 Antoine Plaskowski
-//
-
 #include    <iostream>
 #include    "Game.hpp"
 #include    "Utils.hpp"
@@ -24,16 +14,23 @@ Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::s
     iprotocol::Game_player_param *game_player_param = new iprotocol::Game_player_param;
 
     game_player_param->name = new std::string("color");
-    game_player_param->value = new std::string("none");
+    game_player_param->value = new std::string();
     m_param_player.push_back(game_player_param);
     iprotocol::Game_param *game_param = new iprotocol::Game_param;
 
     game_param->name = new std::string("double trois");
     game_param->value = new std::string("true");
     m_params.push_back(game_param);
-    game_param->name = new std::string("victoire spécial");
+    game_param = new iprotocol::Game_param;
+    game_param->name = new std::string("cinq cassable");
     game_param->value = new std::string("true");
+    game_param = new iprotocol::Game_param;
+    game_param->name = new std::string("seulement cinq");
+    game_param->value = new std::string("false");
     m_params.push_back(game_param);
+    game_param = new iprotocol::Game_param;
+    game_param->name = new std::string("ia");
+    game_param->value = new std::string();
 }
 
 Game::~Game(void)
@@ -170,6 +167,7 @@ void    Game::add_player(iprotocol::ITCP_protocol<Client> *player)
     player->set_callback(this);
     player->send_list_param_game(m_params);
     player->send_list_param_player_game(m_param_player);
+    m_arbitre.Welcome(*player);
     m_itcp_protocols.push_back(player);
 }
 

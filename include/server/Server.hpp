@@ -1,13 +1,3 @@
-//
-// Server.hpp for Server in /home/plasko_a/projet/gomoku/include/server
-//
-// Made by Antoine Plaskowski
-// Login   <plasko_a@epitech.eu>
-//
-// Started on  Tue Jan 26 17:48:04 2016 Antoine Plaskowski
-// Last update Thu Jan 28 13:04:00 2016 Antoine Plaskowski
-//
-
 #ifndef		SERVER_HPP_
 # define	SERVER_HPP_
 
@@ -24,7 +14,7 @@
 class	Server : public iprotocol::ITCP_protocol<Client>::Callback
 {
 public:
-    Server(Options const &options);
+    Server(std::string const &options);
 private:
     Server(ITCP_server *);
 public:

@@ -1,13 +1,3 @@
-//
-// iprotocol::ATCP_packet.cpp for iprotocol::ATCP_packet in /home/plasko_a/projet/cplusplus/rtype/source/iprotocol
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Sun Dec  6 04:04:29 2015 Antoine Plaskowski
-// Last update Tue Jan 26 13:08:33 2016 Antoine Plaskowski
-//
-
 #include    <stdexcept>
 #include	"ATCP_packet.hpp"
 

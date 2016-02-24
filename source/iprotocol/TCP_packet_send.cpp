@@ -1,13 +1,3 @@
-//
-// TCP_packet_send.cpp for TCP_packet_send in /home/plasko_a/projet/cplusplus/rtype/source/iprotocol
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Sun Dec  6 04:07:41 2015 Antoine Plaskowski
-// Last update Thu Jan 28 12:51:41 2016 Antoine Plaskowski
-//
-
 #include	<iostream>
 #include    <stdexcept>
 #include	"TCP_packet_send.hpp"

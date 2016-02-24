@@ -27,7 +27,6 @@ Arbitre::log_level Arbitre::log_level::operator=(const log_level & copy)
 	return *this;
 }
 
-
 void Arbitre::log_level::activate(Arbitre::log_level::log l)
 {
 	m_l |= log_to_int(l);

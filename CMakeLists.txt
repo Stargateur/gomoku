@@ -84,15 +84,6 @@ add_custom_command(TARGET gomoku_client POST_BUILD
         "${PROJECT_SOURCE_DIR}/Sprite/"
         $<TARGET_FILE_DIR:gomoku_client>/Sprite)
 
-add_executable(gomoku_ai
-	source/ai/Client.cpp
-	source/ai/main.cpp
-	include/ai/Client.hpp
-)
-target_compile_features(gomoku_ai PUBLIC cxx_range_for)
-target_include_directories(gomoku_ai PUBLIC include/iprotocol include/itime include/isocket include/ai)
-target_link_libraries(gomoku_ai PUBLIC isocket iprotocol)
-
 add_executable(gomoku_server
 	source/server/Arbitre.cpp
 	source/server/Black.cpp

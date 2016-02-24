@@ -1,13 +1,3 @@
-//
-// TCP_protocol.hpp for TCP_protocol in /home/plasko_a/projet/cplusplus/rtype/include/iprotocol
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Thu Jan 28 10:46:22 2016 Antoine Plaskowski
-//
-
 #ifndef		TCP_PROTOCOL_HPP_
 # define	TCP_PROTOCOL_HPP_
 

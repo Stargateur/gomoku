@@ -1,13 +1,3 @@
-//
-// TCP_packet_recv.hpp for TCP_packet_recv in /home/plasko_a/projet/cplusplus/rtype/include/iprotocol
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Sun Dec  6 04:00:47 2015 Antoine Plaskowski
-// Last update Thu Dec 10 03:46:46 2015 Antoine Plaskowski
-//
-
 #ifndef		TCP_PACKET_RECV_HPP_
 # define	TCP_PACKET_RECV_HPP_
 

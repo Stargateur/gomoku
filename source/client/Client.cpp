@@ -1,13 +1,3 @@
-//
-// Client.cpp for Client in /home/plasko_a/projet/gomoku
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Wed Jan 27 11:01:51 2016 Antoine Plaskowski
-// Last update Sat Feb 13 04:02:41 2016 Antoine Plaskowski
-//
-
 #include	<iostream>
 #include	"Client.hpp"
 #include	"TCP_protocol.hpp"

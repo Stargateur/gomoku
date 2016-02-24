@@ -1,13 +1,3 @@
-//
-// Server.cpp for Server in /home/plasko_a/projet/gomoku/source
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Tue Jan 26 17:50:03 2016 Antoine Plaskowski
-// Last update Wed Feb 17 14:19:23 2016 Antoine Plaskowski
-//
-
 #include    <thread>
 #include	"TCP_protocol.hpp"
 #include	"TCP_server.hpp"
@@ -15,8 +5,8 @@
 #include	"Server.hpp"
 #include    "Utils.hpp"
 
-Server::Server(Options const &options) try :
-    Server(new TCP_server(options.port))
+Server::Server(std::string const &port) try :
+    Server(new TCP_server(port))
 {
 }
 catch (...)
@@ -230,7 +220,7 @@ void	Server::connect(iprotocol::ITCP_protocol<Client> &itcp_protocol, uint8_t ve
         delete login;
         delete password;
         itcp_protocol.send_result(iprotocol::Error::Wrong_password);
-		throw AServer_exception();
+        throw AServer_exception();
     }
 /*    for (iprotocol::ITCP_protocol<Client> *it_itcp_protocol : m_itcp_protocols)
     {
@@ -243,7 +233,7 @@ void	Server::connect(iprotocol::ITCP_protocol<Client> &itcp_protocol, uint8_t ve
                 delete login;
                 delete password;
                 itcp_protocol.send_result(iprotocol::Error::Login_already_use);
-                throw std::logic_error("this login is already used");
+                throw AServer_exception();
             }
         }
     }
@@ -259,7 +249,7 @@ void	Server::connect(iprotocol::ITCP_protocol<Client> &itcp_protocol, uint8_t ve
                     delete login;
                     delete password;
                     itcp_protocol.send_result(iprotocol::Error::Login_already_use);
-                    throw std::logic_error("this login is already used");
+                    throw AServer_exception();
                 }
             }            
         }*/
