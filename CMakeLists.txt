@@ -62,7 +62,6 @@ add_executable(gomoku_client
 	source/client/GameInfo.cpp
 	source/client/GomokuGraphics.cpp
 	source/client/GView.cpp
-	source/client/GVOButton.cpp
 	source/client/PlayerInfo.cpp
 	source/client/main.cpp
 	include/client/Client.hpp
