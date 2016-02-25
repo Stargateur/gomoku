@@ -247,7 +247,7 @@ void	Arbitre::check_capture_victory(iprotocol::ITCP_protocol<Client> &itcp_proto
 
 }
 
-void Arbitre::check_victory(iprotocol::ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
+void Arbitre::check_victory(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone * stone)
 {
 	check_victory_five(itcp_protocol, stone);
 }

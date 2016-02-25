@@ -505,10 +505,7 @@ void	Server::message(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol:
                 if (*message->name == *client->get_login())
                 {
                     it->send_message(*message);
-                    delete message->name;
-                    delete message->message;
-                    delete message;
-                    return;
+                    break;
                 }
             }
     }
