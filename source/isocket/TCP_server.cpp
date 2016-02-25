@@ -1,13 +1,3 @@
-//
-// TCP_server.cpp for TCP_server in /home/plasko_a/projet/cplusplus/rtype
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Fri Nov 20 07:15:53 2015 Antoine Plaskowski
-// Last update Tue Dec  8 15:34:37 2015 Antoine Plaskowski
-//
-
 #include	<iostream>
 #include	<cstring>
 #include    <string>
@@ -38,7 +28,7 @@ int	TCP_server::aux_bind(struct addrinfo const *rp)
 {
     if (rp == NULL)
 #ifdef	_WIN32
-		throw TCP_server_exception("WSA error numero : " + std::to_string(GetLastError()));
+        throw TCP_server_exception("WSA error numero : " + std::to_string(GetLastError()));
 #else
         throw TCP_server_exception(strerror(errno));
 #endif

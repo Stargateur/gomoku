@@ -1,13 +1,3 @@
-//
-// TCP_client.cpp for TCP_client in /home/plasko_a/projet/cplusplus/rtype
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Fri Nov 20 06:49:55 2015 Antoine Plaskowski
-// Last update Tue Dec  8 16:09:24 2015 Antoine Plaskowski
-//
-
 #include	<iostream>
 #include	<cstring>
 #include    <string>

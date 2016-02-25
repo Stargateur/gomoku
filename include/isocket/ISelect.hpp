@@ -1,25 +1,15 @@
-//
-// ISelect.hpp for ISelect in /home/plasko_a/projet/cplusplus/rtype/include/isocket
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Tue Dec  8 13:56:31 2015 Antoine Plaskowski
-// Last update Thu Dec 10 02:25:19 2015 Antoine Plaskowski
-//
-
 #ifndef		ISELECT_HPP_
 # define	ISELECT_HPP_
 
+# include   <chrono>
 # include	"ISocket.hpp"
-# include	"ITime.hpp"
 
 class	ISelect
 {
 public:
     virtual ~ISelect(void);
     virtual void	select(void) = 0;
-    virtual void    select(ITime const &timeout) = 0;
+    virtual void    select(std::chrono::nanoseconds const &timeout) = 0;
     virtual void    reset(void) = 0;
     virtual void    reset_read(ISocket const &socket) = 0;
     virtual void    reset_write(ISocket const &socket) = 0;

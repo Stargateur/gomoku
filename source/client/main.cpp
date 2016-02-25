@@ -1,13 +1,3 @@
-//
-// main.cpp for main in /home/plasko_a/projet/gomoku/source/lol
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Mon Jan 25 18:31:24 2016 Antoine Plaskowski
-// Last update Mon Feb 15 14:42:41 2016 Antoine Plaskowski
-//
-
 #include	<iostream>
 #include	<exception>
 #include	<thread>

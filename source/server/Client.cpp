@@ -1,20 +1,11 @@
-//
-// Client.cpp for Client in /home/plasko_a/projet/gomoku
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Tue Jan 26 18:05:03 2016 Antoine Plaskowski
-// Last update Thu Jan 28 09:32:09 2016 Antoine Plaskowski
-//
-
 #include	"Client.hpp"
 
-Client::Client(ITCP_client *itcp_client, std::string *login, ITime *last, bool wait_pong) :
+Client::Client(ITCP_client *itcp_client, std::string *login) :
 	m_itcp_client(itcp_client),
 	m_login(login),
-	m_last(last),
-	m_wait_pong(wait_pong)
+	m_wait_pong(false),
+	m_last(std::chrono::steady_clock::now()),
+	m_error(0)
 {
 }
 
@@ -22,7 +13,6 @@ Client::~Client(void)
 {
     delete m_itcp_client;
     delete m_login;
-    delete m_last;
 }
 
 void	Client::set_itcp_client(ITCP_client *itcp_client)
@@ -57,18 +47,12 @@ std::string	*Client::get_login(void)
 	return (m_login);
 }
 
-void	Client::set_last(ITime *last)
-{
-	delete m_last;
-	m_last = last;
-}
-
-ITime const	*Client::get_last(void) const
+std::chrono::steady_clock::time_point const	&Client::get_last(void) const
 {
 	return (m_last);
 }
 
-ITime	*Client::get_last(void)
+std::chrono::steady_clock::time_point	&Client::get_last(void)
 {
 	return (m_last);
 }
@@ -81,4 +65,19 @@ void	Client::set_wait_pong(bool wait_pong)
 bool	Client::get_wait_pong(void) const
 {
 	return (m_wait_pong);
+}
+
+void	Client::add_error(void)
+{
+	m_error++;
+}
+
+uintmax_t	Client::get_error(void) const
+{
+	return (m_error);
+}
+
+std::ostream	&operator<<(std::ostream &os, Client const &client)
+{
+	return os << (client.get_login() != NULL ? *client.get_login() : "Unknow Client");
 }
