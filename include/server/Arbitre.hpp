@@ -59,6 +59,8 @@ private:
 
 	void check_victory_five(ITCP_protocol<Client> &itcp_protocol, ITCP_protocol<Client>::Game_stone * stone);
 
+	void check_capture_victory(ITCP_protocol<Client> &itcp_protocol);
+
 	void	check_victory(ITCP_protocol<Client> &itcp_protocol, ITCP_protocol<Client>::Game_stone *stone);
 
 	bool	can_capture(ITCP_protocol<Client>::Game_stone * stone, uint8_t coord[8][4]) const;

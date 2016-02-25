@@ -233,7 +233,7 @@ void Arbitre::check_victory_five(ITCP_protocol<Client> &itcp_protocol, prot::Gam
 	}
 }
 
-void Arbitre::check_victory(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
+void	Arbitre::check_capture_victory(ITCP_protocol<Client> &itcp_protocol)
 {
 	if (m_black_loose >= 10)
 	{
@@ -247,12 +247,17 @@ void Arbitre::check_victory(ITCP_protocol<Client> &itcp_protocol, prot::Game_sto
 		gr.winner = new std::string("Fin de la game");
 		m_callback.result_game(itcp_protocol, &gr);
 	}
+
+}
+
+void Arbitre::check_victory(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
+{
 	check_victory_five(itcp_protocol, stone);
 }
 
 #pragma endregion
 
-#pragma region put_stone
+#pragma region PutStone
 
 void Arbitre::put_stone_game(ITCP_protocol<Client> &itcp_protocol, prot::Game_stone * stone)
 {
@@ -352,7 +357,7 @@ bool Arbitre::can_capture(prot::Game_stone * stone, uint8_t coord[8][4]) const
 
 #pragma endregion
 
-#pragma region Can_play
+#pragma region CanPlay
 
 
 bool Arbitre::can_put_stone(ITCP_protocol<Client>::Game_stone * stone) const
@@ -398,7 +403,7 @@ bool Arbitre::can_put_stone(ITCP_protocol<Client>::Game_stone * stone) const
 
 #pragma endregion
 
-#pragma region Double_three
+#pragma region DoubleThree
 
 bool Arbitre::is_three_line(ITCP_protocol<Client>::Game_stone * stone, const std::pair<int, int> &coeff, std::array<std::pair<int, int>, 2> &coords) const
 {
