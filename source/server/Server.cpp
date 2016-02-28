@@ -85,7 +85,7 @@ void	Server::run(void)
 			m_iselect->reset_read(*m_itcp_server);
 			Client	*client = new Client(&m_itcp_server->accept(), nullptr);
 			#ifndef NDEBUG
-			std::cerr << "Un client vient d'être accepté" << std::endl;
+			std::cerr << "SERVER : NEW CLIENT" << std::endl;
 			#endif
 			m_itcp_protocols.push_back(new iprotocol::TCP_protocol<Client>(this, client));
 		}
@@ -152,7 +152,7 @@ void	Server::run(void)
                 it = m_itcp_protocols.erase(it);
                 m_disconnecteds.push_back(itcp_protocol);
                 #ifndef NDEBUG
-                std::cerr << client << " has too many error" << std::endl;
+                std::cerr << "SERVER : " << client << " too many error" << std::endl;
                 #endif
             }
         }

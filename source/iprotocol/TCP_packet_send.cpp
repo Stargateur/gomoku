@@ -19,7 +19,7 @@ bool	iprotocol::TCP_packet_send::send(ITCP_client const &socket)
     uintmax_t	ret = socket.send(m_buffer[m_send], m_size_header + get_size() - m_send);
 
 	#ifndef NDEBUG
-    std::cerr << "Nombre d'octect envoyé " << ret << std::endl;
+    std::cerr << "TCP_packet_send : Nombre d'octect envoyé " << ret << std::endl;
 	#endif
     if (ret > m_size_header + get_size() - m_send)
         throw iprotocol::ATCP_packet_exception();
