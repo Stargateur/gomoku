@@ -1,13 +1,3 @@
-//
-// TCP_client.hpp for TCP_client in /home/plasko_a/projet/cplusplus/rtype/include/server
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Fri Nov 20 05:18:04 2015 Antoine Plaskowski
-// Last update Tue Dec  8 16:07:32 2015 Antoine Plaskowski
-//
-
 #ifndef		TCP_CLIENT_HPP_
 # define	TCP_CLIENT_HPP_
 

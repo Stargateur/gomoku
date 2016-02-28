@@ -1,13 +1,3 @@
-//
-// Client.hpp for Client in /home/plasko_a/projet/gomoku/include
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Wed Jan 27 11:00:32 2016 Antoine Plaskowski
-// Last update Wed Jan 27 11:18:31 2016 Antoine Plaskowski
-//
-
 #ifndef		CLIENT_HPP_
 # define	CLIENT_HPP_
 
@@ -43,7 +33,8 @@ public:
     void	game_deleted(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game *game);
     void	start_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol);
     void	ready_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, bool ready);
-    void	result_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game_result *game_result);
+    void    score_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game_score *game_score);
+    void    result_game(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game_result *game_result);
     void	message(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Message *message);
 private:
     iprotocol::ITCP_protocol<ITCP_client>						*m_itcp_protocol;

@@ -1,19 +1,11 @@
-//
-// Client.cpp for Client in /home/plasko_a/projet/gomoku
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Tue Jan 26 18:05:03 2016 Antoine Plaskowski
-// Last update Thu Jan 28 09:32:09 2016 Antoine Plaskowski
-//
-
 #include	"Client.hpp"
 
-Client::Client(ITCP_client *itcp_client, std::string *login, bool wait_pong) :
+Client::Client(ITCP_client *itcp_client, std::string *login) :
 	m_itcp_client(itcp_client),
 	m_login(login),
-	m_wait_pong(wait_pong)
+	m_wait_pong(false),
+	m_last(std::chrono::steady_clock::now()),
+	m_error(0)
 {
 }
 
@@ -73,4 +65,19 @@ void	Client::set_wait_pong(bool wait_pong)
 bool	Client::get_wait_pong(void) const
 {
 	return (m_wait_pong);
+}
+
+void	Client::add_error(void)
+{
+	m_error++;
+}
+
+uintmax_t	Client::get_error(void) const
+{
+	return (m_error);
+}
+
+std::ostream	&operator<<(std::ostream &os, Client const &client)
+{
+	return os << (client.get_login() != NULL ? *client.get_login() : "Unknow Client");
 }

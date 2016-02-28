@@ -1,13 +1,3 @@
-//
-// White.hpp for White in /home/plasko_a/projet/gomoku
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Wed Jan 27 14:45:21 2016 Antoine Plaskowski
-// Last update Thu Jan 28 10:25:53 2016 Antoine Plaskowski
-//
-
 #ifndef		WHITE_HPP_
 # define	WHITE_HPP_
 

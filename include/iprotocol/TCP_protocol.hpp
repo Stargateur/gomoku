@@ -1,13 +1,3 @@
-//
-// TCP_protocol.hpp for TCP_protocol in /home/plasko_a/projet/cplusplus/rtype/include/iprotocol
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Sun Dec  6 03:35:29 2015 Antoine Plaskowski
-// Last update Thu Jan 28 10:46:22 2016 Antoine Plaskowski
-//
-
 #ifndef		TCP_PROTOCOL_HPP_
 # define	TCP_PROTOCOL_HPP_
 
@@ -585,6 +575,21 @@ namespace iprotocol
             result->winner = new std::string();
             get_rec(m_to_recv, result->winner);
             m_callback->result_game(*this, result);
+        }
+    
+    public:
+        void    send_score_game(Game_score const &score)
+        {
+            TCP_packet_send &to_send = get_to_send(ATCP_packet::Score_game);
+            set_rec(to_send, score.white_stone_taken, score.black_stone_taken);
+        }
+
+    private:
+        void    recv_score_game(void)
+        {
+            Game_score *score = new Game_score();
+            get_rec(m_to_recv, score->white_stone_taken, score->black_stone_taken);
+            m_callback->score_game(*this, score);
         }
 
     public:

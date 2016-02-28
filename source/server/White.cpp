@@ -1,13 +1,3 @@
-//
-// White.cpp for White in /home/plasko_a/projet/gomoku
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Wed Jan 27 15:21:28 2016 Antoine Plaskowski
-// Last update Thu Jan 28 10:26:09 2016 Antoine Plaskowski
-//
-
 #include	"White.hpp"
 
 White::White(typename iprotocol::ITCP_protocol<Client>::Callback &callback) :

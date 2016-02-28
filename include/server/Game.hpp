@@ -1,13 +1,3 @@
-//
-// Game.hpp for Game in /home/plasko_a/projet/gomoku
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Wed Jan 27 14:45:21 2016 Antoine Plaskowski
-// Last update Thu Jan 28 10:47:25 2016 Antoine Plaskowski
-//
-
 #ifndef		GAME_HPP_
 # define	GAME_HPP_
 
@@ -30,9 +20,9 @@ public:
     void    add_player(iprotocol::ITCP_protocol<Client>  *player);
 private:
     void    delete_player(std::list<iprotocol::ITCP_protocol<Client> *>::iterator &it);
-    void    set_name(std::string *name);
 public:
     std::list<iprotocol::ITCP_protocol<Client> *> const    &get_players(void) const;
+    std::list<iprotocol::ITCP_protocol<Client> *>   &get_players(void);
     std::string const	&get_name(void) const;
     void    send_game_created(iprotocol::ITCP_protocol<Client> &itcp_protocol) const;
     void    send_game_deleted(iprotocol::ITCP_protocol<Client> &itcp_protocol) const;
@@ -52,7 +42,7 @@ private:
     Black	m_black;
     White   m_white;
     std::chrono::seconds   m_timeout;
-    std::list<iprotocol::Game_param *>  m_param;
+    std::list<iprotocol::Game_param *>  m_params;
     std::list<iprotocol::Game_player_param *>  m_param_player;
 private:
     std::list<iprotocol::ITCP_protocol<Client> *>  m_itcp_protocols;

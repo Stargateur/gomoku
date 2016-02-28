@@ -1,13 +1,3 @@
-//
-// ASocket.cpp for ASocket in /home/plasko_a/projet/cplusplus/rtype
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Fri Nov 20 05:43:34 2015 Antoine Plaskowski
-// Last update Thu Dec 10 16:36:04 2015 Antoine Plaskowski
-//
-
 #include	<algorithm>
 #include	<exception>
 #include	<cstring>

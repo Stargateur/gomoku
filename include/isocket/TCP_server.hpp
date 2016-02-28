@@ -1,13 +1,3 @@
-//
-// TCP_server.hpp for TCP_server in /home/plasko_a/projet/cplusplus/rtype/include/server
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Fri Nov 20 05:16:07 2015 Antoine Plaskowski
-// Last update Tue Dec  8 15:29:57 2015 Antoine Plaskowski
-//
-
 #ifndef		TCP_SERVER_HPP_
 # define	TCP_SERVER_HPP_
 

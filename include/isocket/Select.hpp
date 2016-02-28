@@ -1,13 +1,3 @@
-//
-// Select.hpp for Select in /home/plasko_a/projet/cplusplus/rtype/include/isocket
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Tue Dec  8 13:56:31 2015 Antoine Plaskowski
-// Last update Tue Dec  8 15:48:55 2015 Antoine Plaskowski
-//
-
 #ifndef		SELECT_HPP_
 # define	SELECT_HPP_
 

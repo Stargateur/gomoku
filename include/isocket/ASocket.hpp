@@ -1,13 +1,3 @@
-//
-// ASocket.hpp for ASocket in /home/plasko_a/projet/cplusplus/rtype/include/server
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Fri Nov 20 04:46:57 2015 Antoine Plaskowski
-// Last update Thu Dec 10 16:36:21 2015 Antoine Plaskowski
-//
-
 #ifndef		ASOCKET_HPP_
 # define	ASOCKET_HPP_
 

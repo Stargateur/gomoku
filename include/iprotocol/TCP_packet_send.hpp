@@ -1,13 +1,3 @@
-//
-// TCP_packet_send.hpp for TCP_packet_send in /home/plasko_a/projet/cplusplus/rtype/include/iprotocol
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Sun Dec  6 04:02:59 2015 Antoine Plaskowski
-// Last update Tue Dec 22 21:07:10 2015 Antoine Plaskowski
-//
-
 #ifndef		TCP_PACKET_SEND_HPP_
 # define	TCP_PACKET_SEND_HPP_
 
