@@ -143,7 +143,7 @@ Select_exception::Select_exception(char const *what) :
 {
 }
 
-Select_exception::Select_exception(std::string const &what) :
+Select_exception::Select_exception(std::string const &&what) :
 	m_what(what)
 {
 }

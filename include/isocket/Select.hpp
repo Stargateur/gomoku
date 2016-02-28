@@ -43,7 +43,7 @@ class	Select_exception : public ISelect_exception
 {
 public:
 	Select_exception(char const *what);
-	Select_exception(std::string const &what);
+	Select_exception(std::string const &&what);
 	char const	*what(void) const noexcept;
 private:
     std::string const	m_what;
