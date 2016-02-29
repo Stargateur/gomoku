@@ -70,6 +70,7 @@ add_executable(gomoku_client
 	include/client/GView.hpp
 	include/client/IGVObject.hpp
 	include/client/IGVAMouseClick.hpp
+	include/client/IGVAMouseHover.hpp
 	include/client/GVOButton.hpp
 	include/client/GVAMouseClickCallBack.hpp
 	include/client/PlayerInfo.hpp

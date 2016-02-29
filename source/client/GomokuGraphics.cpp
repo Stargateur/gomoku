@@ -3,6 +3,7 @@
 #include	"IGVObject.hpp"
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
+#include	"GVAMouseClickCallBack.hpp"
 
 void		connect(std::string params)
 {
