@@ -1,13 +1,3 @@
-//
-// ITCP_client.hpp for ITCP_client in /home/plasko_a/projet/cplusplus/rtype/include/server
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Fri Nov 20 05:18:04 2015 Antoine Plaskowski
-// Last update Thu Dec 10 02:15:07 2015 Antoine Plaskowski
-//
-
 #ifndef		ITCP_CLIENT_HPP_
 # define	ITCP_CLIENT_HPP_
 

@@ -1,13 +1,3 @@
-//
-// ACallback.hpp for ACallback in /home/plasko_a/projet/gomoku
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Wed Jan 27 14:45:21 2016 Antoine Plaskowski
-// Last update Thu Jan 28 10:24:53 2016 Antoine Plaskowski
-//
-
 #ifndef		ACALLBACK_HPP_
 # define	ACALLBACK_HPP_
 
@@ -141,6 +131,11 @@ namespace iprotocol
         virtual void	ready_game(ITCP_protocol<T> &itcp_protocol, bool ready)
         {
             m_callback.ready_game(itcp_protocol, ready);
+        }
+        
+        virtual void    score_game(ITCP_protocol<T> &itcp_protocol, Game_score *game_score)
+        {
+            m_callback.score_game(itcp_protocol, game_score);
         }
 
         virtual void	result_game(ITCP_protocol<T> &itcp_protocol, Game_result *game_result)

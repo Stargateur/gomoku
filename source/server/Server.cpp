@@ -1,13 +1,3 @@
-//
-// Server.cpp for Server in /home/plasko_a/projet/gomoku/source
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Tue Jan 26 17:50:03 2016 Antoine Plaskowski
-// Last update Wed Feb 17 14:19:23 2016 Antoine Plaskowski
-//
-
 #include    <thread>
 #include	"TCP_protocol.hpp"
 #include	"TCP_server.hpp"
@@ -15,8 +5,8 @@
 #include	"Server.hpp"
 #include    "Utils.hpp"
 
-Server::Server(Options const &options) try :
-    Server(new TCP_server(options.port))
+Server::Server(std::string const &port) try :
+    Server(new TCP_server(port))
 {
 }
 catch (...)
@@ -95,7 +85,7 @@ void	Server::run(void)
 			m_iselect->reset_read(*m_itcp_server);
 			Client	*client = new Client(&m_itcp_server->accept(), nullptr);
 			#ifndef NDEBUG
-			std::cerr << "Un client vient d'être accepté" << std::endl;
+			std::cerr << "SERVER : NEW CLIENT" << std::endl;
 			#endif
 			m_itcp_protocols.push_back(new iprotocol::TCP_protocol<Client>(this, client));
 		}
@@ -162,7 +152,7 @@ void	Server::run(void)
                 it = m_itcp_protocols.erase(it);
                 m_disconnecteds.push_back(itcp_protocol);
                 #ifndef NDEBUG
-                std::cerr << client << " has too many error" << std::endl;
+                std::cerr << "SERVER : " << client << " too many error" << std::endl;
                 #endif
             }
         }
@@ -230,7 +220,7 @@ void	Server::connect(iprotocol::ITCP_protocol<Client> &itcp_protocol, uint8_t ve
         delete login;
         delete password;
         itcp_protocol.send_result(iprotocol::Error::Wrong_password);
-		throw AServer_exception();
+        throw AServer_exception();
     }
 /*    for (iprotocol::ITCP_protocol<Client> *it_itcp_protocol : m_itcp_protocols)
     {
@@ -243,7 +233,7 @@ void	Server::connect(iprotocol::ITCP_protocol<Client> &itcp_protocol, uint8_t ve
                 delete login;
                 delete password;
                 itcp_protocol.send_result(iprotocol::Error::Login_already_use);
-                throw std::logic_error("this login is already used");
+                throw AServer_exception();
             }
         }
     }
@@ -259,7 +249,7 @@ void	Server::connect(iprotocol::ITCP_protocol<Client> &itcp_protocol, uint8_t ve
                     delete login;
                     delete password;
                     itcp_protocol.send_result(iprotocol::Error::Login_already_use);
-                    throw std::logic_error("this login is already used");
+                    throw AServer_exception();
                 }
             }            
         }*/
@@ -459,6 +449,13 @@ void	Server::ready_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, bool)
 	throw AServer_exception();
 }
 
+void    Server::score_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_score *game_score)
+{
+    delete game_score;
+    itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
+    throw AServer_exception();
+}
+
 void	Server::result_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_result *game_result)
 {
     delete game_result->winner;
@@ -508,10 +505,7 @@ void	Server::message(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol:
                 if (*message->name == *client->get_login())
                 {
                     it->send_message(*message);
-                    delete message->name;
-                    delete message->message;
-                    delete message;
-                    return;
+                    break;
                 }
             }
     }

@@ -1,13 +1,3 @@
-//
-// ATCP_packet.hpp for ATCP_packet in /home/plasko_a/projet/cplusplus/rtype/include/iprotocol
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Sun Dec  6 03:57:06 2015 Antoine Plaskowski
-// Last update Tue Jan 26 13:04:02 2016 Antoine Plaskowski
-//
-
 #ifndef		ATCP_PACKET_HPP_
 # define	ATCP_PACKET_HPP_
 
@@ -44,6 +34,7 @@ namespace iprotocol
             Game_deleted,
             Start_game,
             Ready_game,
+            Score_game,
             Result_game,
             Message,
         };

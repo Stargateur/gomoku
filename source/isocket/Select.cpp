@@ -1,13 +1,3 @@
-//
-// Select.cpp for Select in /home/plasko_a/projet/cplusplus/rtype/source/isocket
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Tue Dec  8 14:01:13 2015 Antoine Plaskowski
-// Last update Tue Dec  8 15:50:57 2015 Antoine Plaskowski
-//
-
 #include	<algorithm>
 #include	<cstring>
 #include	<string>
@@ -143,7 +133,7 @@ Select_exception::Select_exception(char const *what) :
 {
 }
 
-Select_exception::Select_exception(std::string const &what) :
+Select_exception::Select_exception(std::string const &&what) :
 	m_what(what)
 {
 }

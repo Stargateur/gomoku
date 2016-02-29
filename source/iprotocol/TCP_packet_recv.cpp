@@ -1,13 +1,3 @@
-//
-// TCP_packet_recv.cpp for TCP_packet_recv in /home/plasko_a/projet/cplusplus/rtype/source/iprotocol
-//
-// Made by Antoine Plaskowski
-// Login   <antoine.plaskowski@epitech.eu>
-//
-// Started on  Sun Dec  6 04:05:19 2015 Antoine Plaskowski
-// Last update Thu Jan 28 12:51:11 2016 Antoine Plaskowski
-//
-
 #include	<iostream>
 #include    <stdexcept>
 #include	"TCP_packet_recv.hpp"
@@ -40,7 +30,7 @@ bool	iprotocol::TCP_packet_recv::recv(ITCP_client const &socket)
         throw iprotocol::ATCP_packet_exception();
 	}
 	#ifndef NDEBUG
-    std::cerr << "Nombre d'octect lu " << ret << std::endl;
+    std::cerr << "TCP_packet_recv : Nombre d'octect lu " << ret << std::endl;
 	#endif
     if (ret == 0)
         throw iprotocol::ATCP_packet_exception();

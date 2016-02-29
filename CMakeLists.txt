@@ -62,7 +62,6 @@ add_executable(gomoku_client
 	source/client/GameInfo.cpp
 	source/client/GomokuGraphics.cpp
 	source/client/GView.cpp
-	source/client/GVOButton.cpp
 	source/client/PlayerInfo.cpp
 	source/client/main.cpp
 	include/client/Client.hpp
@@ -84,20 +83,12 @@ add_custom_command(TARGET gomoku_client POST_BUILD
         "${PROJECT_SOURCE_DIR}/Sprite/"
         $<TARGET_FILE_DIR:gomoku_client>/Sprite)
 
-add_executable(gomoku_ai
-	source/ai/Client.cpp
-	source/ai/main.cpp
-	include/ai/Client.hpp
-)
-target_compile_features(gomoku_ai PUBLIC cxx_range_for)
-target_include_directories(gomoku_ai PUBLIC include/iprotocol include/itime include/isocket include/ai)
-target_link_libraries(gomoku_ai PUBLIC isocket iprotocol)
-
 add_executable(gomoku_server
 	source/server/Arbitre.cpp
 	source/server/Black.cpp
 	source/server/White.cpp
 	source/server/Client.cpp
+	source/server/AI.cpp
 	source/server/Game.cpp
 	source/server/Server.cpp
 	source/server/Options.cpp
@@ -107,6 +98,7 @@ add_executable(gomoku_server
 	include/server/Black.hpp
 	include/server/White.hpp
 	include/server/Client.hpp
+	include/server/AI.hpp
 	include/server/Game.hpp
 	include/server/Server.hpp
 	include/server/Options.hpp

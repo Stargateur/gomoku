@@ -9,19 +9,19 @@ void    Utils::timeout(iprotocol::ITCP_protocol<Client> &itcp_protocol, std::chr
     std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(now - last);
 
     #ifndef NDEBUG
-    std::cerr << "Test du timeout avec " << timeout.count() << " et " << seconds.count() << "s" << std::endl;
+    std::cerr << "TIMEOUT : WITH " << timeout.count() << "s and " << seconds.count() << "s" << std::endl;
     #endif
     if (seconds > timeout)
     {
         if (client.get_wait_pong() == true)
         {
             #ifndef NDEBUG
-            std::cerr << "le client a timeout deuxième fois" << std::endl;
+            std::cerr << "TIMEOUT : YES (second time)" << std::endl;
             #endif
             throw std::logic_error("timeout");
         }
         #ifndef NDEBUG
-        std::cerr << "le client a timeout première fois" << std::endl;
+        std::cerr << "TIMEOUT : YES (first time)" << std::endl;
         #endif
         last = now;
         client.set_wait_pong(true);
@@ -29,6 +29,6 @@ void    Utils::timeout(iprotocol::ITCP_protocol<Client> &itcp_protocol, std::chr
         return;
     }
     #ifndef NDEBUG
-    std::cerr << "le client n'as pas timeout" << std::endl;
+    std::cerr << "TIMEOUT : NO" << std::endl;
     #endif
 }
