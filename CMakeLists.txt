@@ -69,7 +69,9 @@ add_executable(gomoku_client
 	include/client/GomokuGraphics.hpp
 	include/client/GView.hpp
 	include/client/IGVObject.hpp
+	include/client/IGVAMouseClick.hpp
 	include/client/GVOButton.hpp
+	include/client/GVAMouseClickCallBack.hpp
 	include/client/PlayerInfo.hpp
 )
 target_compile_features(gomoku_client PUBLIC cxx_range_for)

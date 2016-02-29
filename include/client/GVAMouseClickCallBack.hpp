@@ -11,7 +11,7 @@ template<typename T>
 class GVAMouseClickCallBack : public IGVAMouseClick
 {
 public:
-	GVAMouseClickCallBack(void(*callback)(T), T &callbackParam)
+	GVAMouseClickCallBack(void(*callback)(T), T callbackParam)
 	{
 		mCallback = callback;
 		mCallbackParam = callbackParam;
