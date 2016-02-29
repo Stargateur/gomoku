@@ -138,9 +138,6 @@
     <ClInclude Include="..\include\client\IGVAMouseHover.hpp">
       <Filter>client\IGView\IGVAction</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\client\IGVAction.hpp">
-      <Filter>client\IGView\IGVAction</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\client\IGVAMouseClick.hpp">
       <Filter>client\IGView\IGVAction</Filter>
     </ClInclude>

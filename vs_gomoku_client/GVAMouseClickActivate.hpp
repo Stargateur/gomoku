@@ -6,7 +6,7 @@
 #include	<SFML/Graphics.hpp>
 #include	"IGVAMouseClick.hpp"
 
-class GVAMouseClickActivate : public IGVAMouseClick<sf::Sprite&, sf::Vector2f&>
+class GVAMouseClickActivate
 {
 public:
 	GVAMouseClickActivate(void) {}

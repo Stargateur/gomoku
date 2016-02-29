@@ -3,12 +3,12 @@
 #ifndef MOUSECLICKCALLBACK_HPP_
 #define MOUSECLICKCALLBACK_HPP_
 
+#include	<iostream>
 #include	<SFML/Graphics.hpp>
 #include	"IGVAMouseClick.hpp"
-#include	<iostream>
 
 template<typename T>
-class GVAMouseClickCallBack : public IGVAMouseClick<sf::Sprite &, sf::Vector2f &>
+class GVAMouseClickCallBack : public IGVAMouseClick
 {
 public:
 	GVAMouseClickCallBack(void(*callback)(T), T &callbackParam)

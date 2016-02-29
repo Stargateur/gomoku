@@ -51,8 +51,7 @@ void	Client::run(void)
             m_iselect->want_read(*m_itcp_protocol->get_data());
         if (m_itcp_protocol->want_send() == true)
             m_iselect->want_write(*m_itcp_protocol->get_data());
-        std::chrono::nanoseconds lol(500000000);
-        m_iselect->select(lol);
+        m_iselect->select(std::chrono::nanoseconds(500000000));
         if (m_iselect->can_read(*m_itcp_protocol->get_data()) == true)
 		{
 			m_iselect->reset_read(*m_itcp_protocol->get_data());

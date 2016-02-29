@@ -143,7 +143,6 @@
     <ClInclude Include="..\include\client\GView.hpp" />
     <ClInclude Include="..\include\client\GVOButton.hpp" />
     <ClInclude Include="..\include\client\GVOCheckbox.hpp" />
-    <ClInclude Include="..\include\client\IGVAction.hpp" />
     <ClInclude Include="..\include\client\IGVAMouseClick.hpp" />
     <ClInclude Include="..\include\client\IGVAMouseHover.hpp" />
     <ClInclude Include="..\include\client\IGVObject.hpp" />
