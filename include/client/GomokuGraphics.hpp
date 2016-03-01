@@ -31,6 +31,7 @@ private:
 	sf::Sprite			mTopMenu;
 	sf::Texture			mBlackTexture;
 	sf::Texture			mWhiteTexture;
+	sf::Texture			mHistoTexture;
 	GView				*mCurrentView;
 	GView				mGameView;
 	GView				mConnectView;
