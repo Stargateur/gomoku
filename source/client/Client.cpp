@@ -28,6 +28,8 @@ Client::Client(void) :
 
 Client::~Client(void)
 {
+    delete m_itcp_protocol;
+    delete m_iselect;
 }
 
 void	Client::run(void)

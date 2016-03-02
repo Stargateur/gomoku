@@ -65,6 +65,9 @@ void    Server::pre_run(void)
 		{
 			disconnect = m_disconnecteds.erase(disconnect);
 			delete itcp_protocol;
+            #ifndef NDEBUG
+            std::cerr << "SERVER : DELETE CLIENT" << std::endl;
+            #endif
 		}
 	}
 
@@ -115,6 +118,9 @@ void	Server::run(void)
             std::cerr << e.what() << std::endl;
             disconnect = m_disconnecteds.erase(disconnect);
             delete itcp_protocol;
+            #ifndef NDEBUG
+            std::cerr << "SERVER : DELETE CLIENT" << std::endl;
+            #endif
         }
     }
     for (auto it = m_itcp_protocols.begin(); it != m_itcp_protocols.end();)
@@ -146,21 +152,15 @@ void	Server::run(void)
         }
         catch (AServer_exception &e)
         {
-            client.add_error();
-            if (client.get_error() > 10)
-            {
-                it = m_itcp_protocols.erase(it);
-                m_disconnecteds.push_back(itcp_protocol);
-                #ifndef NDEBUG
-                std::cerr << "SERVER : " << client << " too many error" << std::endl;
-                #endif
-            }
+            std::cerr << e.what() << std::endl;
+            it = m_itcp_protocols.erase(it);
+            m_disconnecteds.push_back(itcp_protocol);
         }
         catch (std::exception &e)
         {
             std::cerr << e.what() << std::endl;
             it = m_itcp_protocols.erase(it);
-            m_disconnecteds.push_back(itcp_protocol);
+            delete itcp_protocol;
         }
     }
     auto it_game = m_games.begin();
