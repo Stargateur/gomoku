@@ -80,21 +80,25 @@ void GomokuGraphics::init()
 	{std::cerr << "Cant load the texture" << std::endl;}
 	if (!mWhiteTexture.loadFromFile("Sprite/white.png", sf::IntRect(0, 0, 1920, 1080)))
 	{std::cerr << "Cant load the texture" << std::endl;}
+	if (!mHistoTexture.loadFromFile("Sprite/histo.png", sf::IntRect(0, 0, 1920, 1080)))
+	{std::cerr << "Cant load the texture" << std::endl;}
 	//set sprites
 	mCurrentView = &mConnectView;
 	GVOButton<std::string> *button = new GVOButton<std::string>(sf::Vector2f(WIN_X / 2 - mTopTexture.getSize().x / 2, 2 * WIN_Y / 3), mTopTexture, sf::Vector2f(0.8, 0.8));
-	button->setAction(connect, "localhost");
+	button->addAction(new GVAMouseClickCallBack<std::string>(connect, std::string("localhost")));
 	mConnectView.pushObject(button);
 	button = new GVOButton<std::string>(sf::Vector2f(WIN_X / 3 - mBlackTexture.getSize().x / 2, WIN_Y / 3), mBlackTexture, sf::Vector2f(0.8, 0.8));
-	button->setAction(change_color, "black");
+	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("black")));
 	mConnectView.pushObject(button);
 	button = new GVOButton<std::string>(sf::Vector2f(2 * WIN_X / 3 - mWhiteTexture.getSize().x / 2, WIN_Y / 3), mWhiteTexture, sf::Vector2f(0.8, 0.8));
-	button->setAction(change_color, "white");
+	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("white")));
 	mConnectView.pushObject(button);
 	//Background
 	GVOButton<sf::Vector2f *> *button2 = new GVOButton<sf::Vector2f *>(sf::Vector2f(WIN_X / 4.8, 81.6), mTextureBackground, sf::Vector2f(0.8, 0.8));
-	button2->setAction(&click_plateau, &souris);
+	button2->addAction(new GVAMouseClickCallBack<sf::Vector2f *>(click_plateau, (&souris)));
 	mGameView.pushObject(button2);
+	GVOButton<void> *histo = new GVOButton<void>(sf::Vector2f(0, 81.6), mHistoTexture, sf::Vector2f(0.8, 0.8));
+	mGameView.pushObject(histo);
 }
 
 void GomokuGraphics::reset(void)

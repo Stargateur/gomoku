@@ -30,7 +30,7 @@ bool	iprotocol::TCP_packet_recv::recv(ITCP_client const &socket)
         throw iprotocol::ATCP_packet_exception();
 	}
 	#ifndef NDEBUG
-    std::cerr << "Nombre d'octect lu " << ret << std::endl;
+    std::cerr << "TCP_packet_recv : Nombre d'octect lu " << ret << std::endl;
 	#endif
     if (ret == 0)
         throw iprotocol::ATCP_packet_exception();
