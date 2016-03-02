@@ -9,15 +9,19 @@ public:
 	static const uint8_t size = 19;
 
 	Board();
+	Board(const Board &copy) = delete;
 	~Board();
 
-	void put_stone(uint8_t x, uint8_t y, Square::col col);
-	const Square	&get_square(uint8_t x, uint8_t y) const;
+	Board	&operator=(const Board &copy) = delete;
+	void put_stone(int x, int y, Square::col col);
+	const Square	&get_square(int x, int y) const;
+	Square		&get_square(int x, int y);
+	int			get_pos(int x, int y) const;
+	bool		is_valid(int x, int y);
+	int		get_pos(Square::pos p) const;
 private:
-	Square		&get_square(uint8_t x, uint8_t y);
-	bool		is_valid(uint8_t x, uint8_t y);
-	uint8_t		get_pos(uint8_t x, uint8_t y);
-	uint8_t		get_pos(Square::pos p);
 	std::vector<Square>	m_board;
 };
 
+void	aff_tab(const Board &b);
+void update_line(int x, int y, std::pair<int, int> dir, Board &b);

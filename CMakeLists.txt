@@ -85,6 +85,8 @@ add_custom_command(TARGET gomoku_client POST_BUILD
 
 add_executable(gomoku_server
 	source/server/Arbitre.cpp
+	source/server/Board.cpp
+	source/server/Square.cpp
 	source/server/Black.cpp
 	source/server/White.cpp
 	source/server/Client.cpp
@@ -95,6 +97,8 @@ add_executable(gomoku_server
 	source/server/Utils.cpp
 	source/server/main.cpp
 	include/server/Arbitre.hpp
+	include/server/Board.hpp
+	include/server/Square.hpp
 	include/server/Black.hpp
 	include/server/White.hpp
 	include/server/Client.hpp
