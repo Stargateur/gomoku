@@ -6,7 +6,8 @@
 #include	<SFML/Graphics.hpp>
 #include	<list>
 #include	"IGVObject.hpp"
-#include	"GVAMouseClickCallBack.hpp"
+#include	"IGVAMouseClick.hpp"
+#include	"IGVAMouseHover.hpp"
 
 template<typename T>
 class GVOButton : public IGVObject
@@ -30,6 +31,10 @@ public:
 	{
 		mClickActions.push_back(mouseAction);
 	}
+	void	addAction(IGVAMouseHover *mouseAction)
+	{
+		mHoverActions.push_back(mouseAction);
+	}
 	void	mouseClick(sf::Vector2f pos)
 	{
 		if (mClickActions.empty() == false)
@@ -42,7 +47,11 @@ public:
 	}
 	void	mouseMove(sf::Vector2f pos)
 	{
-		/**/
+		if (mHoverActions.empty() == false)
+		{
+			for (IGVAMouseHover* action : mHoverActions)
+				action->Act(*mCurView, pos);
+		}
 	}
 
 private:
@@ -52,6 +61,7 @@ private:
 	sf::Vector2f				mScale;
 	sf::Vector2f				mPos;
 	std::list<IGVAMouseClick *>	mClickActions;
+	std::list<IGVAMouseHover *>	mHoverActions;
 };
 
 #endif // !GVOBUTTON_HPP__

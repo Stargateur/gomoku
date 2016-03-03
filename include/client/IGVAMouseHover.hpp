@@ -3,7 +3,7 @@
 #ifndef IGVAMOUSE_HOVER_HPP_
 #define IGVAMOUSE_HOVER_HPP_
 
-#include	<SFML\Graphics.hpp>
+#include	<SFML/Graphics.hpp>
 
 class IGVAMouseHover
 {
