@@ -28,6 +28,7 @@ private:
 	//sf::Sprite			mBackground;
 	GView				*mCurrentView;
 	GView				mMenuView;
+	GView				mHomeView;
 	GView				mGameView;
 	GView				mConnectView;
 	IGVObject			*mStones[19][19];

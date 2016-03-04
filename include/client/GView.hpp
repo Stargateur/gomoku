@@ -16,7 +16,7 @@ public:
 public:
 	void					pushObject(IGVObject *object);
 	void					removeObject(IGVObject *object);
-	std::list<sf::Sprite *>	getSprites();
+	std::list<sf::Drawable *>	getDrawables();
 
 	// Events
 public:

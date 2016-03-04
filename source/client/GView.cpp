@@ -20,12 +20,12 @@ void GView::removeObject(IGVObject * object)
 }
 
 #include <iostream>
-std::list<sf::Sprite *> GView::getSprites()
+std::list<sf::Drawable *> GView::getDrawables()
 {
-	std::list<sf::Sprite *>res;
+	std::list<sf::Drawable *>res;
 	for (IGVObject *obj : mObjects)
 	{
-		res.push_back(obj->getSprite());
+		res.push_back(obj->getDrawable());
 	}
 	return res;
 }

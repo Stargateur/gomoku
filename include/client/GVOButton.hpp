@@ -9,58 +9,21 @@
 #include	"IGVAMouseClick.hpp"
 #include	"IGVAMouseHover.hpp"
 
-template<typename T>
 class GVOButton : public IGVObject
 {
 public:
-	GVOButton(sf::Vector2f pos, sf::Texture texture, sf::Vector2f scale) : mPos(pos), mTexture(texture), mScale(scale)
-	{
-		mMainSprite.setTexture(mTexture);
-		mMainSprite.setPosition(mPos);
-		mMainSprite.setScale(mScale);
-		mCurView = &mMainSprite;
-	}
-	virtual ~GVOButton() {}
-	virtual sf::Sprite*	getSprite(void)
-	{
-		return mCurView;
-	}
+	GVOButton(sf::Vector2f pos, sf::Texture const &texture, sf::Vector2f const &scale);
+	virtual ~GVOButton();
+	virtual sf::Drawable*	getDrawable(void);
 
 public:
-	void	addAction(IGVAMouseClick *mouseAction)
-	{
-		mClickActions.push_back(mouseAction);
-	}
-	void	addAction(IGVAMouseHover *mouseAction)
-	{
-		mHoverActions.push_back(mouseAction);
-		std::cout << "added hover action ok !" << std::endl;
-	}
-	void	mouseClick(sf::Vector2f const & const pos)
-	{
-		if (mClickActions.empty() == false)
-		{
-			for (IGVAMouseClick* action : mClickActions)
-				action->Act(*mCurView, pos);
-		}
-		std::cout << "scalex:" << mCurView->getGlobalBounds().intersects(sf::FloatRect(pos, sf::Vector2f(1,1))) << std::endl;
-		
-	}
-	void	mouseMove(sf::Vector2f const & const pos)
-	{
-		if (mHoverActions.empty() == false)
-		{
-			std::cout << "not empty moveded" << std::endl;
-			for (IGVAMouseHover* action : mHoverActions)
-				action->Act(*mCurView, pos);
-		}
-	}
+	void	addAction(IGVAMouseClick *mouseAction);
+	void	addAction(IGVAMouseHover *mouseAction);
+	void	mouseClick(sf::Vector2f const & const pos);
+	void	mouseMove(sf::Vector2f const & const pos);
 
 private:
-	sf::Sprite					*mCurView;
-	sf::Sprite					mMainSprite;
-	sf::Texture					mTexture;
-	sf::Vector2f				mScale;
+	sf::Sprite					mSprite;
 	sf::Vector2f				mPos;
 	std::list<IGVAMouseClick *>	mClickActions;
 	std::list<IGVAMouseHover *>	mHoverActions;

@@ -82,26 +82,26 @@ void GomokuGraphics::init()
 	TextureManager::getInstance().loadTexture("histo", "Sprite/histo.png");
 	TextureManager::getInstance().loadTexture("home", "Sprite/home.png");
 	TextureManager::getInstance().getTexture("home").setSmooth(true);
+
 	//set sprites
-	mCurrentView = &mConnectView;
-	GVOButton<std::string> *button = new GVOButton<std::string>(sf::Vector2f(WIN_X / 2 - TextureManager::getInstance().getTexture("connexion").getSize().x / 2, 2 * WIN_Y / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8));
+	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - TextureManager::getInstance().getTexture("connexion").getSize().x / 2, 2 * WIN_Y / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8));
 	button->addAction(new GVAMouseClickCallBack<std::string>(connect, std::string("localhost")));
 	mConnectView.pushObject(button);
-	button = new GVOButton<std::string>(sf::Vector2f(WIN_X / 3 - TextureManager::getInstance().getTexture("black").getSize().x / 2, WIN_Y / 3), TextureManager::getInstance().getTexture("black"), sf::Vector2f(0.8, 0.8));
+	button = new GVOButton(sf::Vector2f(WIN_X / 3 - TextureManager::getInstance().getTexture("black").getSize().x / 2, WIN_Y / 3), TextureManager::getInstance().getTexture("black"), sf::Vector2f(0.8, 0.8));
 	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("black")));
 	mConnectView.pushObject(button);
-	button = new GVOButton<std::string>(sf::Vector2f(2 * WIN_X / 3 - TextureManager::getInstance().getTexture("white").getSize().x / 2, WIN_Y / 3), TextureManager::getInstance().getTexture("white"), sf::Vector2f(0.8, 0.8));
+	button = new GVOButton(sf::Vector2f(2 * WIN_X / 3 - TextureManager::getInstance().getTexture("white").getSize().x / 2, WIN_Y / 3), TextureManager::getInstance().getTexture("white"), sf::Vector2f(0.8, 0.8));
 	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("white")));
 	mConnectView.pushObject(button);
 	//Background
-	GVOButton<sf::Vector2f *> *button2 = new GVOButton<sf::Vector2f *>(sf::Vector2f(WIN_X / 4.8, 81.6), TextureManager::getInstance().getTexture("board"), sf::Vector2f(0.8, 0.8));
+	GVOButton *button2 = new GVOButton(sf::Vector2f(WIN_X / 4.8, 81.6), TextureManager::getInstance().getTexture("board"), sf::Vector2f(0.8, 0.8));
 	button2->addAction(new GVAMouseClickCallBack<sf::Vector2f *>(click_plateau, (&souris)));
 	mGameView.pushObject(button2);
-	GVOButton<void> *histo = new GVOButton<void>(sf::Vector2f(0, 81.6), TextureManager::getInstance().getTexture("histo"), sf::Vector2f(0.8, 0.8));
+	GVOButton *histo = new GVOButton(sf::Vector2f(0, 81.6), TextureManager::getInstance().getTexture("histo"), sf::Vector2f(0.8, 0.8));
 	mGameView.pushObject(histo);
 
 	//init menu
-	GVOButton<void> *btn = new GVOButton<void>(sf::Vector2f(0, 0), TextureManager::getInstance().getTexture("home"), sf::Vector2f(0.5, 0.5));
+	GVOButton *btn = new GVOButton(sf::Vector2f(0, 0), TextureManager::getInstance().getTexture("home"), sf::Vector2f(0.5, 0.5));
 	btn->addAction(new GVAMouseHoverChangeColor(sf::Color(sf::Uint8(210), sf::Uint8(255), sf::Uint8(210), sf::Uint8(180)), sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(255))));
 	mMenuView.pushObject(btn);
 	//btn = new GVOButton<void>(sf::Vector2f(200, 0), mTopTexture, sf::Vector2f(0.8, 0.8));
@@ -110,6 +110,12 @@ void GomokuGraphics::init()
 	//mMenuView.pushObject(btn);
 	//btn = new GVOButton<void>(sf::Vector2f(600, 0), mTopTexture, sf::Vector2f(0.8, 0.8));
 	//mMenuView.pushObject(btn);
+
+	//init home
+
+
+	//set home view
+	mCurrentView = &mHomeView;
 }
 
 void GomokuGraphics::reset(void)
@@ -157,15 +163,15 @@ void GomokuGraphics::run()
 		//clear
 		mWindow->clear();
 		//draw all Sprites
-		std::list<sf::Sprite *> mylist = mCurrentView->getSprites();
-		std::list<sf::Sprite *> myMenu = mMenuView.getSprites();
-		for (sf::Sprite *aff : mylist)
+		std::list<sf::Drawable *> mylist = mCurrentView->getDrawables();
+		std::list<sf::Drawable *> myMenu = mMenuView.getDrawables();
+		for (sf::Drawable *aff : mylist)
 		{
 			if (aff != nullptr)
 				mWindow->draw(*aff);
 		}
 		affStone();
-		for (sf::Sprite *aff : myMenu)
+		for (sf::Drawable *aff : myMenu)
 		{
 			if (aff != nullptr)
 				mWindow->draw(*aff);
@@ -187,11 +193,11 @@ void GomokuGraphics::affStone()
 			{
 				if (mStones[x][y] == nullptr)
 				{
-					GVOButton<int> *button = nullptr;
+					GVOButton *button = nullptr;
 					if (GameInfo::getInstance().mPlate[x][y] == iprotocol::Game_stone::Color::Black)
-						button = new GVOButton<int>(sf::Vector2f(225 + x * 33.5, 80 + y * 33.5), TextureManager::getInstance().getTexture("black"), sf::Vector2f(0.8, 0.8));
+						button = new GVOButton(sf::Vector2f(225 + x * 33.5, 80 + y * 33.5), TextureManager::getInstance().getTexture("black"), sf::Vector2f(0.8, 0.8));
 					if (GameInfo::getInstance().mPlate[x][y] == iprotocol::Game_stone::Color::White)
-						button = new GVOButton<int>(sf::Vector2f(225 + x * 33.5, 80 + y * 33.5), TextureManager::getInstance().getTexture("white"), sf::Vector2f(0.8, 0.8));
+						button = new GVOButton(sf::Vector2f(225 + x * 33.5, 80 + y * 33.5), TextureManager::getInstance().getTexture("white"), sf::Vector2f(0.8, 0.8));
 					mStones[x][y] = button;
 					mGameView.pushObject(button);
 				}

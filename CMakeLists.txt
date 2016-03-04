@@ -63,6 +63,8 @@ add_executable(gomoku_client
 	source/client/GomokuGraphics.cpp
 	source/client/TextureManager.cpp
 	source/client/GView.cpp
+	source/client/GVOText.cpp
+	source/client/GVOButton.cpp
 	source/client/PlayerInfo.cpp
 	source/client/main.cpp
 	include/client/Client.hpp
@@ -74,6 +76,7 @@ add_executable(gomoku_client
 	include/client/IGVAMouseClick.hpp
 	include/client/IGVAMouseHover.hpp
 	include/client/GVOButton.hpp
+	include/client/GVOText.hpp
 	include/client/GVAMouseClickCallBack.hpp
 	include/client/GVAMouseHoverChangeColor.hpp
 	include/client/PlayerInfo.hpp
