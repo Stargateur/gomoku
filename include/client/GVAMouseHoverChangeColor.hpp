@@ -10,7 +10,7 @@
 class GVAMouseHoverChangeColor : public IGVAMouseHover
 {
 public:
-	GVAMouseHoverChangeColor(sf::Color color, sf::Color baseColor) : mColor(color), mBaseColor(baseColor) {}
+	GVAMouseHoverChangeColor(sf::Color const &color, sf::Color const &baseColor) : mColor(color), mBaseColor(baseColor) {}
 	virtual ~GVAMouseHoverChangeColor(void) {}
 	virtual void Act(sf::Sprite &texture, sf::Vector2f const &mousePosition)
 	{

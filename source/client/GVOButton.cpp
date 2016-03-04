@@ -16,6 +16,7 @@ GVOButton::~GVOButton(void)
 }
 
 sf::Drawable	*GVOButton::getDrawable(void) { return &mSprite; }
+sf::Sprite & GVOButton::getSprite(void) { return mSprite; }
 void			GVOButton::addAction(IGVAMouseClick *mouseAction) { mClickActions.push_back(mouseAction); }
 void			GVOButton::addAction(IGVAMouseHover *mouseAction) { mHoverActions.push_back(mouseAction); }
 

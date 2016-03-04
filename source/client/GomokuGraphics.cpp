@@ -5,6 +5,7 @@
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
 #include	"GVAMouseClickCallBack.hpp"
+#include	"GVAMouseClickTextureRect.hpp"
 #include	"GVAMouseHoverChangeColor.hpp"
 #include	"TextureManager.hpp"
 
@@ -71,6 +72,18 @@ void		change_color(std::string color)
 	std::cout << "You are now " << color << std::endl;
 	PlayerInfo::getInstance().unlock();
 }
+void		change_view(GomokuGraphics::e_view view)
+{
+	PlayerInfo::getInstance().lock();
+	PlayerInfo::getInstance().mView = view;
+	PlayerInfo::getInstance().unlock();
+}
+void		mute_speaker(int volume)
+{
+	PlayerInfo::getInstance().lock();
+	PlayerInfo::getInstance().mMusic = !PlayerInfo::getInstance().mMusic;
+	PlayerInfo::getInstance().unlock();
+}
 sf::Vector2f souris;
 void GomokuGraphics::init()
 {
@@ -82,7 +95,11 @@ void GomokuGraphics::init()
 	TextureManager::getInstance().loadTexture("white", "Sprite/white.png");
 	TextureManager::getInstance().loadTexture("histo", "Sprite/histo.png");
 	TextureManager::getInstance().loadTexture("home", "Sprite/home.png");
+	TextureManager::getInstance().loadTexture("play", "Sprite/play.png");
+	TextureManager::getInstance().loadTexture("speaker", "Sprite/speaker.png");
 	TextureManager::getInstance().getTexture("home").setSmooth(true);
+	TextureManager::getInstance().getTexture("play").setSmooth(true);
+	TextureManager::getInstance().getTexture("speaker").setSmooth(true);
 
 	//set sprites
 	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - TextureManager::getInstance().getTexture("connexion").getSize().x / 2, 2 * WIN_Y / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8));
@@ -103,14 +120,19 @@ void GomokuGraphics::init()
 
 	//init menu
 	GVOButton *btn = new GVOButton(sf::Vector2f(0, 0), TextureManager::getInstance().getTexture("home"), sf::Vector2f(0.5, 0.5));
+	btn->addAction(new GVAMouseClickCallBack<GomokuGraphics::e_view>(change_view, GomokuGraphics::e_view::HOME));
 	btn->addAction(new GVAMouseHoverChangeColor(sf::Color(sf::Uint8(210), sf::Uint8(255), sf::Uint8(210), sf::Uint8(180)), sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(255))));
 	mMenuView.pushObject(btn);
-	//btn = new GVOButton<void>(sf::Vector2f(200, 0), mTopTexture, sf::Vector2f(0.8, 0.8));
-	//mMenuView.pushObject(btn);
-	//btn = new GVOButton<void>(sf::Vector2f(400, 0), mTopTexture, sf::Vector2f(0.8, 0.8));
-	//mMenuView.pushObject(btn);
-	//btn = new GVOButton<void>(sf::Vector2f(600, 0), mTopTexture, sf::Vector2f(0.8, 0.8));
-	//mMenuView.pushObject(btn);
+	btn = new GVOButton(sf::Vector2f(70, 0), TextureManager::getInstance().getTexture("play"), sf::Vector2f(0.5, 0.5));
+	btn->addAction(new GVAMouseClickCallBack<GomokuGraphics::e_view>(change_view, GomokuGraphics::e_view::PLAY));
+	btn->addAction(new GVAMouseHoverChangeColor(sf::Color(sf::Uint8(210), sf::Uint8(255), sf::Uint8(210), sf::Uint8(180)), sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(255))));
+	mMenuView.pushObject(btn);
+	btn = new GVOButton(sf::Vector2f(WIN_X - 34, WIN_Y - 34), TextureManager::getInstance().getTexture("speaker"), sf::Vector2f(0.25, 0.25));
+	btn->addAction(new GVAMouseClickTextureRect(sf::IntRect(128, 0, 128, 128), sf::IntRect(0, 0, 128, 128)));
+	btn->addAction(new GVAMouseClickCallBack<int>(mute_speaker, 0));
+	btn->getSprite().setTextureRect(sf::IntRect(0, 0, 128, 128));
+	btn->addAction(new GVAMouseHoverChangeColor(sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(180)), sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(255))));
+	mMenuView.pushObject(btn);
 
 	//init home
 	GVOText *text = new GVOText("Ah, te revoila !", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 2 - 10));
@@ -157,7 +179,6 @@ void GomokuGraphics::run()
 			}
 			else if (event.type == sf::Event::MouseMoved)
 			{
-				std::cout << "moved" << std::endl;
 				mMenuView.mouseMove(mWindow->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y)));
 				mCurrentView->mouseMove(mWindow->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y)));
 			}
@@ -169,6 +190,7 @@ void GomokuGraphics::run()
 		}
 		// check actual state
 		checkClientUpdates();
+		updateView();
 		//clear
 		mWindow->clear();
 		//draw all Sprites
@@ -224,9 +246,38 @@ void GomokuGraphics::affStone()
 	GameInfo::getInstance().unlock();
 }
 
+void GomokuGraphics::updateView(void)
+{
+	PlayerInfo::getInstance().lock();
+	//std::cout << "valeur de view: " << PlayerInfo::getInstance().mView << std::endl;
+	switch (PlayerInfo::getInstance().mView)
+	{
+	case GomokuGraphics::e_view::HOME:
+		mCurrentView = &mHomeView;
+		break;
+	case GomokuGraphics::e_view::PLAY:
+		if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::DONE)
+			mCurrentView = &mGameView;
+		else
+			mCurrentView = &mConnectView;
+		break;
+	default:
+		break;
+	}
+	PlayerInfo::getInstance().unlock();
+}
+
 void GomokuGraphics::checkClientUpdates(void)
 {
 	PlayerInfo::getInstance().lock();
+	//check sound
+	if (PlayerInfo::getInstance().mMusic == false && mThemeSound.getVolume() > 0)
+	{
+		mThemeSound.setVolume(0);
+		std::cout << "cut volume" << std::endl;
+	}
+	else if (PlayerInfo::getInstance().mMusic == true && mThemeSound.getVolume() < 100)
+		mThemeSound.setVolume(100);
 	// check connection
 	if (PlayerInfo::getInstance().mDisconnect == PlayerInfo::STATE::DONE)
 	{
@@ -236,12 +287,10 @@ void GomokuGraphics::checkClientUpdates(void)
 		GameInfo::getInstance().reset();
 		GameInfo::getInstance().unlock();
 		reset();
-		mCurrentView = &mConnectView;
 	}
 	else if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::DONE)
 	{
 		PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::NOTHING;
-		mCurrentView = &mGameView;
 	}
 	else if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::FAILED)
 	{
@@ -252,7 +301,6 @@ void GomokuGraphics::checkClientUpdates(void)
 		GameInfo::getInstance().reset();
 		GameInfo::getInstance().unlock();
 		reset();
-		mCurrentView = &mConnectView;
 	}
 	PlayerInfo::getInstance().unlock();
 }

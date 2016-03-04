@@ -14,6 +14,13 @@
 class GomokuGraphics
 {
 public:
+	enum e_view
+	{
+		HOME = 0,
+		PLAY
+	};
+
+public:
 	GomokuGraphics(void);
 	~GomokuGraphics(void);
 	void	init(void);
@@ -23,6 +30,7 @@ public:
 
 private:
 	void	checkClientUpdates(void);
+	void	updateView(void);
 
 private:
 	sf::RenderWindow	*mWindow;

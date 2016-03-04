@@ -78,6 +78,7 @@ add_executable(gomoku_client
 	include/client/GVOButton.hpp
 	include/client/GVOText.hpp
 	include/client/GVAMouseClickCallBack.hpp
+	include/client/GVAMouseClickTextureRect.hpp
 	include/client/GVAMouseHoverChangeColor.hpp
 	include/client/PlayerInfo.hpp
 )

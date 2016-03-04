@@ -15,6 +15,7 @@ public:
 	GVOButton(sf::Vector2f pos, sf::Texture const &texture, sf::Vector2f const &scale);
 	virtual ~GVOButton();
 	virtual sf::Drawable*	getDrawable(void);
+	sf::Sprite				&getSprite(void);
 
 public:
 	void	addAction(IGVAMouseClick *mouseAction);
