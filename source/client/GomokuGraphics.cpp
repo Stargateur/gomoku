@@ -1,6 +1,7 @@
 #include	"GomokuGraphics.hpp"
 #include	"GVOButton.hpp"
 #include	"GVOText.hpp"
+#include	"GVOInputBox.hpp"
 #include	"IGVObject.hpp"
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
@@ -97,9 +98,11 @@ void GomokuGraphics::init()
 	TextureManager::getInstance().loadTexture("home", "Sprite/home.png");
 	TextureManager::getInstance().loadTexture("play", "Sprite/play.png");
 	TextureManager::getInstance().loadTexture("speaker", "Sprite/speaker.png");
+	TextureManager::getInstance().loadTexture("option", "Sprite/options.png");
 	TextureManager::getInstance().getTexture("home").setSmooth(true);
 	TextureManager::getInstance().getTexture("play").setSmooth(true);
 	TextureManager::getInstance().getTexture("speaker").setSmooth(true);
+	TextureManager::getInstance().getTexture("option").setSmooth(true);
 
 	//set sprites
 	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - TextureManager::getInstance().getTexture("connexion").getSize().x / 2, 2 * WIN_Y / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8));
@@ -127,6 +130,10 @@ void GomokuGraphics::init()
 	btn->addAction(new GVAMouseClickCallBack<GomokuGraphics::e_view>(change_view, GomokuGraphics::e_view::PLAY));
 	btn->addAction(new GVAMouseHoverChangeColor(sf::Color(sf::Uint8(210), sf::Uint8(255), sf::Uint8(210), sf::Uint8(180)), sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(255))));
 	mMenuView.pushObject(btn);
+	btn = new GVOButton(sf::Vector2f(140, 0), TextureManager::getInstance().getTexture("option"), sf::Vector2f(0.5, 0.5));
+	btn->addAction(new GVAMouseClickCallBack<GomokuGraphics::e_view>(change_view, GomokuGraphics::e_view::CLIENT_OPTIONS));
+	btn->addAction(new GVAMouseHoverChangeColor(sf::Color(sf::Uint8(210), sf::Uint8(255), sf::Uint8(210), sf::Uint8(180)), sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(255))));
+	mMenuView.pushObject(btn);
 	btn = new GVOButton(sf::Vector2f(WIN_X - 34, WIN_Y - 34), TextureManager::getInstance().getTexture("speaker"), sf::Vector2f(0.25, 0.25));
 	btn->addAction(new GVAMouseClickTextureRect(sf::IntRect(128, 0, 128, 128), sf::IntRect(0, 0, 128, 128)));
 	btn->addAction(new GVAMouseClickCallBack<int>(mute_speaker, 0));
@@ -137,6 +144,12 @@ void GomokuGraphics::init()
 	//init home
 	GVOText *text = new GVOText("Ah, te revoila !", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 2 - 10));
 	mHomeView.pushObject(text);
+
+	//init options
+	GVOText *t = new GVOText("PSEUDO :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 2 - 100));
+	mClientOptions.pushObject(t);
+	GVOInputBox *ib = new GVOInputBox("SALUT", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 2 - 100));
+	mClientOptions.pushObject(ib);
 
 	//init theme sound
 	if (!mThemeSound.openFromFile("Sound/theme.ogg"))
@@ -261,6 +274,8 @@ void GomokuGraphics::updateView(void)
 		else
 			mCurrentView = &mConnectView;
 		break;
+	case GomokuGraphics::e_view::CLIENT_OPTIONS:
+		mCurrentView = &mClientOptions;
 	default:
 		break;
 	}

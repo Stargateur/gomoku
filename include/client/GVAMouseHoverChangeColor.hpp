@@ -16,15 +16,9 @@ public:
 	{
 		if (mousePosition.x >= texture.getGlobalBounds().left && mousePosition.x <= texture.getGlobalBounds().left + texture.getGlobalBounds().width &&
 			mousePosition.y >= texture.getGlobalBounds().top && mousePosition.y <= texture.getGlobalBounds().top + texture.getGlobalBounds().height)
-		{
-			std::cout << "Here come the colorchange;" << std::endl;
 			texture.setColor(mColor);
-		}
 		else
-		{
 			texture.setColor(mBaseColor);
-		}
-		//texture.setColor(sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(128)));
 	}
 
 private:

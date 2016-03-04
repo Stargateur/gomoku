@@ -17,7 +17,8 @@ public:
 	enum e_view
 	{
 		HOME = 0,
-		PLAY
+		PLAY,
+		CLIENT_OPTIONS
 	};
 
 public:
@@ -40,6 +41,7 @@ private:
 	GView				mHomeView;
 	GView				mGameView;
 	GView				mConnectView;
+	GView				mClientOptions;
 	sf::Music			mThemeSound;
 	IGVObject			*mStones[19][19];
 };
