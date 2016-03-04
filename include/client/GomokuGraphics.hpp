@@ -25,14 +25,9 @@ private:
 
 private:
 	sf::RenderWindow	*mWindow;
-	sf::Texture			mTextureBackground;
-	sf::Sprite			mBackground;
-	sf::Texture			mTopTexture;
-	sf::Sprite			mTopMenu;
-	sf::Texture			mBlackTexture;
-	sf::Texture			mWhiteTexture;
-	sf::Texture			mHistoTexture;
+	//sf::Sprite			mBackground;
 	GView				*mCurrentView;
+	GView				mMenuView;
 	GView				mGameView;
 	GView				mConnectView;
 	IGVObject			*mStones[19][19];

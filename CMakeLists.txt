@@ -61,18 +61,21 @@ add_executable(gomoku_client
 	source/client/Client.cpp
 	source/client/GameInfo.cpp
 	source/client/GomokuGraphics.cpp
+	source/client/TextureManager.cpp
 	source/client/GView.cpp
 	source/client/PlayerInfo.cpp
 	source/client/main.cpp
 	include/client/Client.hpp
 	include/client/GameInfo.hpp
 	include/client/GomokuGraphics.hpp
+	include/client/TextureManager.hpp
 	include/client/GView.hpp
 	include/client/IGVObject.hpp
 	include/client/IGVAMouseClick.hpp
 	include/client/IGVAMouseHover.hpp
 	include/client/GVOButton.hpp
 	include/client/GVAMouseClickCallBack.hpp
+	include/client/GVAMouseHoverChangeColor.hpp
 	include/client/PlayerInfo.hpp
 )
 target_compile_features(gomoku_client PUBLIC cxx_range_for)

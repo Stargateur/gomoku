@@ -10,7 +10,7 @@ class IGVAMouseClick
 {
 public:
 	virtual ~IGVAMouseClick(void) {};
-	virtual void Act(sf::Sprite &texture, sf::Vector2f &mousePosition) = 0;
+	virtual void Act(sf::Sprite &texture, sf::Vector2f const & const mousePosition) = 0;
 };
 
 #endif // !IGVAMOUSE_CLICK_HPP_

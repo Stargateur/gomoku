@@ -34,8 +34,9 @@ public:
 	void	addAction(IGVAMouseHover *mouseAction)
 	{
 		mHoverActions.push_back(mouseAction);
+		std::cout << "added hover action ok !" << std::endl;
 	}
-	void	mouseClick(sf::Vector2f pos)
+	void	mouseClick(sf::Vector2f const & const pos)
 	{
 		if (mClickActions.empty() == false)
 		{
@@ -45,10 +46,11 @@ public:
 		std::cout << "scalex:" << mCurView->getGlobalBounds().intersects(sf::FloatRect(pos, sf::Vector2f(1,1))) << std::endl;
 		
 	}
-	void	mouseMove(sf::Vector2f pos)
+	void	mouseMove(sf::Vector2f const & const pos)
 	{
 		if (mHoverActions.empty() == false)
 		{
+			std::cout << "not empty moveded" << std::endl;
 			for (IGVAMouseHover* action : mHoverActions)
 				action->Act(*mCurView, pos);
 		}

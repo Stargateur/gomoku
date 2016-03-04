@@ -30,8 +30,14 @@ std::list<sf::Sprite *> GView::getSprites()
 	return res;
 }
 
-void GView::mouseClick(sf::Vector2f pos)
+void GView::mouseClick(sf::Vector2f &pos)
 {
 	for (IGVObject *obj : mObjects)
 		obj->mouseClick(pos);
+}
+
+void GView::mouseMove(sf::Vector2f &pos)
+{
+	for (IGVObject *obj : mObjects)
+		obj->mouseMove(pos);
 }
