@@ -20,8 +20,8 @@ public:
 
 	// Events
 public:
-	void	mouseClick(sf::Vector2f &pos);
-	void	mouseMove(sf::Vector2f &pos);
+	void	mouseClick(sf::Vector2f const &pos);
+	void	mouseMove(sf::Vector2f const &pos);
 
 private:
 	std::list<IGVObject *>	mObjects;
