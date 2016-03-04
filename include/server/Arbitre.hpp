@@ -42,7 +42,7 @@ public:
 
 	void set_log_level(log_level l);
 
-	void	put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone);
+	void	game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone);
 
 	static const uint8_t board_size = 19;
 private:

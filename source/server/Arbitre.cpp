@@ -222,7 +222,7 @@ void Arbitre::check_victory_five(iprotocol::ITCP_protocol<Client> &itcp_protocol
 					{
 						iprotocol::Game_result gr;
 						gr.winner = new std::string("Fin de la game");
-						m_callback.result_game(itcp_protocol, &gr);
+						m_callback.game_result(itcp_protocol, &gr);
 					}
 				}
 			}
@@ -236,13 +236,13 @@ void	Arbitre::check_capture_victory(iprotocol::ITCP_protocol<Client> &itcp_proto
 	{
 		iprotocol::Game_result gr;
 		gr.winner = new std::string("Fin de la game");
-		m_callback.result_game(itcp_protocol, &gr);
+		m_callback.game_result(itcp_protocol, &gr);
 	}
 	if (m_white_loose >= 10)
 	{
 		iprotocol::Game_result gr;
 		gr.winner = new std::string("Fin de la game");
-		m_callback.result_game(itcp_protocol, &gr);
+		m_callback.game_result(itcp_protocol, &gr);
 	}
 
 }
@@ -256,7 +256,7 @@ void Arbitre::check_victory(iprotocol::ITCP_protocol<Client> &itcp_protocol, ipr
 
 #pragma region PutStone
 
-void Arbitre::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone * stone)
+void Arbitre::game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone * stone)
 {
 	uint8_t capture[8][4] = {
 		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
@@ -273,7 +273,7 @@ void Arbitre::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, ip
 	{
 		if (m_level.is_active(log_level::Can_play))
 			std::cout << "can put_stone (DEBUG : illo)" << std::endl;
-		m_callback.put_stone_game(itcp_protocol, stone);
+		m_callback.game_stone_put(itcp_protocol, stone);
 		(*this)(stone->x, stone->y) = stone->color;
 		m_empty_square.erase(std::find(m_empty_square.begin(), m_empty_square.end(), std::pair<int, int>(stone->x, stone->y)));
 		m_is_black_turn = !m_is_black_turn;
@@ -287,12 +287,12 @@ void Arbitre::put_stone_game(iprotocol::ITCP_protocol<Client> &itcp_protocol, ip
 				mess->x = static_cast<unsigned char>(capture[i][0]);
 				mess->y = static_cast<unsigned char>(capture[i][1]);
 				m_empty_square.push_back(std::pair<int, int>(capture[i][0], capture[i][1]));
-				m_callback.put_stone_game(itcp_protocol, mess);
+				m_callback.game_stone_put(itcp_protocol, mess);
 				(*this)(capture[i][0], capture[i][1]) = iprotocol::Game_stone::Color::None;
 				mess->x = static_cast<unsigned char>(capture[i][2]);
 				mess->y = static_cast<unsigned char>(capture[i][3]);
 				m_empty_square.push_back(std::pair<int, int>(capture[i][2], capture[i][3]));
-				m_callback.put_stone_game(itcp_protocol, mess);
+				m_callback.game_stone_put(itcp_protocol, mess);
 				(*this)(capture[i][2], capture[i][3]) = iprotocol::Game_stone::Color::None;
 				if (stone->color == iprotocol::Game_stone::Color::Black)
 					m_white_loose += 2;

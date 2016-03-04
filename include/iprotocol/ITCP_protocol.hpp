@@ -56,14 +56,21 @@ namespace iprotocol
 
     struct  Game_param
     {
-        std::string *name;
-        std::string *value;
+        bool    three_and_three;
+        bool    five_breakable;
+        bool    ai_white;
+        bool    ai_black;
     };
 
     struct  Game_player_param
     {
         std::string *name;
-        std::string *value;
+        enum    Type : uint8_t
+        {
+            White,
+            Black,
+            Spectator,
+        }       type;
     };
 
     struct  Game_stone
@@ -97,31 +104,27 @@ namespace iprotocol
             virtual ~Callback(void)
             {
             }
-            virtual void	result(ITCP_protocol &itcp_protocol, Error error) = 0;
+            virtual void    result(ITCP_protocol &itcp_protocol, Error error) = 0;
             virtual void	connect(ITCP_protocol &itcp_protocol, uint8_t version, std::string *login, std::string *password) = 0;
             virtual void	disconnect(ITCP_protocol &itcp_protocol) = 0;
             virtual void	ping(ITCP_protocol &itcp_protocol) = 0;
             virtual void	pong(ITCP_protocol &itcp_protocol) = 0;
-            virtual void	create_game(ITCP_protocol &itcp_protocol, Game *game) = 0;
-            virtual void	join_game(ITCP_protocol &itcp_protocol, Game *game) = 0;
-            virtual void	leave_game(ITCP_protocol &itcp_protocol) = 0;
-            virtual void	put_stone_game(ITCP_protocol &itcp_protocol, Game_stone *stone) = 0;
-            virtual void    change_param_player_game(ITCP_protocol &itcp_protocol, Game_player_param *param) = 0;
-            virtual void    change_param_game(ITCP_protocol &itcp_protocol, Game_param *param) = 0;
-            virtual void    list_param_game(ITCP_protocol &itcp_protocol, std::list<Game_param *> *params) = 0;
-            virtual void    list_param_player_game(ITCP_protocol &itcp_protocol, std::list<Game_player_param *> *params) = 0;
-            virtual void	game_created(ITCP_protocol &itcp_protocol, Game *game) = 0;
-            virtual void	game_player_joined(ITCP_protocol &itcp_protocol, std::string *name) = 0;
-            virtual void	game_player_left(ITCP_protocol &itcp_protocol, std::string *name) = 0;
-            virtual void    game_player_param_changed(ITCP_protocol &itcp_protocol, Game_player_param *param) = 0;
-            virtual void	game_param_changed(ITCP_protocol &itcp_protocol, Game_param *param) = 0;
-            virtual void	game_stone_put(ITCP_protocol &itcp_protocol, Game_stone *stone) = 0;
-            virtual void	game_deleted(ITCP_protocol &itcp_protocol, Game *game) = 0;
-            virtual void	start_game(ITCP_protocol &itcp_protocol) = 0;
-            virtual void	ready_game(ITCP_protocol &itcp_protocol, bool ready) = 0;
-            virtual void    score_game(ITCP_protocol &itcp_protocol, Game_score *game_score) = 0;
-            virtual void    result_game(ITCP_protocol &itcp_protocol, Game_result *game_result) = 0;
-            virtual void	message(ITCP_protocol &itcp_protocol, Message *message) = 0;
+            virtual void	game_create(ITCP_protocol &itcp_protocol, Game *game) = 0;
+            virtual void    game_delete(ITCP_protocol &itcp_protocol, Game *game) = 0;
+            virtual void	game_join(ITCP_protocol &itcp_protocol, Game *game) = 0;
+            virtual void	game_leave(ITCP_protocol &itcp_protocol) = 0;
+            virtual void    game_param(ITCP_protocol &itcp_protocol, Game_param *param) = 0;
+            virtual void    game_player_param(ITCP_protocol &itcp_protocol, Game_player_param *param) = 0;
+            virtual void	game_player_join(ITCP_protocol &itcp_protocol, std::string *name) = 0;
+            virtual void	game_player_leave(ITCP_protocol &itcp_protocol, std::string *name) = 0;
+            virtual void    game_stone_put(ITCP_protocol &itcp_protocol, Game_stone *stone) = 0;
+            virtual void	game_start(ITCP_protocol &itcp_protocol) = 0;
+            virtual void	game_ready(ITCP_protocol &itcp_protocol, bool ready) = 0;
+            virtual void    game_score(ITCP_protocol &itcp_protocol, Game_score *game_score) = 0;
+            virtual void    game_help(ITCP_protocol &itcp_protocol) = 0;
+            virtual void    game_hint(ITCP_protocol &itcp_protocol, Game_stone *stone) = 0;
+            virtual void    game_result(ITCP_protocol &itcp_protocol, Game_result *game_result) = 0;
+            virtual void	game_message(ITCP_protocol &itcp_protocol, Message *message) = 0;
         };
 
     public:
@@ -143,26 +146,22 @@ namespace iprotocol
         virtual void	send_disconnect(void) = 0;
         virtual void	send_ping(void) = 0;
         virtual void	send_pong(void) = 0;
-        virtual void	send_create_game(Game const &game) = 0;
-        virtual void	send_join_game(Game const &game) = 0;
-        virtual void	send_leave_game(void) = 0;
-        virtual void	send_put_stone_game(Game_stone const &stone) = 0;
-        virtual void    send_change_param_game(Game_param const &param) = 0;
-        virtual void	send_change_param_player_game(Game_player_param const &param) = 0;
-        virtual void    send_list_param_game(std::list<Game_param *> const &params) = 0;
-        virtual void    send_list_param_player_game(std::list<Game_player_param *> const &params) = 0;
-        virtual void	send_game_created(Game const &game) = 0;
-        virtual void	send_game_player_joined(std::string const &name) = 0;
-        virtual void	send_game_player_left(std::string const &name) = 0;
-        virtual void    send_game_player_param_changed(Game_player_param const &param) = 0;
-        virtual void	send_game_param_changed(Game_param const &param) = 0;
-        virtual void	send_game_stone_put(Game_stone const &stone) = 0;
-        virtual void	send_game_deleted(Game const &game) = 0;
-        virtual void	send_start_game(void) = 0;
-        virtual void	send_ready_game(bool ready) = 0;
-        virtual void    send_score_game(Game_score const &score) = 0;
-        virtual void    send_result_game(Game_result const &result) = 0;
-        virtual void	send_message(Message const &message) = 0;
+        virtual void	send_game_create(Game const &game) = 0;
+        virtual void    send_game_delete(Game const &game) = 0;
+        virtual void	send_game_join(Game const &game) = 0;
+        virtual void	send_game_leave(void) = 0;
+        virtual void    send_game_stone_put(Game_stone const &stone) = 0;
+        virtual void    send_game_param(Game_param const &param) = 0;
+        virtual void	send_game_player_param(Game_player_param const &param) = 0;
+        virtual void	send_game_player_join(std::string const &name) = 0;
+        virtual void	send_game_player_leave(std::string const &name) = 0;
+        virtual void	send_game_start(void) = 0;
+        virtual void	send_game_ready(bool ready) = 0;
+        virtual void    send_game_score(Game_score const &score) = 0;
+        virtual void    send_game_result(Game_result const &result) = 0;
+        virtual void    send_game_help(void) = 0;
+        virtual void    send_game_hint(Game_stone const &stone) = 0;
+        virtual void	send_game_message(Message const &message) = 0;
 
     };
 

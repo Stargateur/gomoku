@@ -147,62 +147,53 @@ namespace iprotocol
             case ATCP_packet::Pong:
                 recv_pong();
                 return;
-            case ATCP_packet::Create_game:
-                recv_create_game();
+            case ATCP_packet::Game_create:
+                recv_game_create();
                 return;
-            case ATCP_packet::Join_game:
-                recv_join_game();
+            case ATCP_packet::Game_delete:
+                recv_game_delete();
                 return;
-            case ATCP_packet::Leave_game:
-                recv_leave_game();
+            case ATCP_packet::Game_join:
+                recv_game_join();
                 return;
-            case ATCP_packet::Put_stone_game:
-                recv_put_stone_game();
-                return;
-            case ATCP_packet::Change_param_player_game:
-                recv_change_param_player_game();
-                return;
-            case ATCP_packet::Change_param_game:
-                recv_change_param_game();
-                return;
-            case ATCP_packet::List_param_player_game:
-                recv_list_param_player_game();
-                return;
-            case ATCP_packet::List_param_game:
-                recv_list_param_game();
-                return;
-            case ATCP_packet::Game_created:
-                recv_game_created();
-                return;
-            case ATCP_packet::Game_player_joined:
-                recv_game_player_joined();
-                return;
-            case ATCP_packet::Game_player_left:
-                recv_game_player_left();
-                return;
-            case ATCP_packet::Game_player_param_changed:
-                recv_game_player_param_changed();
-                return;
-            case ATCP_packet::Game_param_changed:
-                recv_game_param_changed();
+            case ATCP_packet::Game_leave:
+                recv_game_leave();
                 return;
             case ATCP_packet::Game_stone_put:
                 recv_game_stone_put();
                 return;
-            case ATCP_packet::Game_deleted:
-                recv_game_deleted();
+            case ATCP_packet::Game_param:
+                recv_game_param();
                 return;
-            case ATCP_packet::Start_game:
-                recv_start_game();
+            case ATCP_packet::Game_player_param:
+                recv_game_player_param();
                 return;
-            case ATCP_packet::Ready_game:
-                recv_ready_game();
+            case ATCP_packet::Game_player_join:
+                recv_game_player_join();
                 return;
-            case ATCP_packet::Result_game:
-                recv_result_game();
+            case ATCP_packet::Game_player_leave:
+                recv_game_player_leave();
                 return;
-            case ATCP_packet::Message:
-                recv_message();
+            case ATCP_packet::Game_start:
+                recv_game_start();
+                return;
+            case ATCP_packet::Game_ready:
+                recv_game_ready();
+                return;
+            case ATCP_packet::Game_score:
+                recv_game_score();
+                return;
+            case ATCP_packet::Game_help:
+                recv_game_help();
+                return;
+            case ATCP_packet::Game_hint:
+                recv_game_hint();
+                return;
+            case ATCP_packet::Game_result:
+                recv_game_result();
+                return;
+            case ATCP_packet::Game_message:
+                recv_game_message();
                 return;
             }
             throw std::logic_error("recv a Unknow opcode");
@@ -282,230 +273,67 @@ namespace iprotocol
         }
 
     public:
-        void	send_create_game(Game const &game)
+        void	send_game_create(Game const &game)
         {
-            set_rec(get_to_send(ATCP_packet::Create_game), *game.name);
+            set_rec(get_to_send(ATCP_packet::Game_create), *game.name);
         }
 
     private:
-        void	recv_create_game(void)
+        void	recv_game_create(void)
         {
             Game	*game = new Game();
             game->name = new std::string();
             get_rec(m_to_recv, *game->name);
-            m_callback->create_game(*this, game);
+            m_callback->game_create(*this, game);
         }
 
     public:
-        void	send_join_game(Game const &game)
+        void    send_game_delete(Game const &game)
         {
-            set_rec(get_to_send(ATCP_packet::Join_game), *game.name);
+            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_delete);
+            set_rec(to_send, game.name);
         }
 
     private:
-        void	recv_join_game(void)
-        {
-            Game	*game = new Game();
-            game->name = new std::string();
-            get_rec(m_to_recv, *game->name);
-            m_callback->join_game(*this, game);
-        }
-
-    public:
-        void	send_leave_game(void)
-        {
-            set_rec(get_to_send(ATCP_packet::Leave_game));
-        }
-
-    private:
-        void	recv_leave_game(void)
-        {
-            m_callback->leave_game(*this);
-        }
-
-    public:
-        void	send_put_stone_game(Game_stone const &stone)
-        {
-            set_rec(get_to_send(ATCP_packet::Put_stone_game), stone.x, stone.y, stone.color);
-        }
-
-    private:
-        void	recv_put_stone_game(void)
-        {
-            Game_stone *stone = new Game_stone();
-            get_rec(m_to_recv, stone->x, stone->y, stone->color);
-            m_callback->put_stone_game(*this, stone);
-        }
-
-    public:
-        void    send_change_param_player_game(Game_player_param const &param)
-        {
-            set_rec(get_to_send(ATCP_packet::Change_param_player_game), *param.name, *param.value);
-        }
-
-    private:
-        void    recv_change_param_player_game(void)
-        {
-            Game_player_param *param = new Game_player_param;
-            param->name = new std::string();
-            param->value = new std::string();
-            get_rec(m_to_recv, *param->name, *param->value);
-            m_callback->change_param_player_game(*this, param);
-        }
-
-    public:
-        void	send_change_param_game(Game_param const &param)
-        {
-            set_rec(get_to_send(ATCP_packet::Change_param_game), *param.name, *param.value);
-        }
-
-    private:
-        void	recv_change_param_game(void)
-        {
-            Game_param *param = new Game_param();
-            param->name = new std::string();
-            param->value = new std::string();
-            get_rec(m_to_recv, *param->name, *param->value);
-            m_callback->change_param_game(*this, param);
-        }
-
-    public:
-        void    send_list_param_player_game(std::list<Game_player_param *> const &params)
-        {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::List_param_player_game);
-            to_send.put(static_cast<uint8_t>(params.size()));
-            for (auto param : params)
-                set_rec(to_send, *param->name, *param->value);
-        }
-
-    private:
-        void    recv_list_param_player_game(void)
-        {
-            std::list<Game_player_param *> *params = new std::list<Game_player_param *>();
-            uint8_t size;
-            m_to_recv.get(size);
-            for (uintmax_t i = 0; i < size; i++)
-            {
-                Game_player_param *param = new Game_player_param();
-                param->name = new std::string();
-                param->value = new std::string();
-                get_rec(m_to_recv, *param->name, *param->value);
-                params->push_back(param);
-            }
-            m_callback->list_param_player_game(*this, params);
-        }
-
-    public:
-        void	send_list_param_game(std::list<Game_param *> const &params)
-        {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::List_param_game);
-            to_send.put(static_cast<uint8_t>(params.size()));
-            for (auto param : params)
-                set_rec(to_send, *param->name, *param->value);
-        }
-
-    private:
-        void	recv_list_param_game(void)
-        {
-            std::list<Game_param *> *params = new std::list<Game_param *>();
-            uint8_t	size;
-            m_to_recv.get(size);
-            for (uintmax_t i = 0; i < size; i++)
-            {
-                Game_param *param = new Game_param();
-                param->name = new std::string();
-                param->value = new std::string();
-                get_rec(m_to_recv, *param->name, *param->value);
-                params->push_back(param);
-            }
-            m_callback->list_param_game(*this, params);
-        }
-
-    public:
-        void	send_game_created(Game const &game)
-        {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_created);
-            set_rec(to_send, *game.name);
-        }
-
-    private:
-        void	recv_game_created(void)
+        void    recv_game_delete(void)
         {
             Game *game = new Game();
             game->name = new std::string();
             get_rec(m_to_recv, *game->name);
-            m_callback->game_created(*this, game);
+            m_callback->game_delete(*this, game);
         }
 
     public:
-        void	send_game_player_joined(std::string const &name)
+        void	send_game_join(Game const &game)
         {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_player_joined);
-            set_rec(to_send, name);
+            set_rec(get_to_send(ATCP_packet::Game_join), *game.name);
         }
 
     private:
-        void	recv_game_player_joined(void)
+        void	recv_game_join(void)
         {
-            std::string *name = new std::string();
-            get_rec(m_to_recv, name);
-            m_callback->game_player_joined(*this, name);
+            Game	*game = new Game();
+            game->name = new std::string();
+            get_rec(m_to_recv, *game->name);
+            m_callback->game_join(*this, game);
         }
 
     public:
-        void	send_game_player_left(std::string const &name)
+        void	send_game_leave(void)
         {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_player_left);
-            set_rec(to_send, name);
+            set_rec(get_to_send(ATCP_packet::Game_leave));
         }
 
     private:
-        void	recv_game_player_left(void)
+        void	recv_game_leave(void)
         {
-            std::string *name = new std::string();
-            get_rec(m_to_recv, name);
-            m_callback->game_player_left(*this, name);
+            m_callback->game_leave(*this);
         }
 
     public:
-        void    send_game_player_param_changed(Game_player_param const &param)
+        void    send_game_stone_put(Game_stone const &stone)
         {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_player_param_changed);
-            set_rec(to_send, *param.name, *param.value);
-        }
-
-    private:
-        void    recv_game_player_param_changed(void)
-        {
-            Game_player_param *param = new Game_player_param;
-            param->name = new std::string();
-            param->value = new std::string();
-            get_rec(m_to_recv, *param->name, *param->value);
-            m_callback->game_player_param_changed(*this, param);
-        }
-
-    public:
-        void	send_game_param_changed(Game_param const &param)
-        {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_param_changed);
-            set_rec(to_send, *param.name, *param.value);
-        }
-
-    private:
-        void	recv_game_param_changed(void)
-        {
-            Game_param *param = new Game_param;
-            param->name = new std::string();
-            param->value = new std::string();
-            get_rec(m_to_recv, *param->name, *param->value);
-            m_callback->game_param_changed(*this, param);
-        }
-
-    public:
-        void	send_game_stone_put(Game_stone const &stone)
-        {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_stone_put);
-            set_rec(to_send, stone.x, stone.y, stone.color);
+            set_rec(get_to_send(ATCP_packet::Game_stone_put), stone.x, stone.y, stone.color);
         }
 
     private:
@@ -517,96 +345,168 @@ namespace iprotocol
         }
 
     public:
-        void	send_game_deleted(Game const &game)
+        void    send_game_player_param(Game_player_param const &param)
         {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_deleted);
-            set_rec(to_send, game.name);
+            set_rec(get_to_send(ATCP_packet::Game_player_param), *param.name, param.type);
         }
 
     private:
-        void	recv_game_deleted(void)
+        void    recv_game_player_param(void)
         {
-            Game *game = new Game();
-            game->name = new std::string();
-            get_rec(m_to_recv, game->name);
-            m_callback->game_deleted(*this, game);
+            Game_player_param *param = new Game_player_param;
+            param->name = new std::string;
+            get_rec(m_to_recv, *param->name, param->type);
+            m_callback->game_player_param(*this, param);
         }
 
     public:
-        void	send_start_game(void)
+        void	send_game_param(Game_param const &param)
         {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Start_game);
+            set_rec(get_to_send(ATCP_packet::Game_param),
+                param.three_and_three, param.five_breakable, param.ai_white, param.ai_black);
+        }
+
+    private:
+        void	recv_game_param(void)
+        {
+            Game_param *param = new Game_param();
+            get_rec(m_to_recv, param->three_and_three,
+                param->five_breakable, param->ai_white, param->ai_black);
+            m_callback->game_param(*this, param);
+        }
+
+    public:
+        void	send_game_player_join(std::string const &name)
+        {
+            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_player_join);
+            set_rec(to_send, name);
+        }
+
+    private:
+        void	recv_game_player_join(void)
+        {
+            std::string *name = new std::string();
+            get_rec(m_to_recv, name);
+            m_callback->game_player_join(*this, name);
+        }
+
+    public:
+        void	send_game_player_leave(std::string const &name)
+        {
+            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_player_leave);
+            set_rec(to_send, name);
+        }
+
+    private:
+        void	recv_game_player_leave(void)
+        {
+            std::string *name = new std::string();
+            get_rec(m_to_recv, name);
+            m_callback->game_player_leave(*this, name);
+        }
+
+    public:
+        void	send_game_start(void)
+        {
+            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_start);
             set_rec(to_send);
         }
 
     private:
-        void	recv_start_game(void)
+        void	recv_game_start(void)
         {
             get_rec(m_to_recv);
-            m_callback->start_game(*this);
+            m_callback->game_start(*this);
         }
 
     public:
-        void	send_ready_game(bool ready)
+        void	send_game_ready(bool ready)
         {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Ready_game);
+            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_ready);
             set_rec(to_send, ready);
         }
 
     private:
-        void	recv_ready_game(void)
+        void	recv_game_ready(void)
         {
             bool	ready;
             get_rec(m_to_recv, ready);
-            m_callback->ready_game(*this, ready);
-        }
-
-    public:
-        void	send_result_game(Game_result const &result)
-        {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Result_game);
-            set_rec(to_send, result.winner);
-        }
-
-    private:
-        void	recv_result_game(void)
-        {
-            Game_result *result = new Game_result();
-            result->winner = new std::string();
-            get_rec(m_to_recv, result->winner);
-            m_callback->result_game(*this, result);
+            m_callback->game_ready(*this, ready);
         }
     
     public:
-        void    send_score_game(Game_score const &score)
+        void    send_game_score(Game_score const &score)
         {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Score_game);
+            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_score);
             set_rec(to_send, score.white_stone_taken, score.black_stone_taken);
         }
 
     private:
-        void    recv_score_game(void)
+        void    recv_game_score(void)
         {
             Game_score *score = new Game_score();
             get_rec(m_to_recv, score->white_stone_taken, score->black_stone_taken);
-            m_callback->score_game(*this, score);
+            m_callback->game_score(*this, score);
         }
 
     public:
-        void	send_message(Message const &message)
+        void    send_game_help(void)
         {
-            TCP_packet_send &to_send = get_to_send(ATCP_packet::Message);
+            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_help);
+            set_rec(to_send);
+        }
+
+    private:
+        void    recv_game_help(void)
+        {
+            get_rec(m_to_recv);
+            m_callback->game_help(*this);
+        }
+
+    public:
+        void    send_game_hint(Game_stone const &stone)
+        {
+            set_rec(get_to_send(ATCP_packet::Game_hint), stone.x, stone.y, stone.color);
+        }
+
+    private:
+        void    recv_game_hint(void)
+        {
+            Game_stone *stone = new Game_stone();
+            get_rec(m_to_recv, stone->x, stone->y, stone->color);
+            m_callback->game_hint(*this, stone);
+        }
+
+    public:
+        void    send_game_result(Game_result const &result)
+        {
+            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_result);
+            set_rec(to_send, result.winner);
+        }
+
+    private:
+        void    recv_game_result(void)
+        {
+            Game_result *result = new Game_result();
+            result->winner = new std::string();
+            get_rec(m_to_recv, result->winner);
+            m_callback->game_result(*this, result);
+        }
+    public:
+        void	send_game_message(Message const &message)
+        {
+            TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_message);
             set_rec(to_send, *message.name, *message.message);
         }
 
     private:
-        void	recv_message(void)
+        void	recv_game_message(void)
         {
             Message *message = new Message();
             message->name = new std::string();
             message->message = new std::string();
             get_rec(m_to_recv, *message->name, *message->message);
-            m_callback->message(*this, message);
+            m_callback->game_message(*this, message);
         }
 
     private:

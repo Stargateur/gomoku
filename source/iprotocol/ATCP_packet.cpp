@@ -45,45 +45,37 @@ char const	*iprotocol::ATCP_packet::get_str_opcode(iprotocol::ATCP_packet::Opcod
         return ("Ping");
     case iprotocol::ATCP_packet::Pong:
         return ("Pong");
-    case iprotocol::ATCP_packet::Create_game:
-        return ("Create_game");
-    case iprotocol::ATCP_packet::Join_game:
-        return ("Join_game");
-    case iprotocol::ATCP_packet::Leave_game:
-        return ("Leave_game");
-    case iprotocol::ATCP_packet::Put_stone_game:
-        return ("Put_stone_game");
-    case iprotocol::ATCP_packet::Change_param_player_game:
+    case iprotocol::ATCP_packet::Game_create:
+        return ("Game_create");
+    case iprotocol::ATCP_packet::Game_delete:
+        return ("Game_delete");
+    case iprotocol::ATCP_packet::Game_join:
+        return ("Game_join");
+    case iprotocol::ATCP_packet::Game_leave:
+        return ("Game_leave");
+    case iprotocol::ATCP_packet::Game_param:
         return ("Change_param_player_game");
-    case iprotocol::ATCP_packet::Change_param_game:
-        return ("Change_param_game");
-    case iprotocol::ATCP_packet::List_param_player_game:
+    case iprotocol::ATCP_packet::Game_player_param:
         return ("List_Param_player_game");
-    case iprotocol::ATCP_packet::List_param_game:
-        return ("List_Param_game");
-    case iprotocol::ATCP_packet::Game_created:
-        return ("Game_created");
-    case iprotocol::ATCP_packet::Game_player_joined:
+    case iprotocol::ATCP_packet::Game_player_join:
         return ("Game_player_joined");
-    case iprotocol::ATCP_packet::Game_player_left:
+    case iprotocol::ATCP_packet::Game_player_leave:
         return ("Game_player_left");
-    case iprotocol::ATCP_packet::Game_player_param_changed:
-        return ("Game_player_param_changed");
-    case iprotocol::ATCP_packet::Game_param_changed:
-        return ("Game_param_changed");
     case iprotocol::ATCP_packet::Game_stone_put:
         return ("Game_stone_put");
-    case iprotocol::ATCP_packet::Game_deleted:
-        return ("Game_deleted");
-    case iprotocol::ATCP_packet::Start_game:
+    case iprotocol::ATCP_packet::Game_start:
         return ("Start_game");
-    case iprotocol::ATCP_packet::Ready_game:
+    case iprotocol::ATCP_packet::Game_ready:
         return ("Ready_game");
-    case iprotocol::ATCP_packet::Score_game:
+    case iprotocol::ATCP_packet::Game_score:
         return ("Score_game");
-    case iprotocol::ATCP_packet::Result_game:
+    case iprotocol::ATCP_packet::Game_help:
+        return ("Start_game");
+    case iprotocol::ATCP_packet::Game_hint:
+        return ("Start_game");
+    case iprotocol::ATCP_packet::Game_result:
         return ("Result_game");
-    case iprotocol::ATCP_packet::Message:
+    case iprotocol::ATCP_packet::Game_message:
         return ("Message");
     }
     throw std::logic_error("Unknow Opcode");
