@@ -1,5 +1,6 @@
 #include	"GomokuGraphics.hpp"
 #include	"GVOButton.hpp"
+#include	"GVOText.hpp"
 #include	"IGVObject.hpp"
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
@@ -112,7 +113,15 @@ void GomokuGraphics::init()
 	//mMenuView.pushObject(btn);
 
 	//init home
+	GVOText *text = new GVOText("Ah, te revoila !", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 2 - 10));
+	mHomeView.pushObject(text);
 
+	//init theme sound
+	if (!mThemeSound.openFromFile("Sound/theme.ogg"))
+	{
+		std::cout << "error loading sound" << std::endl;
+	}
+	else { mThemeSound.play(); }
 
 	//set home view
 	mCurrentView = &mHomeView;

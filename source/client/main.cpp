@@ -2,6 +2,7 @@
 #include	<exception>
 #include	<thread>
 #include	<SFML/Graphics.hpp>
+#include	<SFML/Network.hpp>
 #include	"Client.hpp"
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
@@ -54,6 +55,31 @@ void start_tcpclient()
 
 void start_ui()
 {
+	sf::Music test;
+	if (!test.openFromFile("Sound/theme.ogg"))
+	{
+		std::cout << "Connecting to FTP...";
+		sf::Ftp downloader;
+		sf::Ftp::Response resp;
+		resp = downloader.connect(sf::IpAddress("ftp.cluster011.ovh.net"), 21);
+		if (resp.isOk())
+			std::cout << "connected !" << std::endl;
+		std::string password;
+		std::cout << "Password: ";
+		std::cin >> password;
+		resp = downloader.login("zwertvfrpm", password);
+		if (resp.isOk())
+			std::cout << "login ok!" << std::endl;
+		resp = downloader.changeDirectory("www");
+		sf::Ftp::DirectoryResponse directory = downloader.getWorkingDirectory();
+		if (directory.isOk())
+			std::cout << "Working directory: " << directory.getDirectory() << std::endl;
+		std::cout << "Downloading assets...";
+		downloader.download("theme.ogg", "./Sound");
+		std::cout << "complete !" << std::endl;
+		downloader.disconnect();
+	}
+
 	GomokuGraphics gui;
 
 	gui.init();

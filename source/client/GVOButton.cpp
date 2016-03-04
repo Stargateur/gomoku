@@ -7,13 +7,19 @@ GVOButton::GVOButton(sf::Vector2f pos, sf::Texture const &texture, sf::Vector2f 
 	mSprite.setScale(scale);
 }
 
-GVOButton::~GVOButton(void) {}
+GVOButton::~GVOButton(void)
+{
+	for (IGVAMouseHover* action : mHoverActions)
+		delete action;
+	for (IGVAMouseClick* action : mClickActions)
+		delete action;
+}
 
 sf::Drawable	*GVOButton::getDrawable(void) { return &mSprite; }
 void			GVOButton::addAction(IGVAMouseClick *mouseAction) { mClickActions.push_back(mouseAction); }
 void			GVOButton::addAction(IGVAMouseHover *mouseAction) { mHoverActions.push_back(mouseAction); }
 
-void			GVOButton::mouseClick(sf::Vector2f const & const pos)
+void			GVOButton::mouseClick(sf::Vector2f const & pos)
 {
 	if (mClickActions.empty() == false)
 	{
@@ -22,7 +28,7 @@ void			GVOButton::mouseClick(sf::Vector2f const & const pos)
 	}
 }
 
-void			GVOButton::mouseMove(sf::Vector2f const & const pos)
+void			GVOButton::mouseMove(sf::Vector2f const & pos)
 {
 	if (mHoverActions.empty() == false)
 	{

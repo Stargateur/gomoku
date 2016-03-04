@@ -4,6 +4,7 @@
 #define	GOMOKU_GRAPHICS_HPP_
 
 #include	<SFML/Graphics.hpp>
+#include	<SFML/Audio.hpp>
 #include	<iostream>
 #include	"GView.hpp"
 
@@ -31,6 +32,7 @@ private:
 	GView				mHomeView;
 	GView				mGameView;
 	GView				mConnectView;
+	sf::Music			mThemeSound;
 	IGVObject			*mStones[19][19];
 };
 
