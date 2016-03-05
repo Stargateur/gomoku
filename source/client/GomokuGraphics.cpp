@@ -9,6 +9,7 @@
 #include	"GVAMouseClickCallBack.hpp"
 #include	"GVAMouseClickTextureRect.hpp"
 #include	"GVAMouseHoverChangeColor.hpp"
+#include	"GVAKeyPressedFocusSave.hpp"
 #include	"TextureManager.hpp"
 
 void		connect(std::string params)
@@ -193,7 +194,8 @@ void			GomokuGraphics::init()
 	//init options
 	GVOText *t = new GVOText("PSEUDO :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 2 - 100));
 	mClientOptions.pushObject(t);
-	GVOInputBox *ib = new GVOInputBox("Player1", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 2 - 100));
+	GVOInputBox *ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 2 - 100), PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex());
+	ib->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex()));
 	ib->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
 	mClientOptions.pushObject(ib);
 
@@ -223,6 +225,7 @@ void GomokuGraphics::reset(void)
 
 void GomokuGraphics::run()
 {
+	sf::String test;
 	while (mWindow->isOpen())
 	{
 		sf::Event event;
@@ -238,6 +241,7 @@ void GomokuGraphics::run()
 			}
 			else if (event.type == sf::Event::MouseMoved)
 			{
+				souris = mWindow->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
 				mMenuView.mouseMove(mWindow->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y)));
 				mCurrentView->mouseMove(mWindow->mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y)));
 			}
@@ -245,6 +249,12 @@ void GomokuGraphics::run()
 			{
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) == true)
 					mWindow->close();
+			}
+			if (event.type == sf::Event::TextEntered)
+			{
+
+				mMenuView.keyPressed(mWindow->mapPixelToCoords(sf::Mouse::getPosition(*mWindow)), event.text.unicode);
+				mCurrentView->keyPressed(mWindow->mapPixelToCoords(sf::Mouse::getPosition(*mWindow)), event.text.unicode);
 			}
 		}
 		// check actual state

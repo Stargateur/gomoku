@@ -41,3 +41,9 @@ void GView::mouseMove(sf::Vector2f const &pos)
 	for (IGVObject *obj : mObjects)
 		obj->mouseMove(pos);
 }
+
+void GView::keyPressed(sf::Vector2f const &pos, sf::Uint32 const &key)
+{
+	for (IGVObject *obj : mObjects)
+		obj->keyPressed(pos, key);
+}

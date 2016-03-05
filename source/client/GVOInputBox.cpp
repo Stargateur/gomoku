@@ -1,6 +1,6 @@
 #include	"GVOInputBox.hpp"
 
-GVOInputBox::GVOInputBox(std::string const &title, sf::Vector2f const &pos) : mTitle(title)
+GVOInputBox::GVOInputBox(std::string const &title, sf::Vector2f const &pos, std::string &content, std::mutex &mutex) : mTitle(title), mContent(content), mMutex(mutex)
 {
 	mFont.loadFromFile("Font/TCCEB.TTF");
 	mText.setFont(mFont);
@@ -9,22 +9,25 @@ GVOInputBox::GVOInputBox(std::string const &title, sf::Vector2f const &pos) : mT
 	mText.setCharacterSize(24);
 
 	mRendered.create(200, 30);
-	sf::RectangleShape background;
-	background.setFillColor(sf::Color::White);
-	background.setSize(sf::Vector2f(200, 30));
-	mRendered.draw(background);
+	mBackground.setFillColor(sf::Color::White);
+	mBackground.setSize(sf::Vector2f(200, 30));
 
 	mSprite.setPosition(pos);
 	updateRender();
 }
 GVOInputBox::~GVOInputBox(void) {}
 
-sf::Drawable	*GVOInputBox::getDrawable(void) { return &mSprite; }
-void			GVOInputBox::addAction(IGVAMouseClick *mouseAction) { mClickActions.push_back(mouseAction); }
-void			GVOInputBox::addAction(IGVAMouseHover *mouseAction) { mHoverActions.push_back(mouseAction); }
+sf::Drawable	*GVOInputBox::getDrawable(void) { updateRender(); return &mSprite; }
+void			GVOInputBox::addAction(IGVAMouseClick *action) { mClickActions.push_back(action); }
+void			GVOInputBox::addAction(IGVAMouseHover *action) { mHoverActions.push_back(action); }
+void			GVOInputBox::addAction(IGVAKeyPressed *action) { mKeyActions.push_back(action); }
 void			GVOInputBox::updateRender(void)
 {
-	mText.setString(mTitle + mInputSave);
+	mMutex.lock();
+	mText.setString(mTitle + mContent);
+	mMutex.unlock();
+	mRendered.clear();
+	mRendered.draw(mBackground);
 	mRendered.draw(mText);
 	mRendered.display();
 	mSprite.setTexture(mRendered.getTexture());
@@ -46,4 +49,10 @@ void			GVOInputBox::mouseMove(sf::Vector2f const &pos)
 		for (IGVAMouseHover* action : mHoverActions)
 			action->Act(mSprite, pos);
 	}
+}
+
+void			GVOInputBox::keyPressed(sf::Vector2f const &pos, sf::Uint32 const &key)
+{
+	for (IGVAKeyPressed* action : mKeyActions)
+		action->Act(mSprite, pos, key);
 }

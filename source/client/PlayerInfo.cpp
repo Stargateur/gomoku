@@ -24,3 +24,8 @@ void PlayerInfo::unlock(void)
 {
 	mMutex.unlock();
 }
+
+std::mutex &PlayerInfo::getMutex(void)
+{
+	return mMutex;
+}

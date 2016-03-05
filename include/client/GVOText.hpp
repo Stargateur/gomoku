@@ -18,6 +18,7 @@ public:
 	virtual sf::Drawable*	getDrawable(void);
 	virtual void			mouseClick(sf::Vector2f const &pos);
 	virtual void			mouseMove(sf::Vector2f const &pos);
+	virtual void			keyPressed(sf::Vector2f const &pos, sf::Uint32 const &key);
 
 public:
 	sf::Text	&getText(void);
@@ -26,8 +27,6 @@ public:
 private:
 	sf::Text					mText;
 	sf::Font					mFont;
-	std::list<IGVAMouseClick *>	mClickActions;
-	std::list<IGVAMouseHover *>	mHoverActions;
 };
 
 #endif // !GVOTEXT_HPP_
