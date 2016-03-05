@@ -4,6 +4,7 @@
 #define	GOMOKU_GRAPHICS_HPP_
 
 #include	<SFML/Graphics.hpp>
+#include	<SFML/Audio.hpp>
 #include	<iostream>
 #include	"GView.hpp"
 
@@ -12,6 +13,14 @@
 
 class GomokuGraphics
 {
+public:
+	enum e_view
+	{
+		HOME = 0,
+		PLAY,
+		CLIENT_OPTIONS
+	};
+
 public:
 	GomokuGraphics(void);
 	~GomokuGraphics(void);
@@ -22,19 +31,18 @@ public:
 
 private:
 	void	checkClientUpdates(void);
+	void	updateView(void);
 
 private:
 	sf::RenderWindow	*mWindow;
-	sf::Texture			mTextureBackground;
-	sf::Sprite			mBackground;
-	sf::Texture			mTopTexture;
-	sf::Sprite			mTopMenu;
-	sf::Texture			mBlackTexture;
-	sf::Texture			mWhiteTexture;
-	sf::Texture			mHistoTexture;
+	//sf::Sprite			mBackground;
 	GView				*mCurrentView;
+	GView				mMenuView;
+	GView				mHomeView;
 	GView				mGameView;
 	GView				mConnectView;
+	GView				mClientOptions;
+	sf::Music			mThemeSound;
 	IGVObject			*mStones[19][19];
 };
 

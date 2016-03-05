@@ -17,12 +17,11 @@ public:
 		mCallbackParam = callbackParam;
 	}
 	virtual ~GVAMouseClickCallBack() {}
-	virtual void Act(sf::Sprite &texture, sf::Vector2f &mousePosition)
+	virtual void Act(sf::Sprite &texture, sf::Vector2f const &mousePosition)
 	{
 		if (mousePosition.x >= texture.getGlobalBounds().left && mousePosition.x <= texture.getGlobalBounds().left + texture.getGlobalBounds().width &&
 			mousePosition.y >= texture.getGlobalBounds().top && mousePosition.y <= texture.getGlobalBounds().top + texture.getGlobalBounds().height)
 		{
-			std::cout << "Here come the callback;" << std::endl;
 			if (mCallback != nullptr)
 				(*mCallback)(mCallbackParam);
 		}

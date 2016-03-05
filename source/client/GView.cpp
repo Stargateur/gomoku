@@ -20,18 +20,24 @@ void GView::removeObject(IGVObject * object)
 }
 
 #include <iostream>
-std::list<sf::Sprite *> GView::getSprites()
+std::list<sf::Drawable *> GView::getDrawables()
 {
-	std::list<sf::Sprite *>res;
+	std::list<sf::Drawable *>res;
 	for (IGVObject *obj : mObjects)
 	{
-		res.push_back(obj->getSprite());
+		res.push_back(obj->getDrawable());
 	}
 	return res;
 }
 
-void GView::mouseClick(sf::Vector2f pos)
+void GView::mouseClick(sf::Vector2f const &pos)
 {
 	for (IGVObject *obj : mObjects)
 		obj->mouseClick(pos);
+}
+
+void GView::mouseMove(sf::Vector2f const &pos)
+{
+	for (IGVObject *obj : mObjects)
+		obj->mouseMove(pos);
 }

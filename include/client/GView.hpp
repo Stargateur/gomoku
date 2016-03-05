@@ -16,11 +16,12 @@ public:
 public:
 	void					pushObject(IGVObject *object);
 	void					removeObject(IGVObject *object);
-	std::list<sf::Sprite *>	getSprites();
+	std::list<sf::Drawable *>	getDrawables();
 
 	// Events
 public:
-	void	mouseClick(sf::Vector2f pos);
+	void	mouseClick(sf::Vector2f const &pos);
+	void	mouseMove(sf::Vector2f const &pos);
 
 private:
 	std::list<IGVObject *>	mObjects;

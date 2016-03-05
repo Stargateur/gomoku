@@ -7,6 +7,7 @@
 #include	<mutex>
 #include	"ITCP_protocol.hpp"
 #include	"ITCP_client.hpp"
+#include	"GomokuGraphics.hpp"
 
 class PlayerInfo
 {
@@ -31,6 +32,8 @@ public:
 	void				unlock(void);
 
 public:
+	GomokuGraphics::e_view					mView;
+	bool									mMusic;
 	std::string								mPseudo;
 	std::string								mColor;
 	std::string								mHost;

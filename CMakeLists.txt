@@ -9,7 +9,7 @@ if(WIN32)
 	set(BOOST_INCLUDEDIR "C:/Boost/include/boost-1_60/")
 endif()
 find_package(SFML 2 REQUIRED system window graphics network audio)
-find_package(Boost COMPONENTS program_options REQUIRED)
+find_package(Boost COMPONENTS REQUIRED program_options)
 find_package (Threads)
 if(!WIN32)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
@@ -61,18 +61,27 @@ add_executable(gomoku_client
 	source/client/Client.cpp
 	source/client/GameInfo.cpp
 	source/client/GomokuGraphics.cpp
+	source/client/TextureManager.cpp
 	source/client/GView.cpp
+	source/client/GVOText.cpp
+	source/client/GVOButton.cpp
+	source/client/GVOInputBox.cpp
 	source/client/PlayerInfo.cpp
 	source/client/main.cpp
 	include/client/Client.hpp
 	include/client/GameInfo.hpp
 	include/client/GomokuGraphics.hpp
+	include/client/TextureManager.hpp
 	include/client/GView.hpp
 	include/client/IGVObject.hpp
 	include/client/IGVAMouseClick.hpp
 	include/client/IGVAMouseHover.hpp
 	include/client/GVOButton.hpp
+	include/client/GVOText.hpp
+	include/client/GVOInputBox.hpp
 	include/client/GVAMouseClickCallBack.hpp
+	include/client/GVAMouseClickTextureRect.hpp
+	include/client/GVAMouseHoverChangeColor.hpp
 	include/client/PlayerInfo.hpp
 )
 target_compile_features(gomoku_client PUBLIC cxx_range_for)
@@ -84,7 +93,12 @@ target_link_libraries(gomoku_client PUBLIC ${SFML_LIBRARIES} ${CMAKE_THREAD_LIBS
 add_custom_command(TARGET gomoku_client POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${PROJECT_SOURCE_DIR}/Sprite/"
-        $<TARGET_FILE_DIR:gomoku_client>/Sprite)
+        $<TARGET_FILE_DIR:gomoku_client>/Sprite
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_SOURCE_DIR}/Font/"
+        $<TARGET_FILE_DIR:gomoku_client>/Font
+	COMMAND ${CMAKE_COMMAND} -E make_directory
+		$<TARGET_FILE_DIR:gomoku_client>/Sound)
 
 add_executable(gomoku_server
 	source/server/Arbitre.cpp
