@@ -47,6 +47,7 @@ add_library(iprotocol
 	source/iprotocol/ATCP_packet.cpp
 	source/iprotocol/TCP_packet_recv.cpp
 	source/iprotocol/TCP_packet_send.cpp
+	source/iprotocol/TCP_protocol.cpp
 	include/iprotocol/ACallback.hpp
 	include/iprotocol/ATCP_packet.hpp
 	include/iprotocol/ITCP_protocol.hpp

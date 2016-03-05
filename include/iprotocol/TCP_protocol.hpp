@@ -11,6 +11,18 @@
 
 namespace iprotocol
 {
+    class   TCP_protocol_exception : public ITCP_protocol_exception
+    {
+    public:
+        TCP_protocol_exception(std::string &&what) noexcept;
+        TCP_protocol_exception(TCP_protocol_exception const &) noexcept;
+        ~TCP_protocol_exception(void) noexcept;
+        char const  *what(void) const noexcept;
+        TCP_protocol_exception    &operator=(TCP_protocol_exception const &) noexcept;
+    public:
+        std::string m_what;
+    };
+
     template<typename T>
     class	TCP_protocol : public ITCP_protocol<T>
     {
@@ -20,7 +32,7 @@ namespace iprotocol
             m_data(data)
         {
             if (callback == nullptr)
-                throw std::logic_error("callback can't be nullptr");
+                throw TCP_protocol_exception("callback can't be nullptr : " + std::string(__FILE__) + " " + std::to_string(__LINE__));
         }
 
     public:
@@ -41,7 +53,7 @@ namespace iprotocol
         void	set_callback(typename ITCP_protocol<T>::Callback *callback)
         {
             if (callback == nullptr)
-                throw std::logic_error("callback can't be nullptr");
+                throw TCP_protocol_exception("callback can't be nullptr : " + std::string(__FILE__) + " " + std::to_string(__LINE__));
             m_callback = callback;
         }
 
@@ -98,7 +110,7 @@ namespace iprotocol
         void	send(ITCP_client const &socket)
         {
             if (m_to_send.size() == 0)
-                throw std::logic_error("il n'y a rien a envoyé");
+                throw TCP_protocol_exception("nothing to send : " + std::string(__FILE__) + " " + std::to_string(__LINE__));
             TCP_packet_send	*to_send = m_to_send.front();
     	#ifndef	NDEBUG
             std::cerr << "TCP_protocol : j'envoie sur une socket client tcp " << to_send->get_opcode() << " " << std::endl;
@@ -196,7 +208,7 @@ namespace iprotocol
                 recv_game_message();
                 return;
             }
-            throw std::logic_error("recv a Unknow opcode");
+            throw TCP_protocol_exception("opcode unknow : " + std::string(__FILE__) + " " + std::to_string(__LINE__));
         }
 
     public:
@@ -371,7 +383,7 @@ namespace iprotocol
         {
             Game_param *param = new Game_param();
             get_rec(m_to_recv, param->three_and_three,
-                param->five_breakable, param->ai_white, param->ai_black);
+            param->five_breakable, param->ai_white, param->ai_black);
             m_callback->game_param(*this, param);
         }
 

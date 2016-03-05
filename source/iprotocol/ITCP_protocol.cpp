@@ -71,7 +71,7 @@ char const   *iprotocol::get_str_error(iprotocol::Error error)
     case iprotocol::Game_stone_not_your_turn:
         return ("Game_stone_not_your_turn");
     };
-    throw std::logic_error("Unknown error code");
+    throw ITCP_protocol_exception();
 }
 iprotocol::Game_stone::Game_stone(uint8_t _x, uint8_t _y, Color _color) :
 	x(_x),

@@ -78,7 +78,7 @@ char const	*iprotocol::ATCP_packet::get_str_opcode(iprotocol::ATCP_packet::Opcod
     case iprotocol::ATCP_packet::Game_message:
         return ("Game_message");
     }
-    throw std::logic_error("Unknow Opcode");
+    throw ATCP_packet_exception();
 }
 
 std::ostream	&iprotocol::operator<<(std::ostream &os, iprotocol::ATCP_packet::Opcode opcode)

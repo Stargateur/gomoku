@@ -18,7 +18,7 @@ void    Utils::timeout(iprotocol::ITCP_protocol<Client> &itcp_protocol, std::chr
             #ifndef NDEBUG
             std::cerr << "TIMEOUT : YES (second time)" << std::endl;
             #endif
-            throw std::logic_error("timeout");
+            throw Timeout_exception();
         }
         #ifndef NDEBUG
         std::cerr << "TIMEOUT : YES (first time)" << std::endl;
@@ -31,4 +31,26 @@ void    Utils::timeout(iprotocol::ITCP_protocol<Client> &itcp_protocol, std::chr
     #ifndef NDEBUG
     std::cerr << "TIMEOUT : NO" << std::endl;
     #endif
+}
+
+Timeout_exception::Timeout_exception(void) noexcept
+{
+}
+
+Timeout_exception::Timeout_exception(Timeout_exception const &) noexcept
+{
+}
+
+Timeout_exception::~Timeout_exception(void) noexcept
+{
+}
+
+Timeout_exception     &Timeout_exception::operator=(Timeout_exception const &) noexcept
+{
+    return (*this);
+}
+
+char const  *Timeout_exception::Timeout_exception::what(void) const noexcept
+{
+    return ("Timeout_exception");
 }
