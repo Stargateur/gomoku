@@ -13,12 +13,15 @@ GVOButton::~GVOButton(void)
 		delete action;
 	for (IGVAMouseClick* action : mClickActions)
 		delete action;
+	for (IGVAKeyPressed* action : mKeyActions)
+		delete action;
 }
 
 sf::Drawable	*GVOButton::getDrawable(void) { return &mSprite; }
 sf::Sprite & GVOButton::getSprite(void) { return mSprite; }
-void			GVOButton::addAction(IGVAMouseClick *mouseAction) { mClickActions.push_back(mouseAction); }
-void			GVOButton::addAction(IGVAMouseHover *mouseAction) { mHoverActions.push_back(mouseAction); }
+void			GVOButton::addAction(IGVAMouseClick *action) { mClickActions.push_back(action); }
+void			GVOButton::addAction(IGVAMouseHover *action) { mHoverActions.push_back(action); }
+void			GVOButton::addAction(IGVAKeyPressed *action) { mKeyActions.push_back(action); }
 
 void			GVOButton::mouseClick(sf::Vector2f const & pos)
 {
@@ -36,4 +39,10 @@ void			GVOButton::mouseMove(sf::Vector2f const & pos)
 		for (IGVAMouseHover* action : mHoverActions)
 			action->Act(mSprite, pos);
 	}
+}
+
+void			GVOButton::keyPressed(sf::Vector2f const &pos, sf::Uint32 const &key)
+{
+	for (IGVAKeyPressed* action : mKeyActions)
+		action->Act(mSprite, pos, key);
 }

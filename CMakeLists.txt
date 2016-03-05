@@ -77,12 +77,14 @@ add_executable(gomoku_client
 	include/client/IGVObject.hpp
 	include/client/IGVAMouseClick.hpp
 	include/client/IGVAMouseHover.hpp
+	include/client/IGVAKeyPressed.hpp
 	include/client/GVOButton.hpp
 	include/client/GVOText.hpp
 	include/client/GVOInputBox.hpp
 	include/client/GVAMouseClickCallBack.hpp
 	include/client/GVAMouseClickTextureRect.hpp
 	include/client/GVAMouseHoverChangeColor.hpp
+	include/client/GVAKeyPressedFocusSave.hpp
 	include/client/PlayerInfo.hpp
 )
 target_compile_features(gomoku_client PUBLIC cxx_range_for)

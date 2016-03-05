@@ -70,12 +70,13 @@ void start_ui()
 		resp = downloader.login("zwertvfrpm", password);
 		if (resp.isOk())
 			std::cout << "login ok!" << std::endl;
-		resp = downloader.changeDirectory("www");
+		resp = downloader.changeDirectory("www/gomoku");
 		sf::Ftp::DirectoryResponse directory = downloader.getWorkingDirectory();
 		if (directory.isOk())
 			std::cout << "Working directory: " << directory.getDirectory() << std::endl;
 		std::cout << "Downloading assets...";
 		downloader.download("theme.ogg", "./Sound");
+		downloader.download("bg.jpg", "./Sprite");
 		std::cout << "complete !" << std::endl;
 		downloader.disconnect();
 	}

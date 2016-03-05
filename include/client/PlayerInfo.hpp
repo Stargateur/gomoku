@@ -30,10 +30,11 @@ public:
 	static PlayerInfo	&getInstance(void);
 	void				lock(void);
 	void				unlock(void);
+	std::mutex			&getMutex(void);
 
 public:
 	GomokuGraphics::e_view					mView;
-	bool									mMusic;
+	float									mMusicVolume;
 	std::string								mPseudo;
 	std::string								mColor;
 	std::string								mHost;
