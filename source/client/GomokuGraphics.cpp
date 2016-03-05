@@ -1,3 +1,4 @@
+#include	<cstdlib>
 #include	"GomokuGraphics.hpp"
 #include	"GVOButton.hpp"
 #include	"GVOText.hpp"
@@ -82,14 +83,48 @@ void		change_view(GomokuGraphics::e_view view)
 void		mute_speaker(int volume)
 {
 	PlayerInfo::getInstance().lock();
-	PlayerInfo::getInstance().mMusic = !PlayerInfo::getInstance().mMusic;
+	PlayerInfo::getInstance().mMusicVolume = (PlayerInfo::getInstance().mMusicVolume - 75) * -1;
 	PlayerInfo::getInstance().unlock();
 }
-sf::Vector2f souris;
-void GomokuGraphics::init()
+
+void			GomokuGraphics::backgroundEffects(void)
 {
+	static int	effectState = 0;
+	static int	effect = 1;
+	if (effectState == 0)
+	{
+		effect = (effect - 1) * -1;
+		effectState = 10000;
+	}
+	switch (effect)
+	{
+	// Zoom in
+	case 0:
+		mBackground.setScale(mBackground.getScale() + sf::Vector2f(0.000003, 0.000003));
+		effectState--;
+		break;
+	// Zoom out
+	case 1:
+		mBackground.setScale(mBackground.getScale() - sf::Vector2f(0.000003, 0.000003));
+		effectState--;
+		break;
+	}
+}
+
+sf::Vector2f	souris;
+void			GomokuGraphics::init()
+{
+	// Création de la fenètre
 	mWindow = new sf::RenderWindow(sf::VideoMode(WIN_X, WIN_Y, 32), "Hikaru no GO");
+
+	//set loading screen
+	GVOText *loading = new GVOText("Loading...");
+	loading->setPos(sf::Vector2f(WIN_X / 2 - loading->getText().getGlobalBounds().width / 2, WIN_Y / 2 - loading->getText().getGlobalBounds().height / 2));
+	mWindow->draw(*loading->getDrawable());
+	mWindow->display();
+
 	//charge texture
+	TextureManager::getInstance().loadTexture("background", "Sprite/bg.jpg");
 	TextureManager::getInstance().loadTexture("board", "Sprite/board.png");
 	TextureManager::getInstance().loadTexture("connexion", "Sprite/connexion.png");
 	TextureManager::getInstance().loadTexture("black", "Sprite/black.png");
@@ -104,6 +139,8 @@ void GomokuGraphics::init()
 	TextureManager::getInstance().getTexture("speaker").setSmooth(true);
 	TextureManager::getInstance().getTexture("option").setSmooth(true);
 
+	delete loading;
+
 	//set sprites
 	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - TextureManager::getInstance().getTexture("connexion").getSize().x / 2, 2 * WIN_Y / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8));
 	button->addAction(new GVAMouseClickCallBack<std::string>(connect, std::string("localhost")));
@@ -114,7 +151,15 @@ void GomokuGraphics::init()
 	button = new GVOButton(sf::Vector2f(2 * WIN_X / 3 - TextureManager::getInstance().getTexture("white").getSize().x / 2, WIN_Y / 3), TextureManager::getInstance().getTexture("white"), sf::Vector2f(0.8, 0.8));
 	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("white")));
 	mConnectView.pushObject(button);
+
 	//Background
+	mBackground.setTexture(TextureManager::getInstance().getTexture("background"));
+	mBackground.setScale(sf::Vector2f(0.2, 0.2));
+	mBackground.setColor(sf::Color(75, 75, 75, 125));
+	mBackground.setOrigin(sf::Vector2f(mBackground.getLocalBounds().width / 2, mBackground.getLocalBounds().height / 2));
+	mBackground.setPosition(sf::Vector2f(WIN_X / 2, WIN_Y / 2));
+
+	//init game
 	GVOButton *button2 = new GVOButton(sf::Vector2f(WIN_X / 4.8, 81.6), TextureManager::getInstance().getTexture("board"), sf::Vector2f(0.8, 0.8));
 	button2->addAction(new GVAMouseClickCallBack<sf::Vector2f *>(click_plateau, (&souris)));
 	mGameView.pushObject(button2);
@@ -148,7 +193,8 @@ void GomokuGraphics::init()
 	//init options
 	GVOText *t = new GVOText("PSEUDO :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 2 - 100));
 	mClientOptions.pushObject(t);
-	GVOInputBox *ib = new GVOInputBox("SALUT", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 2 - 100));
+	GVOInputBox *ib = new GVOInputBox("Player1", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 2 - 100));
+	ib->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
 	mClientOptions.pushObject(ib);
 
 	//init theme sound
@@ -156,7 +202,7 @@ void GomokuGraphics::init()
 	{
 		std::cout << "error loading sound" << std::endl;
 	}
-	else { mThemeSound.play(); }
+	else { mThemeSound.play(); mThemeSound.setLoop(true); }
 
 	//set home view
 	mCurrentView = &mHomeView;
@@ -204,11 +250,13 @@ void GomokuGraphics::run()
 		// check actual state
 		checkClientUpdates();
 		updateView();
+		backgroundEffects();
 		//clear
 		mWindow->clear();
 		//draw all Sprites
 		std::list<sf::Drawable *> mylist = mCurrentView->getDrawables();
 		std::list<sf::Drawable *> myMenu = mMenuView.getDrawables();
+		mWindow->draw(mBackground);
 		for (sf::Drawable *aff : mylist)
 		{
 			if (aff != nullptr)
@@ -286,13 +334,8 @@ void GomokuGraphics::checkClientUpdates(void)
 {
 	PlayerInfo::getInstance().lock();
 	//check sound
-	if (PlayerInfo::getInstance().mMusic == false && mThemeSound.getVolume() > 0)
-	{
-		mThemeSound.setVolume(0);
-		std::cout << "cut volume" << std::endl;
-	}
-	else if (PlayerInfo::getInstance().mMusic == true && mThemeSound.getVolume() < 100)
-		mThemeSound.setVolume(100);
+	if (PlayerInfo::getInstance().mMusicVolume != mThemeSound.getVolume())
+		mThemeSound.setVolume(PlayerInfo::getInstance().mMusicVolume);
 	// check connection
 	if (PlayerInfo::getInstance().mDisconnect == PlayerInfo::STATE::DONE)
 	{

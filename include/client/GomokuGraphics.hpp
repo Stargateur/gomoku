@@ -32,10 +32,11 @@ public:
 private:
 	void	checkClientUpdates(void);
 	void	updateView(void);
+	void	backgroundEffects(void);
 
 private:
 	sf::RenderWindow	*mWindow;
-	//sf::Sprite			mBackground;
+	sf::Sprite			mBackground;
 	GView				*mCurrentView;
 	GView				mMenuView;
 	GView				mHomeView;

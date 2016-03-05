@@ -33,7 +33,7 @@ public:
 
 public:
 	GomokuGraphics::e_view					mView;
-	bool									mMusic;
+	float									mMusicVolume;
 	std::string								mPseudo;
 	std::string								mColor;
 	std::string								mHost;
