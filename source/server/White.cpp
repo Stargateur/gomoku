@@ -21,7 +21,7 @@ void	White::game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, ipro
     m_callback.game_stone_put(itcp_protocol, stone);
 }
 
-void	White::ready_game(iprotocol::ITCP_protocol<Client> &, bool ready)
+void	White::game_ready(iprotocol::ITCP_protocol<Client> &, bool ready)
 {
     m_is_ready = ready;
 }
