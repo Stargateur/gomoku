@@ -8,7 +8,7 @@
 class Client : public iprotocol::ITCP_protocol<ITCP_client>::Callback
 {
 public:
-    Client(void);
+    Client(std::string const &host);
     ~Client(void);
     void	run(void);
     void	result(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, iprotocol::Error error);
@@ -33,9 +33,9 @@ public:
     void    game_result(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game_result *game_result);
     void	game_message(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Message *message);
 private:
-    iprotocol::ITCP_protocol<ITCP_client>						*m_itcp_protocol;
-    ISelect											*m_iselect;
-	std::list<iprotocol::Game *>	mRoomlist;
+    iprotocol::ITCP_protocol<ITCP_client>	*m_itcp_protocol;
+    ISelect									*m_iselect;
+	std::list<iprotocol::Game *>			mRoomlist;
 
 private:
 	void	checkUserInputs(void);

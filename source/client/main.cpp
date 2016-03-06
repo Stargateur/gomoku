@@ -24,7 +24,10 @@ void start_tcpclient()
 			PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::DOING;
 			PlayerInfo::getInstance().unlock();*/
 			try {
-				Client		client;
+				PlayerInfo::getInstance().lock();
+				std::string host(PlayerInfo::getInstance().mHost);
+				PlayerInfo::getInstance().unlock();
+				Client		client(host);
 				PlayerInfo::getInstance().lock();
 				PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::DONE;
 				PlayerInfo::getInstance().unlock();

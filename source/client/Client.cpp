@@ -6,14 +6,14 @@
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
 
-Client::Client(void) :
-    m_itcp_protocol(new iprotocol::TCP_protocol<ITCP_client>(this, new TCP_client("localhost", "4242"))),
+Client::Client(std::string const &host) :
+    m_itcp_protocol(new iprotocol::TCP_protocol<ITCP_client>(this, new TCP_client(host, "4242"))),
     m_iselect(new Select)
 {
-    m_itcp_protocol->send_connect("test", "test");
+	PlayerInfo::getInstance().lock();
+	m_itcp_protocol->send_connect(PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().mPseudo);
 	iprotocol::Game game;
 	game.name = new std::string("mdr");
-	PlayerInfo::getInstance().lock();
 	if (PlayerInfo::getInstance().mColor.compare("black") == 0)
 		m_itcp_protocol->send_game_create(game);
 	else

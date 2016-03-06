@@ -19,7 +19,7 @@ public:
 			mousePosition.y >= texture.getGlobalBounds().top && mousePosition.y <= texture.getGlobalBounds().top + texture.getGlobalBounds().height)
 		{
 			mMutex.lock();
-			if ((key >= '0' && key <= '9') || (key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z'))
+			if ((key >= '0' && key <= '9') || (key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z') || key == '.')
 				mSave += static_cast<char>(key);
 			else if (key == 8)
 			{

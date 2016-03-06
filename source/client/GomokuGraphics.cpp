@@ -12,16 +12,12 @@
 #include	"GVAKeyPressedFocusSave.hpp"
 #include	"TextureManager.hpp"
 
-void		connect(std::string params)
+void		connect(int u)
 {
-	if (params.empty() == false)
-	{
-		PlayerInfo::getInstance().lock();
-		std::cout << "Asking connection" << std::endl;
-		PlayerInfo::getInstance().mHost = params;
-		PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::ASK;
-		PlayerInfo::getInstance().unlock();
-	}
+	PlayerInfo::getInstance().lock();
+	std::cout << "Asking connection" << std::endl;
+	PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::ASK;
+	PlayerInfo::getInstance().unlock();
 }
 
 GomokuGraphics::GomokuGraphics()
@@ -141,17 +137,28 @@ void			GomokuGraphics::init()
 	TextureManager::getInstance().getTexture("option").setSmooth(true);
 
 	delete loading;
-
-	//set sprites
-	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - TextureManager::getInstance().getTexture("connexion").getSize().x / 2, 2 * WIN_Y / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8));
-	button->addAction(new GVAMouseClickCallBack<std::string>(connect, std::string("localhost")));
+	
+	//init connect
+	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - (TextureManager::getInstance().getTexture("connexion").getSize().x * 0.8) / 2, 2 * WIN_Y / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8));
+	button->addAction(new GVAMouseClickCallBack<int>(connect, 0));
 	mConnectView.pushObject(button);
-	button = new GVOButton(sf::Vector2f(WIN_X / 3 - TextureManager::getInstance().getTexture("black").getSize().x / 2, WIN_Y / 3), TextureManager::getInstance().getTexture("black"), sf::Vector2f(0.8, 0.8));
+	button = new GVOButton(sf::Vector2f(WIN_X / 2 - TextureManager::getInstance().getTexture("black").getSize().x * 0.8, WIN_Y / 2), TextureManager::getInstance().getTexture("black"), sf::Vector2f(0.8, 0.8));
 	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("black")));
 	mConnectView.pushObject(button);
-	button = new GVOButton(sf::Vector2f(2 * WIN_X / 3 - TextureManager::getInstance().getTexture("white").getSize().x / 2, WIN_Y / 3), TextureManager::getInstance().getTexture("white"), sf::Vector2f(0.8, 0.8));
+	button = new GVOButton(sf::Vector2f(WIN_X / 2 + TextureManager::getInstance().getTexture("white").getSize().x * 0.8, WIN_Y / 2), TextureManager::getInstance().getTexture("white"), sf::Vector2f(0.8, 0.8));
 	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("white")));
 	mConnectView.pushObject(button);
+
+	mConnectView.pushObject(new GVOText("PSEUDO :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 3 - 20)));
+	GVOInputBox *ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 - 20), PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex());
+	ib->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex()));
+	ib->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
+	mConnectView.pushObject(ib);
+	mConnectView.pushObject(new GVOText("HOST :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 3 + 50)));
+	GVOInputBox *ibh = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 + 50), PlayerInfo::getInstance().mHost, PlayerInfo::getInstance().getMutex());
+	ibh->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mHost, PlayerInfo::getInstance().getMutex()));
+	ibh->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
+	mConnectView.pushObject(ibh);
 
 	//Background
 	mBackground.setTexture(TextureManager::getInstance().getTexture("background"));
@@ -192,12 +199,7 @@ void			GomokuGraphics::init()
 	mHomeView.pushObject(text);
 
 	//init options
-	GVOText *t = new GVOText("PSEUDO :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 2 - 100));
-	mClientOptions.pushObject(t);
-	GVOInputBox *ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 2 - 100), PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex());
-	ib->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex()));
-	ib->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
-	mClientOptions.pushObject(ib);
+	
 
 	//init theme sound
 	if (!mThemeSound.openFromFile("Sound/theme.ogg"))
