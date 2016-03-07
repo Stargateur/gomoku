@@ -124,6 +124,29 @@ void update_line(int x, int y, std::pair<int, int> dir, Board &b)
 	}
 }
 
+bool can_capture(int x, int y, Square::col col, std::vector<Square::Combi> &Combi, const Board &b)
+{
+	const std::vector<Square::Combi> &c = b.get_square(x, y).get_combis();
+	for (auto it = c.begin(); it != c.end(); ++it)
+	{
+		if (it->getSize() == 2 && it->isBroken() == false)
+		{
+			if (std::make_pair(x, y) == it->getBegin())
+			{
+				if (b.get_square(it->getEnd().first + it->getCoeff().first, it->getEnd().first + it->getCoeff().second).get_color() == col)
+					Combi.push_back(*it);
+			}
+			else
+			{
+				Square::col c = b.get_square(it->getBegin().first - it->getCoeff().first, it->getBegin().second - it->getCoeff().second).get_color();
+				if (c == col)
+					Combi.push_back(*it);
+			}
+		}
+	}
+	return (Combi.size() != 0);
+}
+
 void Board::put_stone(int x, int y, Square::col col, std::vector<iprotocol::Game_stone *> &movement)
 {
 	std::array<std::pair<int, int>, 8> dir =
@@ -140,30 +163,19 @@ void Board::put_stone(int x, int y, Square::col col, std::vector<iprotocol::Game
 	std::vector<std::pair<int, int>>	toUpdate;
 	get_square(x, y).put_stone(col);
 	movement.push_back(new iprotocol::Game_stone(x, y, col));
-	std::vector<Square::Combi> c = get_square(x, y).get_combis();
-	for (auto it = c.begin(); it != c.end(); ++it)
+	std::vector<Square::Combi> t;
+	if (can_capture(x, y, col, t, *this))
 	{
-		if (it->getSize() == 2 && it->isBroken() == false)
+		for (auto it = t.begin(); it != t.end(); ++it)
 		{
-			if (std::make_pair(x, y) == it->getBegin())
+			Square::pos p = it->getBegin();
+			Square::pos end = it->getBegin();
+			while (p != end)
 			{
-				if (get_square(it->getEnd().first + it->getCoeff().first, it->getEnd().first + it->getCoeff().second).get_color() == col)
+				if (get_square(p.first, p.second).get_color() != Square::col::None)
 				{
-					get_square(it->getEnd().first, it->getEnd().second).put_stone(Square::col::None);
-					movement.push_back(new iprotocol::Game_stone(it->getEnd().first, it->getEnd().second, Square::col::None));
-					get_square(it->getEnd().first - it->getCoeff().first, it->getEnd().second - it->getCoeff().second).put_stone(Square::col::None);
-					movement.push_back(new iprotocol::Game_stone(it->getEnd().first - it->getCoeff().first, it->getEnd().second - it->getCoeff().second, Square::col::None));
-				}
-			}
-			else
-			{
-				Square::col c = get_square(it->getBegin().first - it->getCoeff().first, it->getBegin().second - it->getCoeff().second).get_color();
-				if (c == col)
-				{
-					get_square(it->getBegin().first, it->getBegin().second).put_stone(Square::col::None);
-					movement.push_back(new iprotocol::Game_stone(it->getBegin().first, it->getBegin().second, Square::col::None));
-					get_square(it->getBegin().first + it->getCoeff().first, it->getBegin().second + it->getCoeff().second).put_stone(Square::col::None);
-					movement.push_back(new iprotocol::Game_stone(it->getBegin().first + it->getCoeff().first, it->getBegin().second + it->getCoeff().second, Square::col::None));
+					get_square(p.first, p.second).put_stone(Square::col::None);
+					movement.push_back(new iprotocol::Game_stone(p.first, p.second, Square::col::None));
 				}
 			}
 		}

@@ -30,3 +30,5 @@ private:
 
 void	aff_tab(const Board &b);
 void update_line(int x, int y, std::pair<int, int> dir, Board &b);
+
+bool can_capture(int x, int y, Square::col col, std::vector<Square::Combi>& Combi, const Board & b);
