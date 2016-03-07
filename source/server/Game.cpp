@@ -8,8 +8,8 @@ Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::s
     m_name(name),
     m_board(),
     m_arbitre(),
-    m_black(*this, m_board),
-    m_white(*this, m_board),
+    m_black(*this),
+    m_white(*this),
     m_timeout(5)
 {
 }
@@ -197,9 +197,26 @@ void	Game::game_leave(iprotocol::ITCP_protocol<Client> &)
 
 void	Game::game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone)
 {
-    itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
+    if (itcp_protocol.get_callback() != &m_white && itcp_protocol.get_callback() != &m_black)
+    {
+        itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
+        throw AGame_exception();
+    }
+    else
+    {
+        if (Arbitre::can_put_stone(stone, m_board, true))
+        {
+            std::vector<iprotocol::Game_stone *>    stones;
+            m_board.put_stone(stone->x, stone->y, stone->color, stones);
+            for (iprotocol::Game_stone *sto : stones)
+            {
+                for (iprotocol::ITCP_protocol<Client> *client : m_itcp_protocols)
+                    client->send_game_stone_put(*sto);
+                delete sto;
+            }
+        }
+    }
     delete stone;
-	throw AGame_exception();
 }
 
 void    Game::game_player_param(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_player_param *param)

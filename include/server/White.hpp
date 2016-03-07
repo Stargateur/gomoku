@@ -6,7 +6,7 @@
 class	White : public Player
 {
 public:
-    White(typename iprotocol::ITCP_protocol<Client>::Callback &callback, Board &board);
+    White(typename iprotocol::ITCP_protocol<Client>::Callback &callback);
     ~White(void);
     void	game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone);
 };
