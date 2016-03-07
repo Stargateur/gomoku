@@ -49,7 +49,6 @@ public:
 	void			set_double_three(bool active);
 	void			set_only_six(bool active);
 
-	static const uint8_t board_size = 19;
 private:
 	log_level		m_level;
 	bool			m_isFiveNotBreakableActive;

@@ -39,10 +39,10 @@ private:
     bool	m_is_start;
     std::string	*m_name;
     Arbitre m_arbitre;
+    Board   m_board;
     Black	m_black;
     White   m_white;
     std::chrono::seconds   m_timeout;
-    iprotocol::Game_param  m_params;
 private:
     std::list<iprotocol::ITCP_protocol<Client> *>  m_itcp_protocols;
     std::list<iprotocol::ITCP_protocol<Client> *>  m_disconnecteds;

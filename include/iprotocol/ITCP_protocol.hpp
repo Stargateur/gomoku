@@ -28,8 +28,6 @@ namespace iprotocol
         Already_in_game,
         Not_in_game,
         Packet_not_allowed,
-        Game_param_not_exist,
-        Game_player_param_not_exist,
         All_player_are_not_ready,
         Game_stone_double_three_not_allow,
         Game_stone_case_not_empty,

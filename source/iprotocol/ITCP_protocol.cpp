@@ -56,10 +56,6 @@ char const   *iprotocol::get_str_error(iprotocol::Error error)
         return ("Not_in_game");
     case iprotocol::Packet_not_allowed:
         return ("Packet_not_allowed");
-    case iprotocol::Game_param_not_exist:
-        return ("Game_param_not_exist");
-    case iprotocol::Game_player_param_not_exist:
-        return ("Game_player_param_not_exist");
     case iprotocol::All_player_are_not_ready:
         return ("All_player_are_not_ready");
     case iprotocol::Game_stone_double_three_not_allow:
