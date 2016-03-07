@@ -3,6 +3,8 @@
 
 # include <iostream>
 
+const uint8_t	Board::size = 19;
+
 void aff_tab(const Board &b)
 {
 	for (int i = 0; i < Board::size; i++)

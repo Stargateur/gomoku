@@ -6,9 +6,9 @@ Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::s
     ACallback(callback),
     m_is_start(false),
     m_name(name),
-    m_arbitre(*this),
-    m_black(m_arbitre),
-    m_white(m_arbitre),
+    m_arbitre(),
+    m_black(*this),
+    m_white(*this),
     m_timeout(5)
 {
 }
@@ -133,7 +133,6 @@ void    Game::add_player(iprotocol::ITCP_protocol<Client> *player)
     for (iprotocol::ITCP_protocol<Client> *itcp_protocol : m_itcp_protocols)
         itcp_protocol->send_game_player_join(*player->get_data()->get_login());
     player->set_callback(this);
-    m_arbitre.Welcome(*player);
     m_itcp_protocols.push_back(player);
 }
 

@@ -7,7 +7,7 @@
 class Board
 {
 public:
-	static const uint8_t size = 19;
+	static const uint8_t size;
 
 	Board();
 	Board(const Board &copy);
