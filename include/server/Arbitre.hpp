@@ -39,7 +39,7 @@ public:
 
 	Square::col		check_victory(const Board &b) const;
 
-	bool			can_put_stone(iprotocol::Game_stone *stone, const Board &b, std::vector<iprotocol::Game_stone *> &movement) const;
+	bool			can_put_stone(iprotocol::Game_stone *stone, const Board &b) const;
 
 	bool			is_five_not_breakable_active() const;
 	bool			is_double_three_active() const;

@@ -138,7 +138,7 @@ static bool is_three_free(const Square::Combi &c)
 	return (c.getSize() == 3 && c.isOpenDown() == true && c.isOpenUp() == true);
 }
 
-bool Arbitre::can_put_stone(iprotocol::Game_stone * stone, const Board &b, std::vector<iprotocol::Game_stone*>& movement) const
+bool Arbitre::can_put_stone(iprotocol::Game_stone * stone, const Board &b) const
 {
 	if (b.get_turn() != stone->color)
 		return (false);
@@ -147,8 +147,9 @@ bool Arbitre::can_put_stone(iprotocol::Game_stone * stone, const Board &b, std::
 	if (m_isDoubleThreeActive)
 	{
 		Board	tmp(b);
+		std::vector<iprotocol::Game_stone *> m;
 
-		tmp.put_stone(stone->x, stone->y, stone->color);
+		tmp.put_stone(stone->x, stone->y, stone->color, m);
 		const std::vector<Square::Combi> &c = tmp.get_square(stone->x, stone->y).get_combis();
 		for (auto it = c.begin(); it != c.end(); ++it)
 		{

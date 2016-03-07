@@ -14,7 +14,7 @@ public:
 	~Board();
 
 	Board	&operator=(const Board &copy) = delete;
-	void put_stone(int x, int y, Square::col col);
+	void put_stone(int x, int y, Square::col col, std::vector<iprotocol::Game_stone *> &movement);
 	const Square	&get_square(int x, int y) const;
 	Square		&get_square(int x, int y);
 	int			get_pos(int x, int y) const;

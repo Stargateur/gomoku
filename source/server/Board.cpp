@@ -124,7 +124,7 @@ void update_line(int x, int y, std::pair<int, int> dir, Board &b)
 	}
 }
 
-void Board::put_stone(int x, int y, Square::col col)
+void Board::put_stone(int x, int y, Square::col col, std::vector<iprotocol::Game_stone *> &movement)
 {
 	std::array<std::pair<int, int>, 8> dir =
 	{
@@ -139,6 +139,7 @@ void Board::put_stone(int x, int y, Square::col col)
 	};
 	std::vector<std::pair<int, int>>	toUpdate;
 	get_square(x, y).put_stone(col);
+	movement.push_back(new iprotocol::Game_stone(x, y, col));
 	std::vector<Square::Combi> c = get_square(x, y).get_combis();
 	for (auto it = c.begin(); it != c.end(); ++it)
 	{
@@ -149,7 +150,9 @@ void Board::put_stone(int x, int y, Square::col col)
 				if (get_square(it->getEnd().first + it->getCoeff().first, it->getEnd().first + it->getCoeff().second).get_color() == col)
 				{
 					get_square(it->getEnd().first, it->getEnd().second).put_stone(Square::col::None);
+					movement.push_back(new iprotocol::Game_stone(it->getEnd().first, it->getEnd().second, Square::col::None));
 					get_square(it->getEnd().first - it->getCoeff().first, it->getEnd().second - it->getCoeff().second).put_stone(Square::col::None);
+					movement.push_back(new iprotocol::Game_stone(it->getEnd().first - it->getCoeff().first, it->getEnd().second - it->getCoeff().second, Square::col::None));
 				}
 			}
 			else
@@ -158,7 +161,9 @@ void Board::put_stone(int x, int y, Square::col col)
 				if (c == col)
 				{
 					get_square(it->getBegin().first, it->getBegin().second).put_stone(Square::col::None);
+					movement.push_back(new iprotocol::Game_stone(it->getBegin().first, it->getBegin().second, Square::col::None));
 					get_square(it->getBegin().first + it->getCoeff().first, it->getBegin().second + it->getCoeff().second).put_stone(Square::col::None);
+					movement.push_back(new iprotocol::Game_stone(it->getBegin().first + it->getCoeff().first, it->getBegin().second + it->getCoeff().second, Square::col::None));
 				}
 			}
 		}
