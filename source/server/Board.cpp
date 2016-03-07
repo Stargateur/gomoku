@@ -23,6 +23,8 @@ void aff_tab(const Board &b)
 }
 
 Board::Board() :
+	m_point({ {Square::col::Black, 0}, { Square::col::White, 0 } }),
+	m_turn(Square::col::Black),
 	m_board()
 {
 	for (int x = 0; x < Board::size; x++)
@@ -32,6 +34,13 @@ Board::Board() :
 			m_board.push_back(Square(std::make_pair(x, y)));
 		}
 	}
+}
+
+Board::Board(const Board & copy) :
+	m_point(copy.m_point),
+	m_turn(copy.m_turn),
+	m_board(copy.m_board)
+{
 }
 
 Board::~Board()
@@ -161,6 +170,10 @@ void Board::put_stone(int x, int y, Square::col col)
 	{
 		get_square(it->first, it->second).update(*this);
 	}
+	if (m_turn == Square::col::White)
+		m_turn = Square::col::Black;
+	else
+		m_turn = Square::col::White;
 }
 
 const Square & Board::get_square(int x, int y) const
@@ -187,4 +200,14 @@ int Board::get_pos(int x, int y) const
 int Board::get_pos(Square::pos p) const
 {
 	return (p.first * Board::size + p.second);
+}
+
+int Board::get_point(Square::col col) const
+{
+	return (m_point.at(col));
+}
+
+Square::col Board::get_turn() const
+{
+	return m_turn;
 }

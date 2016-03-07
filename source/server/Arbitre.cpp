@@ -1,5 +1,3 @@
-#include <iostream>
-#include <algorithm>
 #include "Arbitre.hpp"
 
 #pragma region Log
@@ -60,35 +58,19 @@ int				Arbitre::log_level::log_to_int(Arbitre::log_level::log l) const
 
 #pragma region Constructeur
 
-Arbitre::Arbitre(iprotocol::ITCP_protocol<Client>::Callback &itcp_protocol) :
-	ACallback(itcp_protocol),
-	m_board(),
-	m_empty_square(),
-	m_white_loose(0),
-	m_black_loose(0),
-	m_is_black_turn(true),
-	m_level(log_level::Double_three)
+Arbitre::Arbitre() :
+	m_level(Arbitre::log_level::None),
+	m_isDoubleThreeActive(true),
+	m_isFiveNotBreakableActive(true),
+	m_isOnlySixActive(false)
 {
-	for (unsigned int i = 0; i < Arbitre::board_size; i++)
-	{
-		for (unsigned int j = 0; j < Arbitre::board_size; j++)
-		{
-			m_empty_square.push_back(std::pair<int, int>(i, j));
-			m_board[i * Arbitre::board_size + j] = iprotocol::Game_stone::Color::None;
-		}
-	}
-	m_level.activate(log_level::Victory);
-	m_level.activate(log_level::Can_play);
-	m_level.activate(log_level::Capture);
 }
 
 Arbitre::Arbitre(const Arbitre & copy) :
-	ACallback(copy),
-	m_board(copy.m_board),
-	m_white_loose(0),
-	m_black_loose(0),
-	m_is_black_turn(copy.m_is_black_turn),
-	m_level(copy.m_level)
+	m_level(copy.m_level),
+	m_isDoubleThreeActive(copy.m_isDoubleThreeActive),
+	m_isFiveNotBreakableActive(copy.m_isFiveNotBreakableActive),
+	m_isOnlySixActive(copy.m_isOnlySixActive)
 {}
 
 Arbitre::~Arbitre(void)
@@ -98,459 +80,131 @@ Arbitre::~Arbitre(void)
 
 #pragma region ArbitreLogging
 
-void Arbitre::dump(void) const
-{
-	for (int i = 0; i < Arbitre::board_size; i++)
-	{
-		for (int j = 0; j < Arbitre::board_size; j++)
-		{
-			iprotocol::Game_stone::Color col = (*this)(i, j);
-			if (col == iprotocol::Game_stone::Color::None)
-				std::cout << " ";
-			if (col == iprotocol::Game_stone::Color::Black)
-				std::cout << "o";
-			if (col == iprotocol::Game_stone::Color::White)
-				std::cout << "x";
-		}
-		std::cout << std::endl;
-	}
-}
-
 void Arbitre::set_log_level(log_level l)
 {
 	m_level = l;
-}
-
-void Arbitre::Welcome(iprotocol::ITCP_protocol<Client> &itcp_protocol)
-{
-	iprotocol::Game_stone	stone;
-
-	for (int i = 0; i < Arbitre::board_size; i++)
-	{
-		for (int j = 0; j < Arbitre::board_size; j++)
-		{
-			stone.color = (*this)(i, j);
-			if (stone.color != iprotocol::Game_stone::Color::None)
-			{
-				stone.x = i;
-				stone.y = j;
-				itcp_protocol.send_game_stone_put(stone);
-			}
-		}
-	}
 }
 
 #pragma endregion
 
 #pragma region Victory
 
-bool Arbitre::check_stone_libre(int x, int y) const
+Square::col	Arbitre::check_victory(const Board & b) const
 {
-	int tab[8][2] = {
-		{ 1, 0 },
-		{ 0, 1 },
-		{-1, 0 },
-		{ 0, -1 },
-		{ 1, 1 },
-		{ -1, -1 },
-		{ 1, -1 },
-		{ -1, 1 }
-	};
-
-	for (int i = 0; i < 8; i++)
-	{
-		if (check_coord(x + tab[i][0], y + tab[i][1]) == false)
-			continue;
-		if (check_coord(x - tab[i][0], y - tab[i][1]) == false)
-			continue;
-		if (check_coord(x - tab[i][0] * 2, y - tab[i][1] * 2) == false)
-			continue;
-		if ((*this)(x - tab[i][0], y - tab[i][1]) != (*this)(x, y))
-			continue;
-		if (((*this)(x + tab[i][0], y + tab[i][1]) == iprotocol::Game_stone::Color::None &&
-				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) == !((*this)(x, y)))
-			|| ((*this)(x + tab[i][0], y + tab[i][1]) == !((*this)(x, y)) &&
-				(*this)(x - tab[i][0] * 2, y - tab[i][1] * 2) == iprotocol::Game_stone::Color::None))
-		return (false);
-	}
-	return (true);
+	Square::col	ret;
+	if ((ret = check_capture_victory(b)) != Square::col::None)
+		return (ret);
+	return (check_victory_five(b));
 }
 
-void Arbitre::check_victory_five(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone)
+Square::col	Arbitre::check_capture_victory(const Board & b) const
 {
-	int tab[4][2] =
+	if (b.get_point(Square::col::Black) >= 10)
+		return (Square::col::Black);
+	if (b.get_point(Square::col::White) >= 10)
+		return (Square::col::White);
+	return (Square::col::White);
+}
+
+Square::col Arbitre::check_victory_five(const Board & b) const
+{
+	Square::pos	begin = { 0, 0 };
+	Square::pos	end = { Board::size, Board::size };
+
+	while (begin != end)
 	{
-		{ 0, 1 },
-		{ 1, 0 },
-		{ 1, 1 },
-		{ 1, -1 }
-	};
-	for (int x = 0; x < Arbitre::board_size; x++)
-	{
-		for (int y = 0; y < Arbitre::board_size; y++)
+		const std::vector<Square::Combi> &c = b.get_square(begin.first, begin.second).get_combis();
+		for (auto it = c.begin(); it != c.end(); ++it)
 		{
-			if ((*this)(x, y) == stone->color)
-			{
-				for (int k = 0; k < 4; k++)
-				{
-					int nb = 0;
-					int i = 0;
-					int j = 0;
-					while (check_coord(x + i, y + j) && (*this)(x + i, y + j) == stone->color)
-					{
-						if (check_stone_libre(x + i, y + j) == false)
-							break;
-						if (m_level.is_active(log_level::Victory))
-							std::cout << "stone " << x + i << " " << y + j << "est libre (DEBUG : illo)" << std::endl;
-						i += tab[k][0];
-						j += tab[k][1];
-						nb++;
-					}
-					i = tab[k][0];
-					j = tab[k][1];
-					while (check_coord(x - i, y - j) && (*this)(x - i, y - j) == stone->color)
-					{
-						if (check_stone_libre(x - i, y - j) == false)
-							break;
-						if (m_level.is_active(log_level::Victory))
-							std::cout << "stone " << x + i << " " << y + j << "est libre (DEBUG : illo)" << std::endl;
-						i += tab[k][0];
-						j += tab[k][1];
-						nb++;
-					}
-					if (nb >= 5)
-					{
-						iprotocol::Game_result gr;
-						gr.winner = new std::string("Fin de la game");
-						m_callback.game_result(itcp_protocol, &gr);
-					}
-				}
-			}
+			if (it->getSize() == 5)
+				return (it->getSide());
+		}
+		begin.first += 1;
+		if (begin.first == Board::size)
+		{
+			begin.first = 0;
+			begin.second += 1;
 		}
 	}
-}
-
-void	Arbitre::check_capture_victory(iprotocol::ITCP_protocol<Client> &itcp_protocol)
-{
-	if (m_black_loose >= 10)
-	{
-		iprotocol::Game_result gr;
-		gr.winner = new std::string("Fin de la game");
-		m_callback.game_result(itcp_protocol, &gr);
-	}
-	if (m_white_loose >= 10)
-	{
-		iprotocol::Game_result gr;
-		gr.winner = new std::string("Fin de la game");
-		m_callback.game_result(itcp_protocol, &gr);
-	}
-
-}
-
-void Arbitre::check_victory(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone * stone)
-{
-	check_victory_five(itcp_protocol, stone);
+	return Square::col::None;
 }
 
 #pragma endregion
 
 #pragma region PutStone
 
-void Arbitre::game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone * stone)
+static bool is_three_free(const Square::Combi &c)
 {
-	uint8_t capture[8][4] = {
-		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
-		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
-		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
-		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
-		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
-		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
-		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size },
-		{ Arbitre::board_size, Arbitre::board_size, Arbitre::board_size, Arbitre::board_size }
-	};
-
-	if (can_put_stone(stone))
-	{
-		if (m_level.is_active(log_level::Can_play))
-			std::cout << "can put_stone (DEBUG : illo)" << std::endl;
-		m_callback.game_stone_put(itcp_protocol, stone);
-		(*this)(stone->x, stone->y) = stone->color;
-		m_empty_square.erase(std::find(m_empty_square.begin(), m_empty_square.end(), std::pair<int, int>(stone->x, stone->y)));
-		m_is_black_turn = !m_is_black_turn;
-		if (can_capture(stone, capture))
-		{
-			int i = 0;
-			iprotocol::Game_stone *mess = new iprotocol::Game_stone();
-			mess->color = iprotocol::Game_stone::Color::None;
-			while (i < 8 && capture[i][0] != Arbitre::board_size)
-			{
-				mess->x = static_cast<unsigned char>(capture[i][0]);
-				mess->y = static_cast<unsigned char>(capture[i][1]);
-				m_empty_square.push_back(std::pair<int, int>(capture[i][0], capture[i][1]));
-				m_callback.game_stone_put(itcp_protocol, mess);
-				(*this)(capture[i][0], capture[i][1]) = iprotocol::Game_stone::Color::None;
-				mess->x = static_cast<unsigned char>(capture[i][2]);
-				mess->y = static_cast<unsigned char>(capture[i][3]);
-				m_empty_square.push_back(std::pair<int, int>(capture[i][2], capture[i][3]));
-				m_callback.game_stone_put(itcp_protocol, mess);
-				(*this)(capture[i][2], capture[i][3]) = iprotocol::Game_stone::Color::None;
-				if (stone->color == iprotocol::Game_stone::Color::Black)
-					m_white_loose += 2;
-				else
-					m_black_loose += 2;
-				i++;
-				if (m_level.is_active(log_level::Capture))
-				{
-					std::cout << "white loose : " << m_white_loose << " (DEBUG : illo)" << std::endl;
-					std::cout << "black loose : " << m_black_loose << " (DEBUG : illo)" << std::endl;
-				}
-			}
-		}
-		check_victory(itcp_protocol, stone);
-	}
-	else
-		if (m_level.is_active(log_level::Can_play))
-			std::cout << "can not put_stone (DEBUG : illo)" << std::endl;
-
+	return (c.getSize() == 3 && c.isOpenDown() == true && c.isOpenUp() == true);
 }
 
-#pragma endregion
-
-#pragma region Capture
-
-bool Arbitre::can_capture(iprotocol::Game_stone * stone, uint8_t coord[8][4]) const
+bool Arbitre::can_put_stone(iprotocol::Game_stone * stone, const Board &b, std::vector<iprotocol::Game_stone*>& movement) const
 {
-	int tab[8][2] =
-	{
-		{ 0, 1 },
-		{ 1, 1 },
-		{ 1, 0 },
-		{ -1, 0 },
-		{ -1, -1 },
-		{ 0, -1 },
-		{ -1, 1 },
-		{ 1, -1 }
-	};
-	int i = 0;
-
-	for (int k = 0; k < 8; k++)
-	{
-		if (check_coord(stone->x + tab[k][0] * 3, stone->y + tab[k][1] * 3) && (*this)(stone->x + tab[k][0] * 3, stone->y + tab[k][1] * 3) == stone->color)
-		{
-		  if ((*this)(stone->x + tab[k][0] * 2, stone->y + tab[k][1] * 2) == !(stone->color) && (*this)(stone->x + tab[k][0], stone->y + tab[k][1]) == !(stone->color))
-			{
-				if (m_level.is_active(log_level::Capture))
-					std::cout << "capture between " << stone->x << " " << stone->y << " and " << stone->x + tab[k][0] * 3 << " " << stone->y + tab[k][1] * 3 << " (DEBUG : illo)" << std::endl;
-				coord[i][0] = stone->x + tab[k][0] * 2;
-				coord[i][1] = stone->y + tab[k][1] * 2;
-				coord[i][2] = stone->x + tab[k][0];
-				coord[i][3] = stone->y + tab[k][1];
-				i++;
-			}
-		}
-	}
-	return (i != 0);
-}
-
-#pragma endregion
-
-#pragma region CanPlay
-
-
-bool Arbitre::can_put_stone(iprotocol::Game_stone * stone) const
-{
-	if (m_is_black_turn && stone->color != iprotocol::Game_stone::Color::Black)
-	{
-		if (m_level.is_active(log_level::Can_play))
-			std::cout << "can not put_stone not your turn (DEBUG : illo)" << std::endl;
-		return false;
-	}
-	if (!m_is_black_turn && stone->color != iprotocol::Game_stone::Color::White)
-	{
-		if (m_level.is_active(log_level::Can_play))
-			std::cout << "can not put_stone not your turn (DEBUG : illo)" << std::endl;
-		return false;
-	}
-	if (stone->x >= 19)
-	{
-		if (m_level.is_active(log_level::Can_play))
-			std::cout << "can not put_stone out of range (DEBUG : illo)" << std::endl;
-		return false;
-	}
-	if (stone->y >= 19)
-	{
-		if (m_level.is_active(log_level::Can_play))
-			std::cout << "can not put_stone out of range (DEBUG : illo)" << std::endl;
-		return false;
-	}
-	if ((*this)(stone->x, stone->y) != iprotocol::Game_stone::Color::None)
-	{
-		if (m_level.is_active(log_level::Can_play))
-			std::cout << "can not put_stone case non libre (DEBUG : illo)" << std::endl;
+	if (b.get_turn() != stone->color)
 		return (false);
-	}
-	if (is_three(stone))
-	{
-		if (m_level.is_active(log_level::Can_play))
-			std::cout << "can not put_stone double three (DEBUG : illo)" << std::endl;
-		return false;
-	}
-	return true;
-}
-
-#pragma endregion
-
-#pragma region DoubleThree
-
-bool Arbitre::is_three_line(iprotocol::Game_stone * stone, const std::pair<int, int> &coeff, std::array<std::pair<int, int>, 2> &coords) const
-{
-	std::array<int, 3>	tab = {0, 1, 0};
-	int i = coeff.first;
-	int j = coeff.second;
-	bool is_broken = false;
-	std::array<std::pair<int, int>, 2> empty = { std::make_pair(-1, -1), std::make_pair(-1, -1) };
-
-	while (check_coord(stone->x + i, stone->y + j) && (is_broken == false ||  (*this)(stone->x + i, stone->y + j) == stone->color))
-	{
-		if ((*this)(stone->x + i, stone->y + j) == iprotocol::Game_stone::Color::None)
-		{
-			is_broken = true;
-			empty[0].first = stone->x + i;
-			empty[0].second = stone->y + j;
-		}
-		else if ((*this)(stone->x + i, stone->y + j) == !(stone->color))
-			break;
-		else
-		{
-			if (is_broken)
-				tab[2] += 1;
-			else
-				tab[1] += 1;
-		}
-		i += coeff.first;
-		j += coeff.second;
-	}
-	i = coeff.first;
-	j = coeff.second;
-	is_broken = false;
-	while (check_coord(stone->x - i, stone->y - j) && (is_broken == false || (*this)(stone->x - i, stone->y - j) == stone->color))
-	{
-		if ((*this)(stone->x - i, stone->y - j) == iprotocol::Game_stone::Color::None)
-		{
-			is_broken = true;
-			empty[1].first = stone->x - i;
-			empty[1].second = stone->y - j;
-		}
-		else if ((*this)(stone->x - i, stone->y - j) == !(stone->color))
-			break;
-		else
-		{
-			if (is_broken)
-				tab[0] += 1;
-			else
-				tab[1] += 1;
-		}
-		i += coeff.first;
-		j += coeff.second;
-	}
-	if (empty[0].first == -1 || empty[1].first == -1)
+	if (b.get_square(stone->x, stone->y).get_color() != Square::col::None)
 		return (false);
-	if (tab[1] == 3)
+	if (m_isDoubleThreeActive)
 	{
-		coords[0] = empty[1];
-		coords[1] = empty[0];
-		if (m_level.is_active(log_level::Double_three))
-			std::cout << "Find a three between " << coords[0].first << " " << coords[0].second << " and " << coords[1].first << " " << coords[1].second << " (DEBUG : illo)" << std::endl;
-		return (true);
-	}
-	// Wow such formule
-	if (tab[1] + tab[2] == 3 && (*this)(empty[0].first + (tab[2] + 1) * coeff.first, empty[0].second + (tab[2] + 1) * coeff.second) == iprotocol::Game_stone::Color::None)
-	{
-		coords[0] = empty[1];
-		coords[1].first = empty[0].first + (tab[2] + 1) * coeff.first;
-		coords[1].second = empty[0].second + (tab[2] + 1) * coeff.second;
-		if (m_level.is_active(log_level::Double_three))
-			std::cout << "Find a three between " << coords[0].first << " " << coords[0].second << " and " << coords[1].first << " " << coords[1].second << " (DEBUG : illo)" << std::endl;
-		return (true);
-	}
-	if (tab[1] + tab[0] == 3 && (*this)(empty[1].first - (tab[0] + 1) * coeff.first, empty[1].second - (tab[0] + 1) * coeff.second) == iprotocol::Game_stone::Color::None)
-	{
-		coords[1] = empty[0];
-		coords[0].first = empty[1].first - (tab[0] + 1) * coeff.first;
-		coords[0].second = empty[1].second - (tab[0] + 1) * coeff.second;
-		if (m_level.is_active(log_level::Double_three))
-			std::cout << "Find a three between " << coords[0].first << " " << coords[0].second << " and " << coords[1].first << " " << coords[1].second << " (DEBUG : illo)" << std::endl;
-		return (true);
-	}
-	return (false);
-}
+		Board	tmp(b);
 
-bool Arbitre::is_three(iprotocol::Game_stone * stone) const
-{
-	std::array<std::pair<int, int>, 4> coeff =
-	{
-		std::make_pair(0, 1),
-		std::make_pair(1, 1),
-		std::make_pair(1, 0),
-		std::make_pair(1, -1)
-	};
-	std::array<std::pair<int, int>, 2> coords;
-
-	for (int i = 0; i < 4; i++)
-	{
-		if (is_three_line(stone, coeff[i], coords))
+		tmp.put_stone(stone->x, stone->y, stone->color);
+		const std::vector<Square::Combi> &c = tmp.get_square(stone->x, stone->y).get_combis();
+		for (auto it = c.begin(); it != c.end(); ++it)
 		{
-			std::array<std::pair<int, int>, 2> new_coords;
-			int j = coeff[i].first;
-			int k = coeff[i].second;
-			while (coords[0].first + j != coords[1].first || coords[0].second + k != coords[1].second)
+			if (is_three_free(*it))
 			{
-				iprotocol::Game_stone new_stone;
-				new_stone.x = coords[0].first + j;
-				new_stone.y = coords[0].second + k;
-				if (stone->x == new_stone.x && stone->y == new_stone.y)
-					new_stone.color = stone->color;
-				else
-					new_stone.color = (*this)(new_stone.x, new_stone.y);
-				if (m_level.is_active(log_level::Double_three))
-					std::cout << "Seeking a second three in " << static_cast<int>(new_stone.x) << " " << static_cast<int>(new_stone.y) << " (DEBUG : illo)" << std::endl;
-				for (int l = 0; l < 4; l++)
+				std::pair<int, int> coeff = it->getCoeff();
+				std::pair<int, int> pos = it->getBegin();
+				while (pos != it->getEnd())
 				{
-					if (l == i)
-						continue;
-					if ((stone->x == new_stone.x && stone->y == new_stone.y) || new_stone.color == stone->color)
+					const std::vector<Square::Combi> &c_bis = tmp.get_square(pos.first, pos.second).get_combis();
+					for (auto it_bis = c_bis.begin(); it_bis != c_bis.end(); ++it_bis)
 					{
-						if (is_three_line(&new_stone, coeff[l], new_coords))
-							return (true);
+						if (is_three_free(*it_bis) && *it_bis != *it)
+							return (false);
 					}
+					pos.first += coeff.first;
+					pos.second += coeff.second;
 				}
-				j += coeff[i].first;
-				k += coeff[i].second;
 			}
 		}
 	}
-	return (false);
+	return (true);
 }
+
 #pragma endregion
 
-#pragma region Coord
+#pragma region setterGetter
 
-bool Arbitre::check_coord(int x, int y) const
+bool Arbitre::is_five_not_breakable_active() const
 {
-	if (x < 0 || x >= Arbitre::board_size)
-		return false;
-	if (y < 0 || y >= Arbitre::board_size)
-		return false;
-	return true;
-}
-const iprotocol::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y) const
-{
-	return (m_board[x * Arbitre::board_size + y]);
+	return (m_isFiveNotBreakableActive);
 }
 
-iprotocol::Game_stone::Color & Arbitre::operator()(unsigned int x, unsigned int y)
+bool Arbitre::is_double_three_active() const
 {
-	return (m_board[x * Arbitre::board_size + y]);
+	return (m_isDoubleThreeActive);
+}
+
+bool Arbitre::is_only_six_active() const
+{
+	return (m_isOnlySixActive);
+}
+
+void Arbitre::set_five_not_breakable(bool active)
+{
+	m_isFiveNotBreakableActive = active;
+}
+
+void Arbitre::set_double_three(bool active)
+{
+	m_isDoubleThreeActive = active;
+}
+
+void Arbitre::set_only_six(bool active)
+{
+	m_isOnlySixActive = active;
 }
 
 #pragma endregion

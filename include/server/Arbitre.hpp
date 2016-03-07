@@ -2,11 +2,9 @@
 
 #include <list>
 #include <array>
-#include "ACallback.hpp"
-#include "ITCP_protocol.hpp"
-#include "Client.hpp"
+#include "Board.hpp"
 
-class Arbitre : public iprotocol::ACallback<Client>
+class Arbitre
 {
 public:
 	class log_level
@@ -33,45 +31,32 @@ public:
 
 		int log_to_int(log l) const;
 	};
-	Arbitre(iprotocol::ITCP_protocol<Client>::Callback& itcp_protocol);
+	Arbitre();
 	Arbitre(const Arbitre &copy);
-	~Arbitre(void);
-
-	void dump(void) const;
-	void Welcome(iprotocol::ITCP_protocol<Client> &itcp_protocol);
+	~Arbitre();
 
 	void set_log_level(log_level l);
 
-	void	game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone);
+	Square::col		check_victory(const Board &b) const;
+
+	bool			can_put_stone(iprotocol::Game_stone *stone, const Board &b, std::vector<iprotocol::Game_stone *> &movement) const;
+
+	bool			is_five_not_breakable_active() const;
+	bool			is_double_three_active() const;
+	bool			is_only_six_active() const;
+
+	void			set_five_not_breakable(bool active);
+	void			set_double_three(bool active);
+	void			set_only_six(bool active);
 
 	static const uint8_t board_size = 19;
 private:
-	std::array<iprotocol::Game_stone::Color, board_size * board_size>	m_board;
-	std::list<std::pair<int, int> > m_empty_square;
-	int			m_white_loose;
-	int			m_black_loose;
-	bool		m_is_black_turn;
 	log_level		m_level;
+	bool			m_isFiveNotBreakableActive;
+	bool			m_isDoubleThreeActive;
+	bool			m_isOnlySixActive;
 
-	bool check_coord(int x, int y) const;
+	Square::col check_victory_five(const Board &b) const;
 
-	bool check_stone_libre(int x, int y) const;
-
-	void check_victory_five(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone * stone);
-
-  void check_capture_victory(iprotocol::ITCP_protocol<Client> &itcp_protocol);
-
-	void	check_victory(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_stone *stone);
-
-	bool	can_capture(iprotocol::Game_stone * stone, uint8_t coord[8][4]) const;
-
-	bool	can_put_stone(iprotocol::Game_stone *stone) const;
-
-	bool is_three_line(iprotocol::Game_stone * stone, const std::pair<int, int>& coeff, std::array<std::pair<int, int>, 2> &coords) const;
-
-	bool is_three(iprotocol::Game_stone * stone) const;
-
-	const iprotocol::Game_stone::Color& operator()(unsigned int x, unsigned int y) const;
-
-	iprotocol::Game_stone::Color& operator()(unsigned int x, unsigned int y);
+	Square::col check_capture_victory(const Board &b) const;
 };
