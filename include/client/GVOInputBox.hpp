@@ -14,7 +14,15 @@
 class GVOInputBox : public IGVObject
 {
 public:
-	GVOInputBox(std::string const &title, sf::Vector2f const &pos, std::string &content, std::mutex &mutex);
+	enum e_position
+	{
+		CENTERED,
+		ALIGN_LEFT,
+		ALIGN_RIGHT
+	};
+
+public:
+	GVOInputBox(std::string const &title, sf::Vector2f const &pos, sf::Vector2f const &size, std::string &content, std::mutex &mutex);
 	virtual ~GVOInputBox(void);
 	virtual sf::Drawable	*getDrawable(void);
 	virtual void			mouseClick(sf::Vector2f const &pos);
@@ -25,9 +33,11 @@ public:
 	void	addAction(IGVAMouseClick *action);
 	void	addAction(IGVAMouseHover *action);
 	void	addAction(IGVAKeyPressed *action);
+	void	setTextPosition(e_position const &pos);
 
 private:
 	void	updateRender(void);
+	void	updateTextPosition(void);
 
 private:
 	sf::Sprite			mSprite;
@@ -38,6 +48,7 @@ private:
 	std::string			mTitle;
 	std::string			&mContent;
 	std::mutex			&mMutex;
+	e_position			mTextPos;
 
 private:
 	std::list<IGVAMouseClick *>	mClickActions;

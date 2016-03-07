@@ -1,16 +1,17 @@
 #include	"GVOInputBox.hpp"
 
-GVOInputBox::GVOInputBox(std::string const &title, sf::Vector2f const &pos, std::string &content, std::mutex &mutex) : mTitle(title), mContent(content), mMutex(mutex)
+GVOInputBox::GVOInputBox(std::string const &title, sf::Vector2f const &pos, sf::Vector2f const &size, std::string &content, std::mutex &mutex) : 
+	mTitle(title), mContent(content), mMutex(mutex), mTextPos(e_position::ALIGN_LEFT)
 {
 	mFont.loadFromFile("Font/TCCEB.TTF");
 	mText.setFont(mFont);
-	mText.setPosition(sf::Vector2f(5,0));
 	mText.setColor(sf::Color::Black);
 	mText.setCharacterSize(24);
+	mText.setPosition(sf::Vector2f(5, 0));
 
-	mRendered.create(200, 30);
+	mRendered.create(size.x, size.y);
 	mBackground.setFillColor(sf::Color::White);
-	mBackground.setSize(sf::Vector2f(200, 30));
+	mBackground.setSize(size);
 
 	mSprite.setPosition(pos);
 	updateRender();
@@ -21,10 +22,49 @@ sf::Drawable	*GVOInputBox::getDrawable(void) { updateRender(); return &mSprite; 
 void			GVOInputBox::addAction(IGVAMouseClick *action) { mClickActions.push_back(action); }
 void			GVOInputBox::addAction(IGVAMouseHover *action) { mHoverActions.push_back(action); }
 void			GVOInputBox::addAction(IGVAKeyPressed *action) { mKeyActions.push_back(action); }
+
+void GVOInputBox::setTextPosition(e_position const &pos)
+{
+	mTextPos = pos;
+}
+
+#include <iostream>
+void				GVOInputBox::updateTextPosition(void)
+{
+	sf::Vector2f	pos;
+
+	switch (mTextPos)
+	{
+	case e_position::ALIGN_LEFT:
+		mText.setOrigin(sf::Vector2f(0, mText.getLocalBounds().height / 2 + mText.getLocalBounds().top / 2));
+		pos.x = 5;
+		pos.y = mBackground.getLocalBounds().height / 2 + mBackground.getLocalBounds().top / 2 - 3;
+		break;
+	case e_position::ALIGN_RIGHT:
+		mText.setOrigin(sf::Vector2f(mText.getLocalBounds().width + mText.getLocalBounds().left, mText.getLocalBounds().height / 2 + mText.getLocalBounds().top / 2));
+		pos.x = mBackground.getLocalBounds().width + mBackground.getLocalBounds().left - 5;
+		pos.y = mBackground.getLocalBounds().height / 2 + mBackground.getLocalBounds().top / 2 - 3;
+		break;
+	case e_position::CENTERED:
+		mText.setOrigin(sf::Vector2f(mText.getLocalBounds().width / 2 + mText.getLocalBounds().left, mText.getLocalBounds().height / 2 + mText.getLocalBounds().top / 2));
+		pos.x = mBackground.getLocalBounds().width / 2 + mBackground.getLocalBounds().left / 2;
+		pos.y = mBackground.getLocalBounds().height / 2 + mBackground.getLocalBounds().top / 2 - 3;
+		break;
+	default:
+		break;
+	}
+	if (pos.y < 0)
+		pos.y = 0;
+	if (pos.x < 0)
+		pos.x = 0;
+	mText.setPosition(pos);
+}
+
 void			GVOInputBox::updateRender(void)
 {
 	mMutex.lock();
 	mText.setString(mTitle + mContent);
+	updateTextPosition();
 	mMutex.unlock();
 	mRendered.clear();
 	mRendered.draw(mBackground);

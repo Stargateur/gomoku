@@ -80,7 +80,18 @@ void		change_view(GomokuGraphics::e_view view)
 void		mute_speaker(int volume)
 {
 	PlayerInfo::getInstance().lock();
-	PlayerInfo::getInstance().mMusicVolume = (PlayerInfo::getInstance().mMusicVolume - 75) * -1;
+	PlayerInfo::getInstance().mMusicMute = !PlayerInfo::getInstance().mMusicMute;
+	PlayerInfo::getInstance().unlock();
+}
+void		change_volume(float volume)
+{
+	PlayerInfo::getInstance().lock();
+	PlayerInfo::getInstance().mMusicVolume += volume;
+	if (PlayerInfo::getInstance().mMusicVolume < 0)
+		PlayerInfo::getInstance().mMusicVolume = 0;
+	else if (PlayerInfo::getInstance().mMusicVolume > 100)
+		PlayerInfo::getInstance().mMusicVolume = 100;
+	PlayerInfo::getInstance().mStringVolume = std::to_string(static_cast<int>(PlayerInfo::getInstance().mMusicVolume));
 	PlayerInfo::getInstance().unlock();
 }
 
@@ -150,12 +161,13 @@ void			GomokuGraphics::init()
 	mConnectView.pushObject(button);
 
 	mConnectView.pushObject(new GVOText("PSEUDO :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 3 - 20)));
-	GVOInputBox *ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 - 20), PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex());
+	GVOInputBox *ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 - 20), sf::Vector2f(200, 30), PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex());
 	ib->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex()));
 	ib->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
 	mConnectView.pushObject(ib);
 	mConnectView.pushObject(new GVOText("HOST :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 3 + 50)));
-	GVOInputBox *ibh = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 + 50), PlayerInfo::getInstance().mHost, PlayerInfo::getInstance().getMutex());
+	GVOInputBox *ibh = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 + 50), sf::Vector2f(200, 30), PlayerInfo::getInstance().mHost, PlayerInfo::getInstance().getMutex());
+	ibh->setTextPosition(GVOInputBox::e_position::ALIGN_RIGHT);
 	ibh->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mHost, PlayerInfo::getInstance().getMutex()));
 	ibh->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
 	mConnectView.pushObject(ibh);
@@ -199,7 +211,15 @@ void			GomokuGraphics::init()
 	mHomeView.pushObject(text);
 
 	//init options
-	
+	ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2, WIN_Y / 2), sf::Vector2f(60, 30), PlayerInfo::getInstance().mStringVolume, PlayerInfo::getInstance().getMutex());
+	ib->setTextPosition(GVOInputBox::e_position::CENTERED);
+	mClientOptions.pushObject(ib);
+	btn = new GVOButton(sf::Vector2f(WIN_X / 2 - 70, WIN_Y / 2), TextureManager::getInstance().getTexture("speaker"), sf::Vector2f(0.2, 0.2));
+	btn->addAction(new GVAMouseClickCallBack<float>(change_volume, -10));
+	mClientOptions.pushObject(btn);
+	btn = new GVOButton(sf::Vector2f(WIN_X / 2 + 170, WIN_Y / 2), TextureManager::getInstance().getTexture("speaker"), sf::Vector2f(0.2, 0.2));
+	btn->addAction(new GVAMouseClickCallBack<float>(change_volume, +10));
+	mClientOptions.pushObject(btn);
 
 	//init theme sound
 	if (!mThemeSound.openFromFile("Sound/theme.ogg"))
@@ -346,8 +366,9 @@ void GomokuGraphics::checkClientUpdates(void)
 {
 	PlayerInfo::getInstance().lock();
 	//check sound
-	if (PlayerInfo::getInstance().mMusicVolume != mThemeSound.getVolume())
-		mThemeSound.setVolume(PlayerInfo::getInstance().mMusicVolume);
+	float rVol = (PlayerInfo::getInstance().mMusicMute == true ? 0 : PlayerInfo::getInstance().mMusicVolume);
+	if (rVol != mThemeSound.getVolume())
+		mThemeSound.setVolume(rVol);
 	// check connection
 	if (PlayerInfo::getInstance().mDisconnect == PlayerInfo::STATE::DONE)
 	{

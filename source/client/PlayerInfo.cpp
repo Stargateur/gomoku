@@ -1,7 +1,7 @@
 #include "PlayerInfo.hpp"
 
 PlayerInfo::PlayerInfo() : mQuit(NOTHING), mDisconnect(NOTHING), mConnect(NOTHING), mWantPlay(NOTHING), mColor("black"),
-mView(GomokuGraphics::e_view::HOME), mMusicVolume(75)
+mView(GomokuGraphics::e_view::HOME), mMusicVolume(70), mMusicMute(false), mStringVolume("70")
 {
 }
 
