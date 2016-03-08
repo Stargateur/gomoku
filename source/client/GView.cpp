@@ -6,6 +6,8 @@ GView::GView()
 
 GView::~GView()
 {
+	for (IGVObject *object : mObjects)
+		delete object;
 }
 
 void GView::pushObject(IGVObject * object)
@@ -19,7 +21,13 @@ void GView::removeObject(IGVObject * object)
 		mObjects.remove(object);
 }
 
-#include <iostream>
+void GView::clearObjects(void)
+{
+	for (IGVObject *object : mObjects)
+		delete object;
+	mObjects.clear();
+}
+
 std::list<sf::Drawable *> GView::getDrawables()
 {
 	std::list<sf::Drawable *>res;

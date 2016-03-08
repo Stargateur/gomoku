@@ -16,9 +16,9 @@ class GomokuGraphics
 public:
 	enum e_view
 	{
-		HOME = 0,
+		HOME,
 		PLAY,
-		CLIENT_OPTIONS
+		CLIENT_OPTIONS,
 	};
 
 public:
@@ -33,15 +33,18 @@ private:
 	void	checkClientUpdates(void);
 	void	updateView(void);
 	void	backgroundEffects(void);
+	void	showGames(int page);
 
 private:
 	sf::RenderWindow	*mWindow;
 	sf::Sprite			mBackground;
+	sf::Clock			mClock;
 	GView				*mCurrentView;
 	GView				mMenuView;
 	GView				mHomeView;
-	GView				mGameView;
 	GView				mConnectView;
+	GView				mGameListView;
+	GView				mGameView;
 	GView				mClientOptions;
 	sf::Music			mThemeSound;
 	IGVObject			*mStones[19][19];
