@@ -9,6 +9,7 @@
 #include	"IGVAMouseClick.hpp"
 #include	"IGVAMouseHover.hpp"
 #include	"IGVAKeyPressed.hpp"
+#include	"GVOText.hpp"
 
 class GVOButton : public IGVObject
 {
@@ -25,6 +26,9 @@ public:
 	void	mouseClick(sf::Vector2f const &pos);
 	void	mouseMove(sf::Vector2f const &pos);
 	void	keyPressed(sf::Vector2f const &pos, sf::Uint32 const &key);
+
+public:
+	GVOText						*mText;
 
 private:
 	sf::Sprite					mSprite;

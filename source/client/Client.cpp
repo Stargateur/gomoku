@@ -1,33 +1,34 @@
 #include	<iostream>
 #include	"Client.hpp"
+#include	"ITCP_protocol.hpp"
 #include	"TCP_protocol.hpp"
 #include	"TCP_client.hpp"
 #include	"Select.hpp"
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
 
-Client::Client(std::string const &host) :
-    m_itcp_protocol(new iprotocol::TCP_protocol<ITCP_client>(this, new TCP_client(host, "4242"))),
+Client::Client(std::string const &host, std::string const &port) :
+    m_itcp_protocol(new iprotocol::TCP_protocol<ITCP_client>(this, new TCP_client(host, port))),
     m_iselect(new Select)
 {
 	PlayerInfo::getInstance().lock();
 	m_itcp_protocol->send_connect(PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().mPseudo);
-	iprotocol::Game game;
+	/*iprotocol::Game game;
 	game.name = new std::string("mdr");
 	if (PlayerInfo::getInstance().mColor.compare("black") == 0)
-		m_itcp_protocol->send_game_create(game);
-	else
-		m_itcp_protocol->send_game_join(game);
-	iprotocol::Game_player_param param;
+		m_itcp_protocol->send_game_create(game);*/
+	/*else
+		m_itcp_protocol->send_game_join(game);*/
+	/*iprotocol::Game_player_param param;
     std::string lol("test");
     param.name = &lol;
     if (PlayerInfo::getInstance().mColor == "black")
         param.type = iprotocol::Game_player_param::Black;
     else
-        param.type = iprotocol::Game_player_param::White;        
+        param.type = iprotocol::Game_player_param::White;*/
 	PlayerInfo::getInstance().unlock();
-	m_itcp_protocol->send_game_player_param(param);
-	m_itcp_protocol->send_game_ready(true);
+	//m_itcp_protocol->send_game_player_param(param);
+	//m_itcp_protocol->send_game_ready(true);
 }
 
 Client::~Client(void)
@@ -67,6 +68,17 @@ void	Client::run(void)
 
 void	Client::result(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, iprotocol::Error error)
 {
+	switch (error)
+	{
+	case (iprotocol::Error::Not_connected):
+	case (iprotocol::Error::Already_in_game):
+		GameInfo::getInstance().lock();
+		GameInfo::getInstance().mConnected = PlayerInfo::STATE::FAILED;
+		GameInfo::getInstance().unlock();
+		break;
+	default:
+		break;
+	}
     std::cout << error << std::endl;
 }
 
@@ -95,7 +107,14 @@ void	Client::pong(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
 
 void	Client::game_create(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game *game)
 {
-    mRoomlist.push_back(game);
+	GameInfo::getInstance().lock();
+    GameInfo::getInstance().mRoomlist.push_back(game);
+	GameInfo::getInstance().mUpdateRooms = PlayerInfo::STATE::ASK;
+	if (GameInfo::getInstance().mCreate == PlayerInfo::STATE::DOING && GameInfo::getInstance().mName == *game->name)
+	{
+		GameInfo::getInstance().mCreate = PlayerInfo::STATE::DONE;
+	}
+	GameInfo::getInstance().unlock();
 }
 
 void    Client::game_delete(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game *game)
@@ -104,6 +123,7 @@ void    Client::game_delete(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol
 
 void	Client::game_join(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game *game)
 {
+	std::cout << "TU AS REJOINDS LA GAME" << std::endl;
 }
 
 void	Client::game_leave(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
@@ -131,6 +151,10 @@ void    Client::game_param(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol,
 
 void	Client::game_player_join(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
 {
+	/*if (name != nullptr)
+		std::cout << "PLAYER JOINED (" << *name << ")" << std::endl;
+	else*/
+		std::cout << "PLAYER NULL JOINED" << std::endl;
 }
 
 void	Client::game_player_leave(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
@@ -166,6 +190,7 @@ void	Client::game_result(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, t
 
 void	Client::game_message(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Message *message)
 {
+	std::cout << "message (" << *message->name << "): " << *message->message << std::endl;
 }
 
 void Client::checkUserInputs(void)
@@ -188,4 +213,22 @@ void Client::checkUserInputs(void)
 		PlayerInfo::getInstance().mWantPlay = PlayerInfo::STATE::DONE;
 	}
 	PlayerInfo::getInstance().unlock();
+	GameInfo::getInstance().lock();
+	if (GameInfo::getInstance().mConnected == PlayerInfo::STATE::ASK)
+	{
+		GameInfo::getInstance().mConnected = PlayerInfo::STATE::DOING;
+		iprotocol::Game game;
+		game.name = new std::string(GameInfo::getInstance().mName);
+		m_itcp_protocol->send_game_join(game);
+		/* DEBUG */
+		GameInfo::getInstance().mConnected = PlayerInfo::STATE::DONE;
+	}
+	else if (GameInfo::getInstance().mCreate == PlayerInfo::STATE::ASK)
+	{
+		GameInfo::getInstance().mCreate = PlayerInfo::STATE::DOING;
+		iprotocol::Game game;
+		game.name = new std::string(GameInfo::getInstance().mName);
+		m_itcp_protocol->send_game_create(game);
+	}
+	GameInfo::getInstance().unlock();
 }

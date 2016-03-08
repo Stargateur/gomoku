@@ -8,7 +8,7 @@ Square::col	Arbitre::check_capture_victory(const Board & b)
 		return (Square::col::Black);
 	if (b.get_point(Square::col::White) >= 10)
 		return (Square::col::White);
-	return (Square::col::White);
+	return (Square::col::None);
 }
 
 static bool five_capturable(const Square::Combi &s, const Board & b)
@@ -36,7 +36,7 @@ Square::col Arbitre::check_victory(const Board & b, bool only_five, bool is_capt
 
 	if ((c = check_capture_victory(b)) != Square::col::None)
 		return (c);
-	while (begin != end)
+/*	while (begin != end)
 	{
 		const std::vector<Square::Combi> &c = b.get_square(begin.first, begin.second).get_combis();
 		for (auto it = c.begin(); it != c.end(); ++it)
@@ -52,7 +52,7 @@ Square::col Arbitre::check_victory(const Board & b, bool only_five, bool is_capt
 			begin.first = 0;
 			begin.second += 1;
 		}
-	}
+	}*/
 	return Square::col::None;
 }
 

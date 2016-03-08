@@ -18,7 +18,9 @@ void GameInfo::reset()
 	mSpecs = 0;
 	mOpponent.clear();
 	mGameEnd = false;
-	mConnected = false;
+	mConnected = PlayerInfo::STATE::NOTHING;
+	mUpdateRooms = PlayerInfo::STATE::NOTHING;
+	mCreate = PlayerInfo::STATE::NOTHING;
 }
 
 GameInfo & GameInfo::getInstance(void)
@@ -35,4 +37,9 @@ void GameInfo::lock(void)
 void GameInfo::unlock(void)
 {
 	mMutex.unlock();
+}
+
+std::mutex & GameInfo::getMutex(void)
+{
+	return mMutex;
 }

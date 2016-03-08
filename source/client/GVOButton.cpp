@@ -1,6 +1,6 @@
 #include	"GVOButton.hpp"
 
-GVOButton::GVOButton(sf::Vector2f pos, sf::Texture const &texture, sf::Vector2f const &scale) : mPos(pos)
+GVOButton::GVOButton(sf::Vector2f pos, sf::Texture const &texture, sf::Vector2f const &scale) : mPos(pos), mText(nullptr)
 {
 	mSprite.setTexture(texture);
 	mSprite.setPosition(mPos);

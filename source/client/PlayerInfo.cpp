@@ -32,6 +32,7 @@ void PlayerInfo::load(std::string const & path)
 		boost::property_tree::ini_parser::read_ini(path, tree);
 		mPseudo = tree.get<std::string>("Config.pseudo", "Player");
 		mHost = tree.get<std::string>("Config.host", "localhost");
+		mPort = tree.get<std::string>("Config.port", "4242");
 		mMusicVolume = tree.get<float>("Config.musicVolume", 70);
 		mStringVolume = std::to_string(static_cast<int>(mMusicVolume));
 		mMusicMute = tree.get<bool>("Config.musicMute", false);
@@ -55,6 +56,7 @@ void PlayerInfo::save(std::string const & path)
 		boost::property_tree::ini_parser::read_ini(path, tree);
 		tree.put<std::string>("Config.pseudo", mPseudo);
 		tree.put<std::string>("Config.host", mHost);
+		tree.put<std::string>("Config.port", mPort);
 		tree.put<float>("Config.musicVolume", mMusicVolume);
 		tree.put<bool>("Config.musicMute", mMusicMute);
 	}

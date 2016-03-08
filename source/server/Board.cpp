@@ -93,9 +93,9 @@ void update_line(int x, int y, std::pair<int, int> dir, Board &b)
 			new_y = y;
 			while (b.is_valid(new_x, new_y) && (isBroken == false || b.get_square(new_x, new_y).get_color() == side))
 			{
-				if (b.get_square(new_x, new_y).get_color() == Square::col::None)
+				if (b.get_square(new_x, new_y).get_color() == Square::col::None && b.is_valid(new_x + dir.first * direction[j], new_y + dir.second * direction[j]) && b.get_square(new_x + dir.first * direction[j], new_y + dir.second * direction[j]).get_color() == side)
 					isBroken = true;
-				else if (b.get_square(new_x, new_y).get_color() == !side)
+				else if (b.get_square(new_x, new_y).get_color() != side)
 					break;
 				new_x += dir.first * direction[j];
 				new_y += dir.second * direction[j];
@@ -133,7 +133,7 @@ bool can_capture(int x, int y, Square::col col, std::vector<Square::Combi> &Comb
 		{
 			if (std::make_pair(x, y) == it->getBegin())
 			{
-				if (b.get_square(it->getEnd().first + it->getCoeff().first, it->getEnd().first + it->getCoeff().second).get_color() == col)
+				if (b.get_square(it->getEnd().first + it->getCoeff().first, it->getEnd().second + it->getCoeff().second).get_color() == col)
 					Combi.push_back(*it);
 			}
 			else
@@ -169,13 +169,15 @@ void Board::put_stone(int x, int y, Square::col col, std::vector<iprotocol::Game
 		for (auto it = t.begin(); it != t.end(); ++it)
 		{
 			Square::pos p = it->getBegin();
-			Square::pos end = it->getBegin();
+			Square::pos end = it->getEnd();
 			while (p != end)
 			{
 				if (get_square(p.first, p.second).get_color() != Square::col::None)
 				{
-					get_square(p.first, p.second).put_stone(Square::col::None);
+					put_stone(p.first, p.second, Square::col::None, movement);
 					movement.push_back(new iprotocol::Game_stone(p.first, p.second, Square::col::None));
+					p.first += it->getCoeff().first;
+					p.second += it->getCoeff().second;
 				}
 			}
 		}

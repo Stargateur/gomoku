@@ -14,8 +14,9 @@ public:
 	~GView();
 
 public:
-	void					pushObject(IGVObject *object);
-	void					removeObject(IGVObject *object);
+	void						pushObject(IGVObject *object);
+	void						removeObject(IGVObject *object);
+	void						clearObjects(void);
 	std::list<sf::Drawable *>	getDrawables();
 
 	// Events
@@ -24,7 +25,7 @@ public:
 	void	mouseMove(sf::Vector2f const &pos);
 	void	keyPressed(sf::Vector2f const &pos, sf::Uint32 const &key);
 
-private:
+public:
 	std::list<IGVObject *>	mObjects;
 };
 
