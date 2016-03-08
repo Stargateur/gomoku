@@ -18,7 +18,8 @@ void GameInfo::reset()
 	mSpecs = 0;
 	mOpponent.clear();
 	mGameEnd = false;
-	mConnected = false;
+	mConnected = PlayerInfo::STATE::NOTHING;
+	mUpdateRooms = PlayerInfo::STATE::NOTHING;
 }
 
 GameInfo & GameInfo::getInstance(void)

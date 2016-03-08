@@ -20,6 +20,18 @@ void		connect(int u)
 	PlayerInfo::getInstance().unlock();
 }
 
+void		connect_room(std::string room)
+{
+	GameInfo::getInstance().lock();
+	if (GameInfo::getInstance().mConnected == PlayerInfo::STATE::NOTHING || GameInfo::getInstance().mConnected == PlayerInfo::STATE::FAILED)
+	{
+		std::cout << "connecting to " << room << "..." << std::endl;
+		GameInfo::getInstance().mName = room;
+		GameInfo::getInstance().mConnected = PlayerInfo::STATE::ASK;
+	}
+	GameInfo::getInstance().unlock();
+}
+
 GomokuGraphics::GomokuGraphics()
 {
 	for (size_t i = 0; i < 19; i++)
@@ -95,6 +107,13 @@ void		change_volume(float volume)
 	PlayerInfo::getInstance().unlock();
 }
 
+void		refresh_games(PlayerInfo::STATE state)
+{
+	GameInfo::getInstance().lock();
+	GameInfo::getInstance().mUpdateRooms = state;
+	GameInfo::getInstance().unlock();
+}
+
 void			GomokuGraphics::backgroundEffects(void)
 {
 	static int	effectState = 0;
@@ -117,6 +136,44 @@ void			GomokuGraphics::backgroundEffects(void)
 		effectState--;
 		break;
 	}
+}
+
+void GomokuGraphics::showGames(int page)
+{
+	GVOButton		*game;
+	GameInfo::getInstance().lock();
+	if (GameInfo::getInstance().mUpdateRooms == PlayerInfo::STATE::ASK)
+	{
+		GameInfo::getInstance().mUpdateRooms = PlayerInfo::STATE::DOING;
+		while ((page - 1) * PAGE_GAME_COUNT > GameInfo::getInstance().mRoomlist.size())
+			page--;
+		if (page < 1)
+			page = 1;
+		std::cout << "doing page " << page << std::endl;
+		for (GVOButton *btn : GameInfo::getInstance().mGamelist)
+		{
+			if (btn->mText != nullptr)
+				mGameListView.removeObject(btn->mText);
+			mGameListView.removeObject(btn);
+			delete btn;
+		}
+		GameInfo::getInstance().mGamelist.clear();
+		int j = 0;
+		for (int i = (page - 1) * PAGE_GAME_COUNT; i < page * PAGE_GAME_COUNT; i++)
+		{
+			if (i >= GameInfo::getInstance().mRoomlist.size())
+				break;
+			game = new GVOButton(sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 2 + (50 * j)), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(1, 1));
+			game->mText = new GVOText(*GameInfo::getInstance().mRoomlist.at(j)->name, sf::Vector2f(WIN_X / 2 - 200, WIN_Y / 2 + (50 * j)));
+			game->addAction(new GVAMouseClickCallBack<std::string>(connect_room, *GameInfo::getInstance().mRoomlist.at(j)->name));
+			mGameListView.pushObject(game);
+			mGameListView.pushObject(game->mText);
+			GameInfo::getInstance().mGamelist.push_back(game);
+			j++;
+		}
+	}
+	GameInfo::getInstance().mUpdateRooms = PlayerInfo::STATE::DONE;
+	GameInfo::getInstance().unlock();
 }
 
 sf::Vector2f	souris;
@@ -142,10 +199,7 @@ void			GomokuGraphics::init()
 	TextureManager::getInstance().loadTexture("play", "Sprite/play.png");
 	TextureManager::getInstance().loadTexture("speaker", "Sprite/speaker.png");
 	TextureManager::getInstance().loadTexture("option", "Sprite/options.png");
-	TextureManager::getInstance().getTexture("home").setSmooth(true);
-	TextureManager::getInstance().getTexture("play").setSmooth(true);
-	TextureManager::getInstance().getTexture("speaker").setSmooth(true);
-	TextureManager::getInstance().getTexture("option").setSmooth(true);
+	TextureManager::getInstance().loadTexture("refresh", "Sprite/refresh.png");
 
 	delete loading;
 	
@@ -232,6 +286,11 @@ void			GomokuGraphics::init()
 	btn->addAction(new GVAMouseClickCallBack<float>(change_volume, +10));
 	mClientOptions.pushObject(btn);
 
+	//init gamelist
+	btn = new GVOButton(sf::Vector2f(500, 500), TextureManager::getInstance().getTexture("refresh"), sf::Vector2f(1,1));
+	btn->addAction(new GVAMouseClickCallBack<PlayerInfo::STATE>(refresh_games, PlayerInfo::STATE::ASK));
+	mGameListView.pushObject(btn);
+
 	//init theme sound
 	if (!mThemeSound.openFromFile("Sound/theme.ogg"))
 	{
@@ -292,6 +351,7 @@ void GomokuGraphics::run()
 		}
 		// check actual state
 		checkClientUpdates();
+		showGames(1);
 		updateView();
 		backgroundEffects();
 		//clear
@@ -360,9 +420,14 @@ void GomokuGraphics::updateView(void)
 		mCurrentView = &mHomeView;
 		break;
 	case GomokuGraphics::e_view::PLAY:
-		if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::DONE)
-			mCurrentView = &mGameView;
-		else
+		if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::DONE) // Connected to server
+		{
+			if (GameInfo::getInstance().mConnected == PlayerInfo::STATE::DONE) // Connected to game
+				mCurrentView = &mGameView;
+			else // List of games
+				mCurrentView = &mGameListView;
+		}
+		else // Connection view
 			mCurrentView = &mConnectView;
 		break;
 	case GomokuGraphics::e_view::CLIENT_OPTIONS:

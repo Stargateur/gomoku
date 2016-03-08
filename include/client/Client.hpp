@@ -35,7 +35,6 @@ public:
 private:
     iprotocol::ITCP_protocol<ITCP_client>	*m_itcp_protocol;
     ISelect									*m_iselect;
-	std::list<iprotocol::Game *>			mRoomlist;
 
 private:
 	void	checkUserInputs(void);

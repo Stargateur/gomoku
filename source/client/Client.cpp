@@ -16,8 +16,8 @@ Client::Client(std::string const &host) :
 	game.name = new std::string("mdr");
 	if (PlayerInfo::getInstance().mColor.compare("black") == 0)
 		m_itcp_protocol->send_game_create(game);
-	else
-		m_itcp_protocol->send_game_join(game);
+	/*else
+		m_itcp_protocol->send_game_join(game);*/
 	iprotocol::Game_player_param param;
     std::string lol("test");
     param.name = &lol;
@@ -26,8 +26,8 @@ Client::Client(std::string const &host) :
     else
         param.type = iprotocol::Game_player_param::White;        
 	PlayerInfo::getInstance().unlock();
-	m_itcp_protocol->send_game_player_param(param);
-	m_itcp_protocol->send_game_ready(true);
+	//m_itcp_protocol->send_game_player_param(param);
+	//m_itcp_protocol->send_game_ready(true);
 }
 
 Client::~Client(void)
@@ -95,7 +95,10 @@ void	Client::pong(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
 
 void	Client::game_create(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game *game)
 {
-    mRoomlist.push_back(game);
+	GameInfo::getInstance().lock();
+    GameInfo::getInstance().mRoomlist.push_back(game);
+	GameInfo::getInstance().mUpdateRooms = PlayerInfo::STATE::ASK;
+	GameInfo::getInstance().unlock();
 }
 
 void    Client::game_delete(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game *game)
@@ -188,4 +191,30 @@ void Client::checkUserInputs(void)
 		PlayerInfo::getInstance().mWantPlay = PlayerInfo::STATE::DONE;
 	}
 	PlayerInfo::getInstance().unlock();
+	GameInfo::getInstance().lock();
+	if (GameInfo::getInstance().mConnected == PlayerInfo::STATE::ASK)
+	{
+		GameInfo::getInstance().mConnected == PlayerInfo::STATE::DOING;
+		iprotocol::Game game;
+		game.name = new std::string(GameInfo::getInstance().mName);
+		m_itcp_protocol->send_game_join(game);
+		GameInfo::getInstance().mConnected = PlayerInfo::STATE::DONE;
+		/*
+		**
+		*/
+		PlayerInfo::getInstance().lock();
+		iprotocol::Game_player_param param;
+		std::string lol("test");
+		param.name = &lol;
+		if (PlayerInfo::getInstance().mColor == "black")
+			param.type = iprotocol::Game_player_param::Black;
+		else
+			param.type = iprotocol::Game_player_param::White;
+		PlayerInfo::getInstance().unlock();
+		m_itcp_protocol->send_game_player_param(param);
+		/*
+		**
+		*/
+	}
+	GameInfo::getInstance().unlock();
 }
