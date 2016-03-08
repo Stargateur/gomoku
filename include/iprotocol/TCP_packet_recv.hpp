@@ -15,14 +15,13 @@ namespace iprotocol
         template<typename T>
         void	get(T &value)
         {
-            static_assert(!std::is_pointer<T>::value, "send pointer is not allowed");
+            static_assert(std::is_arithmetic<T>::value || std::is_enum<T>::value, "put only arithmetic or enum type");
             uint8_t	*data(reinterpret_cast<uint8_t *>(&value));
 
             for (uintmax_t i = 0; i < sizeof(T); i++)
                 data[i] = m_packet.data[m_packet.size++];
         }
         void	get(std::string &string);
-        //  void	get(iprotocol::ITCP_protocol::Error &error);
         bool	recv(ITCP_client const &socket);
     private:
         uintmax_t	m_recv;
