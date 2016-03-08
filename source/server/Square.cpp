@@ -114,7 +114,7 @@ void Square::delete_line(std::pair<int, int> coeff, Board &b)
 			while (pos != end)
 			{
 				b.get_square(pos.first, pos.second).delete_combi(c);
-				b.get_square(pos.first, pos.second).update(Combi(std::make_pair(pos.first, pos.second), std::make_pair(pos.first, pos.second), b, coeff));
+//				b.get_square(pos.first, pos.second).update(Combi(std::make_pair(pos.first, pos.second), std::make_pair(pos.first, pos.second), b, coeff));
 				pos.first += coeff.first;
 				pos.second += coeff.second;
 			}
@@ -215,6 +215,7 @@ Square::Combi::Combi(pos begin, pos end, const Board & board) :
 	}
 	if (board.get_square(tmp.first, tmp.second).get_color() == Square::col::None)
 		m_isOpenDown = true;
+	else m_size++;
 }
 
 Square::Combi::Combi(Combi const & other) :
@@ -319,7 +320,7 @@ bool Square::Combi::check_validity(const Board &b) const
 
 std::pair<int, int>	Square::Combi::getCoeff() const
 {
-	assert(m_coeff != std::make_pair(0, 0));
+//	assert(m_coeff != std::make_pair(0, 0));
 	return (m_coeff);
 }
 
