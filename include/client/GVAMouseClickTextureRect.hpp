@@ -10,7 +10,7 @@
 class GVAMouseClickTextureRect : public IGVAMouseClick
 {
 public:
-	GVAMouseClickTextureRect(sf::IntRect const &rect, sf::IntRect const &baserect) : mRect(rect), mBaseRect(baserect), mState(false) {}
+	GVAMouseClickTextureRect(sf::IntRect const &rect, sf::IntRect const &baserect, bool state = false) : mRect(rect), mBaseRect(baserect), mState(state) {}
 	virtual ~GVAMouseClickTextureRect() {}
 	virtual void Act(sf::Sprite &texture, sf::Vector2f const &mousePosition)
 	{

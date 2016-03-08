@@ -9,6 +9,8 @@
 #include	"ITCP_client.hpp"
 #include	"GomokuGraphics.hpp"
 
+#define		PROPERTIES_PATH	"client.properties"
+
 class PlayerInfo
 {
 public:
@@ -28,21 +30,25 @@ private:
 
 public:
 	static PlayerInfo	&getInstance(void);
+	void				load(std::string const &path);
+	void				save(std::string const &path);
 	void				lock(void);
 	void				unlock(void);
 	std::mutex			&getMutex(void);
 
 public:
-	GomokuGraphics::e_view					mView;
-	float									mMusicVolume;
-	std::string								mPseudo;
-	std::string								mColor;
-	std::string								mHost;
-	std::string								mErrorMessage;
-	STATE									mQuit;
-	STATE									mDisconnect;
-	STATE									mConnect;
-	STATE									mWantPlay;
+	GomokuGraphics::e_view	mView;
+	float					mMusicVolume;
+	bool					mMusicMute;
+	std::string				mStringVolume;
+	std::string				mPseudo;
+	std::string				mColor;
+	std::string				mHost;
+	std::string				mErrorMessage;
+	STATE					mQuit;
+	STATE					mDisconnect;
+	STATE					mConnect;
+	STATE					mWantPlay;
 	iprotocol::Game_stone	mLastPlay;
 };
 
