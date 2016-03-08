@@ -33,8 +33,6 @@ public:
     void    game_player_param(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_player_param *param);
     void    game_param(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_param *param);
     void	game_start(iprotocol::ITCP_protocol<Client> &itcp_protocol);
-    void	game_ready(iprotocol::ITCP_protocol<Client> &itcp_protocol, bool ready);
-    void    game_result(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_result *game_result);
 private:
     bool	m_is_start;
     std::string	*m_name;

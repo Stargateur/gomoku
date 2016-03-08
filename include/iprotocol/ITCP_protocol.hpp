@@ -49,7 +49,11 @@ namespace iprotocol
 
     struct  Game_result
     {
-        std::string *winner;
+		enum    Color : uint8_t
+		{
+			White = 0,
+			Black,
+		}	winner;
     };
 
     struct  Game_param

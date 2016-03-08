@@ -500,7 +500,6 @@ namespace iprotocol
         void    recv_game_result(void)
         {
             Game_result *result = new Game_result();
-            result->winner = new std::string();
             get_rec(m_to_recv, result->winner);
             m_callback->game_result(*this, result);
         }

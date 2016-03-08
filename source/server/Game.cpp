@@ -214,6 +214,14 @@ void	Game::game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprot
                     client->send_game_stone_put(*sto);
                 delete sto;
             }
+			Square::col	col;
+			if ((col = Arbitre::check_victory(m_board, false, true)) != Square::col::None)
+			{
+				iprotocol::Game_result	result;
+				result.winner = col == Square::col::Black ? iprotocol::Game_result::Black : iprotocol::Game_result::White;
+				for (iprotocol::ITCP_protocol<Client> *client : m_itcp_protocols)
+					client->send_game_result(result);
+			}
         }
     }
     delete stone;
@@ -242,26 +250,6 @@ void	Game::game_start(iprotocol::ITCP_protocol<Client> &itcp_protocol)
         itcp_protocol.send_result(iprotocol::Error::All_player_are_not_ready);
     else
         m_is_start = true;
-}
-
-void	Game::game_ready(iprotocol::ITCP_protocol<Client> &itcp_protocol, bool)
-{
-    itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
-    throw AGame_exception();
-}
-
-void    Game::game_result(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_result *game_result)
-{
-    if (itcp_protocol.get_callback() != &m_white && itcp_protocol.get_callback() != &m_black)
-    {
-        itcp_protocol.send_result(iprotocol::Error::Packet_not_allowed);
-        delete game_result->winner;
-        delete game_result;
-        throw AGame_exception();
-    }
-    for (iprotocol::ITCP_protocol<Client> *it : m_itcp_protocols)
-        it->send_game_result(*game_result);
-//    throw AGame_exception();
 }
 
 AGame_exception::AGame_exception(void) noexcept
