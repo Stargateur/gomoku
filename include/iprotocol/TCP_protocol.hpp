@@ -303,7 +303,7 @@ namespace iprotocol
         void    send_game_delete(Game const &game)
         {
             TCP_packet_send &to_send = get_to_send(ATCP_packet::Game_delete);
-            set_rec(to_send, game.name);
+            set_rec(to_send, *game.name);
         }
 
     private:
@@ -398,7 +398,7 @@ namespace iprotocol
         void	recv_game_player_join(void)
         {
             std::string *name = new std::string();
-            get_rec(m_to_recv, name);
+            get_rec(m_to_recv, *name);
             m_callback->game_player_join(*this, name);
         }
 
@@ -413,7 +413,7 @@ namespace iprotocol
         void	recv_game_player_leave(void)
         {
             std::string *name = new std::string();
-            get_rec(m_to_recv, name);
+            get_rec(m_to_recv, *name);
             m_callback->game_player_leave(*this, name);
         }
 

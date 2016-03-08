@@ -20,7 +20,10 @@ TextureManager&	TextureManager::getInstance(void)
 bool TextureManager::loadTexture(std::string key, std::string path)
 {
 	if (mTextures.find(key) == mTextures.end())
+	{
 		mTextures[key] = new sf::Texture();
+		mTextures[key]->setSmooth(true);
+	}
 	return mTextures[key]->loadFromFile(path, sf::IntRect());
 }
 

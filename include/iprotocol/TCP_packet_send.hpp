@@ -14,6 +14,7 @@ namespace iprotocol
         template<typename T>
         void	put(T const &value)
         {
+            static_assert(!std::is_pointer<T>::value, "send pointer is not allowed");
             uint8_t const	*data(reinterpret_cast<uint8_t const *>(&value));
             for (uintmax_t i = 0; i < sizeof(T); i++)
                 m_packet.data[m_packet.size++] = data[i];

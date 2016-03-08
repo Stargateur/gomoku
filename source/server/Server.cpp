@@ -222,9 +222,9 @@ void	Server::connect(iprotocol::ITCP_protocol<Client> &itcp_protocol, uint8_t ve
         itcp_protocol.send_result(iprotocol::Error::Wrong_password);
         throw AServer_exception();
     }
-/*    for (iprotocol::ITCP_protocol<Client> *it_itcp_protocol : m_itcp_protocols)
+    for (iprotocol::ITCP_protocol<Client> *it_itcp_protocol : m_itcp_protocols)
     {
-        iprotocol::ITCP_protocol<Client> *client = it_itcp_protocol->get_data();
+        Client *client = it_itcp_protocol->get_data();
 
         if (client->get_login() != nullptr)
         {
@@ -252,7 +252,7 @@ void	Server::connect(iprotocol::ITCP_protocol<Client> &itcp_protocol, uint8_t ve
                     throw AServer_exception();
                 }
             }            
-        }*/
+        }
     itcp_protocol.get_data()->set_login(login);
     for (Game *game : m_games)
         game->send_game_create(itcp_protocol);
