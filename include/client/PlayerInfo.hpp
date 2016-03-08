@@ -44,6 +44,7 @@ public:
 	std::string				mPseudo;
 	std::string				mColor;
 	std::string				mHost;
+	std::string				mPort;
 	std::string				mErrorMessage;
 	STATE					mQuit;
 	STATE					mDisconnect;

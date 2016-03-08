@@ -8,7 +8,7 @@
 class Client : public iprotocol::ITCP_protocol<ITCP_client>::Callback
 {
 public:
-    Client(std::string const &host);
+    Client(std::string const &host, std::string const &port);
     ~Client(void);
     void	run(void);
     void	result(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, iprotocol::Error error);

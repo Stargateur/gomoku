@@ -114,26 +114,38 @@ void		refresh_games(PlayerInfo::STATE state)
 	GameInfo::getInstance().unlock();
 }
 
+void		create_game(PlayerInfo::STATE state)
+{
+	GameInfo::getInstance().lock();
+	if (GameInfo::getInstance().mCreate != PlayerInfo::STATE::DOING || GameInfo::getInstance().mCreate != PlayerInfo::STATE::ASK)
+	{
+		GameInfo::getInstance().mConnected = PlayerInfo::STATE::DOING;
+		GameInfo::getInstance().mCreate = state;
+	}
+	GameInfo::getInstance().unlock();
+}
+
 void			GomokuGraphics::backgroundEffects(void)
 {
-	static int	effectState = 0;
-	static int	effect = 1;
-	if (effectState == 0)
+	static long		effectState = 0;
+	static int		effect = 1;
+	
+	if (effectState < 0)
 	{
 		effect = (effect - 1) * -1;
-		effectState = 10000;
+		effectState = 100000;
 	}
 	switch (effect)
 	{
 	// Zoom in
 	case 0:
-		mBackground.setScale(mBackground.getScale() + sf::Vector2f(0.000003, 0.000003));
-		effectState--;
+		mBackground.setScale(mBackground.getScale() + sf::Vector2f(0.00001, 0.00001));
+		effectState -= mClock.getElapsedTime().asMicroseconds();
 		break;
 	// Zoom out
 	case 1:
-		mBackground.setScale(mBackground.getScale() - sf::Vector2f(0.000003, 0.000003));
-		effectState--;
+		mBackground.setScale(mBackground.getScale() - sf::Vector2f(0.00001, 0.00001));
+		effectState -= mClock.getElapsedTime().asMicroseconds();
 		break;
 	}
 }
@@ -192,6 +204,7 @@ void			GomokuGraphics::init()
 	TextureManager::getInstance().loadTexture("background", "Sprite/bg.jpg");
 	TextureManager::getInstance().loadTexture("board", "Sprite/board.png");
 	TextureManager::getInstance().loadTexture("connexion", "Sprite/connexion.png");
+	TextureManager::getInstance().loadTexture("create", "Sprite/creategame.png");
 	TextureManager::getInstance().loadTexture("black", "Sprite/black.png");
 	TextureManager::getInstance().loadTexture("white", "Sprite/white.png");
 	TextureManager::getInstance().loadTexture("histo", "Sprite/histo.png");
@@ -215,14 +228,20 @@ void			GomokuGraphics::init()
 	mConnectView.pushObject(button);
 
 	mConnectView.pushObject(new GVOText("PSEUDO :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 3 - 20)));
-	GVOInputBox *ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 - 20), sf::Vector2f(200, 30), PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex());
+	GVOInputBox *ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 - 20), sf::Vector2f(240, 30), PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex());
 	ib->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex()));
 	ib->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
 	mConnectView.pushObject(ib);
 	mConnectView.pushObject(new GVOText("HOST :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 3 + 50)));
-	GVOInputBox *ibh = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 + 50), sf::Vector2f(200, 30), PlayerInfo::getInstance().mHost, PlayerInfo::getInstance().getMutex());
+	GVOInputBox *ibh = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 + 50), sf::Vector2f(150, 30), PlayerInfo::getInstance().mHost, PlayerInfo::getInstance().getMutex());
 	ibh->setTextPosition(GVOInputBox::e_position::ALIGN_RIGHT);
 	ibh->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mHost, PlayerInfo::getInstance().getMutex()));
+	ibh->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
+	mConnectView.pushObject(ibh);
+	mConnectView.pushObject(new GVOText(":", sf::Vector2f(WIN_X / 2 + 107, WIN_Y / 3 + 50)));
+	ibh = new GVOInputBox("", sf::Vector2f(WIN_X / 2 + 120, WIN_Y / 3 + 50), sf::Vector2f(70, 30), PlayerInfo::getInstance().mPort, PlayerInfo::getInstance().getMutex());
+	ibh->setTextPosition(GVOInputBox::e_position::CENTERED);
+	ibh->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPort, PlayerInfo::getInstance().getMutex()));
 	ibh->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
 	mConnectView.pushObject(ibh);
 
@@ -289,6 +308,13 @@ void			GomokuGraphics::init()
 	//init gamelist
 	btn = new GVOButton(sf::Vector2f(500, 500), TextureManager::getInstance().getTexture("refresh"), sf::Vector2f(1,1));
 	btn->addAction(new GVAMouseClickCallBack<PlayerInfo::STATE>(refresh_games, PlayerInfo::STATE::ASK));
+	mGameListView.pushObject(btn);
+	GVOInputBox *gameCreate = new GVOInputBox("", sf::Vector2f(300, 500), sf::Vector2f(200, 30), GameInfo::getInstance().mName, GameInfo::getInstance().getMutex());
+	gameCreate->addAction(new GVAKeyPressedFocusSave(GameInfo::getInstance().mName, GameInfo::getInstance().getMutex()));
+	gameCreate->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
+	mGameListView.pushObject(gameCreate);
+	btn = new GVOButton(sf::Vector2f(600, 500), TextureManager::getInstance().getTexture("create"), sf::Vector2f(1, 1));
+	btn->addAction(new GVAMouseClickCallBack<PlayerInfo::STATE>(create_game, PlayerInfo::STATE::ASK));
 	mGameListView.pushObject(btn);
 
 	//init theme sound
@@ -373,6 +399,7 @@ void GomokuGraphics::run()
 		}
 		//aff display
 		mWindow->display();
+		mClock.restart();
 	}
 }
 

@@ -20,6 +20,7 @@ void GameInfo::reset()
 	mGameEnd = false;
 	mConnected = PlayerInfo::STATE::NOTHING;
 	mUpdateRooms = PlayerInfo::STATE::NOTHING;
+	mCreate = PlayerInfo::STATE::NOTHING;
 }
 
 GameInfo & GameInfo::getInstance(void)
@@ -36,4 +37,9 @@ void GameInfo::lock(void)
 void GameInfo::unlock(void)
 {
 	mMutex.unlock();
+}
+
+std::mutex & GameInfo::getMutex(void)
+{
+	return mMutex;
 }

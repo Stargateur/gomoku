@@ -38,6 +38,7 @@ private:
 private:
 	sf::RenderWindow	*mWindow;
 	sf::Sprite			mBackground;
+	sf::Clock			mClock;
 	GView				*mCurrentView;
 	GView				mMenuView;
 	GView				mHomeView;

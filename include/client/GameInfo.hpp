@@ -25,6 +25,7 @@ public:
 	static GameInfo	&getInstance(void);
 	void			lock(void);
 	void			unlock(void);
+	std::mutex		&getMutex(void);
 
 public:
 	std::list<iprotocol::Game_stone *>	mHisto;
@@ -33,6 +34,7 @@ public:
 	std::string							mName;
 	std::string							mOpponent;
 	bool								mGameEnd;
+	PlayerInfo::STATE					mCreate;
 	PlayerInfo::STATE					mConnected;
 	PlayerInfo::STATE					mUpdateRooms;
 
