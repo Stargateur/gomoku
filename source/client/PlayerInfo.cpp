@@ -33,6 +33,7 @@ void PlayerInfo::load(std::string const & path)
 		mPseudo = tree.get<std::string>("Config.pseudo", "Player");
 		mHost = tree.get<std::string>("Config.host", "localhost");
 		mMusicVolume = tree.get<float>("Config.musicVolume", 70);
+		mStringVolume = std::to_string(static_cast<int>(mMusicVolume));
 		mMusicMute = tree.get<bool>("Config.musicMute", false);
 	}
 	catch (std::exception &e)

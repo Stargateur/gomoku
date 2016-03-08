@@ -200,9 +200,14 @@ void			GomokuGraphics::init()
 	btn->addAction(new GVAMouseHoverChangeColor(sf::Color(sf::Uint8(210), sf::Uint8(255), sf::Uint8(210), sf::Uint8(180)), sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(255))));
 	mMenuView.pushObject(btn);
 	btn = new GVOButton(sf::Vector2f(WIN_X - 34, WIN_Y - 34), TextureManager::getInstance().getTexture("speaker"), sf::Vector2f(0.25, 0.25));
-	btn->addAction(new GVAMouseClickTextureRect(sf::IntRect(128, 0, 128, 128), sf::IntRect(0, 0, 128, 128)));
 	btn->addAction(new GVAMouseClickCallBack<int>(mute_speaker, 0));
-	btn->getSprite().setTextureRect(sf::IntRect(0, 0, 128, 128));
+	PlayerInfo::getInstance().lock();
+	if (PlayerInfo::getInstance().mMusicMute)
+		btn->getSprite().setTextureRect(sf::IntRect(128, 0, 128, 128));
+	else
+		btn->getSprite().setTextureRect(sf::IntRect(0, 0, 128, 128));
+	btn->addAction(new GVAMouseClickTextureRect(sf::IntRect(128, 0, 128, 128), sf::IntRect(0, 0, 128, 128), PlayerInfo::getInstance().mMusicMute));
+	PlayerInfo::getInstance().unlock();
 	btn->addAction(new GVAMouseHoverChangeColor(sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(180)), sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(255))));
 	mMenuView.pushObject(btn);
 
@@ -211,13 +216,19 @@ void			GomokuGraphics::init()
 	mHomeView.pushObject(text);
 
 	//init options
-	ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2, WIN_Y / 2), sf::Vector2f(60, 30), PlayerInfo::getInstance().mStringVolume, PlayerInfo::getInstance().getMutex());
+	text = new GVOText("Musique :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 2 - 15));
+	mClientOptions.pushObject(text);
+	ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2, WIN_Y / 2 - 15), sf::Vector2f(60, 30), PlayerInfo::getInstance().mStringVolume, PlayerInfo::getInstance().getMutex());
 	ib->setTextPosition(GVOInputBox::e_position::CENTERED);
 	mClientOptions.pushObject(ib);
-	btn = new GVOButton(sf::Vector2f(WIN_X / 2 - 70, WIN_Y / 2), TextureManager::getInstance().getTexture("speaker"), sf::Vector2f(0.2, 0.2));
+	btn = new GVOButton(sf::Vector2f(WIN_X / 2 - 51.2, WIN_Y / 2 - 25.2), TextureManager::getInstance().getTexture("speaker"), sf::Vector2f(0.4, 0.4));
+	btn->getSprite().setTextureRect(sf::IntRect(256, 0, 128, 128));
+	btn->addAction(new GVAMouseHoverChangeColor(sf::Color(sf::Uint8(210), sf::Uint8(255), sf::Uint8(210), sf::Uint8(180)), sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(255))));
 	btn->addAction(new GVAMouseClickCallBack<float>(change_volume, -10));
 	mClientOptions.pushObject(btn);
-	btn = new GVOButton(sf::Vector2f(WIN_X / 2 + 170, WIN_Y / 2), TextureManager::getInstance().getTexture("speaker"), sf::Vector2f(0.2, 0.2));
+	btn = new GVOButton(sf::Vector2f(WIN_X / 2 + 70, WIN_Y / 2 - 25.2), TextureManager::getInstance().getTexture("speaker"), sf::Vector2f(0.4, 0.4));
+	btn->getSprite().setTextureRect(sf::IntRect(0, 0, 128, 128));
+	btn->addAction(new GVAMouseHoverChangeColor(sf::Color(sf::Uint8(210), sf::Uint8(255), sf::Uint8(210), sf::Uint8(180)), sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(255))));
 	btn->addAction(new GVAMouseClickCallBack<float>(change_volume, +10));
 	mClientOptions.pushObject(btn);
 
