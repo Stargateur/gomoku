@@ -172,13 +172,18 @@ void Board::put_stone(int x, int y, Square::col col, std::vector<iprotocol::Game
 			Square::pos end = it->getEnd();
 			while (p != end)
 			{
-				if (get_square(p.first, p.second).get_color() != Square::col::None)
+				if (get_square(p.first, p.second).get_color() == it->getSide())
 				{
 					put_stone(p.first, p.second, Square::col::None, movement);
 					movement.push_back(new iprotocol::Game_stone(p.first, p.second, Square::col::None));
-					p.first += it->getCoeff().first;
-					p.second += it->getCoeff().second;
 				}
+				p.first += it->getCoeff().first;
+				p.second += it->getCoeff().second;
+			}
+			if (get_square(p.first, p.second).get_color() == it->getSide())
+			{
+				put_stone(p.first, p.second, Square::col::None, movement);
+				movement.push_back(new iprotocol::Game_stone(p.first, p.second, Square::col::None));
 			}
 		}
 	}
