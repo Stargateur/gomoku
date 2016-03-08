@@ -135,6 +135,9 @@ void    Game::add_player(iprotocol::ITCP_protocol<Client> *player)
         itcp_protocol->send_game_player_join(*player->get_data()->get_login());
     player->set_callback(this);
     m_itcp_protocols.push_back(player);
+    iprotocol::Game game;
+    game.name = m_name;
+    player->send_game_join(game);
 }
 
 void    Game::delete_player(std::list<iprotocol::ITCP_protocol<Client> *>::iterator &it)
