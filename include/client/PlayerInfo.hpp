@@ -9,6 +9,8 @@
 #include	"ITCP_client.hpp"
 #include	"GomokuGraphics.hpp"
 
+#define		PROPERTIES_PATH	"client.properties"
+
 class PlayerInfo
 {
 public:
@@ -28,6 +30,8 @@ private:
 
 public:
 	static PlayerInfo	&getInstance(void);
+	void				load(std::string const &path);
+	void				save(std::string const &path);
 	void				lock(void);
 	void				unlock(void);
 	std::mutex			&getMutex(void);

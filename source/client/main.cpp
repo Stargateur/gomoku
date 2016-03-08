@@ -93,7 +93,7 @@ void start_ui()
 int				main(void) try
 {
 	// Initing memory
-	PlayerInfo::getInstance();
+	PlayerInfo::getInstance().load(PROPERTIES_PATH);
 	GameInfo::getInstance();
 
 	// Launching main tasks
@@ -107,6 +107,7 @@ int				main(void) try
 	tcpclient.join();
 
 	// end of program
+	PlayerInfo::getInstance().save(PROPERTIES_PATH);
 	return (0);
 }
 catch (std::exception &e)
