@@ -126,6 +126,15 @@ void	Client::game_join(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typ
 	std::cout << "TU AS REJOINDS LA GAME" << std::endl;
 	GameInfo::getInstance().lock();
 	GameInfo::getInstance().mConnected = PlayerInfo::STATE::DONE;
+	iprotocol::Game_player_param param;
+	std::string lol("test");
+	param.name = &lol;
+	if (PlayerInfo::getInstance().mColor == "black")
+		param.type = iprotocol::Game_player_param::Black;
+	else
+		param.type = iprotocol::Game_player_param::White;
+	m_itcp_protocol->send_game_player_param(param);
+	m_itcp_protocol->send_game_ready(true);
 	GameInfo::getInstance().unlock();
 }
 
