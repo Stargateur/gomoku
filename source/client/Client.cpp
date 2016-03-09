@@ -124,6 +124,9 @@ void    Client::game_delete(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol
 void	Client::game_join(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game *game)
 {
 	std::cout << "TU AS REJOINDS LA GAME" << std::endl;
+	GameInfo::getInstance().lock();
+	GameInfo::getInstance().mConnected = PlayerInfo::STATE::DONE;
+	GameInfo::getInstance().unlock();
 }
 
 void	Client::game_leave(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
@@ -220,8 +223,6 @@ void Client::checkUserInputs(void)
 		iprotocol::Game game;
 		game.name = new std::string(GameInfo::getInstance().mName);
 		m_itcp_protocol->send_game_join(game);
-		/* DEBUG */
-		GameInfo::getInstance().mConnected = PlayerInfo::STATE::DONE;
 	}
 	else if (GameInfo::getInstance().mCreate == PlayerInfo::STATE::ASK)
 	{
