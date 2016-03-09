@@ -21,6 +21,7 @@ void GameInfo::reset()
 	mConnected = PlayerInfo::STATE::NOTHING;
 	mUpdateRooms = PlayerInfo::STATE::NOTHING;
 	mCreate = PlayerInfo::STATE::NOTHING;
+	mRoomPage = 1;
 }
 
 GameInfo & GameInfo::getInstance(void)

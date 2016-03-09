@@ -63,7 +63,16 @@ void				GVOInputBox::updateTextPosition(void)
 void			GVOInputBox::updateRender(void)
 {
 	mMutex.lock();
-	mText.setString(mTitle + mContent);
+	if (mContent == "")
+	{
+		mText.setString(mTitle);
+		mText.setColor(sf::Color(0, 0, 0, 125));
+	}
+	else
+	{
+		mText.setString(mContent);
+		mText.setColor(sf::Color::Black);
+	}
 	updateTextPosition();
 	mMutex.unlock();
 	mRendered.clear();

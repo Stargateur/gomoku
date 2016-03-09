@@ -33,7 +33,8 @@ private:
 	void	checkClientUpdates(void);
 	void	updateView(void);
 	void	backgroundEffects(void);
-	void	showGames(int page);
+	void	clearGames(void);
+	void	showGames(void);
 
 private:
 	sf::RenderWindow	*mWindow;

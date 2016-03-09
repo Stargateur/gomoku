@@ -41,6 +41,10 @@ GomokuGraphics::GomokuGraphics()
 
 GomokuGraphics::~GomokuGraphics()
 {
+	reset();
+	delete mWindow;
+	if (mThemeSound.getStatus() == sf::Music::Status::Playing)
+		mThemeSound.stop();
 }
 
 void		click_plateau(sf::Vector2f *param)
@@ -107,13 +111,6 @@ void		change_volume(float volume)
 	PlayerInfo::getInstance().unlock();
 }
 
-void		refresh_games(PlayerInfo::STATE state)
-{
-	GameInfo::getInstance().lock();
-	GameInfo::getInstance().mUpdateRooms = state;
-	GameInfo::getInstance().unlock();
-}
-
 void		create_game(PlayerInfo::STATE state)
 {
 	GameInfo::getInstance().lock();
@@ -127,33 +124,49 @@ void		create_game(PlayerInfo::STATE state)
 
 void			GomokuGraphics::backgroundEffects(void)
 {
-	static long		effectState = 0;
-	static int		effect = 1;
+	static sf::Clock	clock;
+	static char			effect;
+	sf::Vector2f		movement;
 	
-	if (effectState < 0)
+	if (clock.getElapsedTime().asSeconds() >= 40)
 	{
 		effect = (effect - 1) * -1;
-		effectState = 100000;
+		clock.restart();
 	}
+	movement.x = 0.0001 / mClock.getElapsedTime().asMicroseconds();
+	movement.y = movement.x;
 	switch (effect)
 	{
 	// Zoom in
 	case 0:
-		mBackground.setScale(mBackground.getScale() + sf::Vector2f(0.00001, 0.00001));
-		effectState -= mClock.getElapsedTime().asMicroseconds();
+		mBackground.setScale(mBackground.getScale() + movement);
 		break;
 	// Zoom out
 	case 1:
-		mBackground.setScale(mBackground.getScale() - sf::Vector2f(0.00001, 0.00001));
-		effectState -= mClock.getElapsedTime().asMicroseconds();
+		mBackground.setScale(mBackground.getScale() - movement);
 		break;
 	}
 }
 
-void GomokuGraphics::showGames(int page)
+void GomokuGraphics::clearGames()
+{
+	for (GVOButton *btn : GameInfo::getInstance().mGamelist)
+	{
+		if (btn->mText != nullptr)
+			mGameListView.removeObject(btn->mText);
+		mGameListView.removeObject(btn);
+		delete btn;
+	}
+	GameInfo::getInstance().mGamelist.clear();
+}
+
+void GomokuGraphics::showGames(void)
 {
 	GVOButton		*game;
+	int				page;
+
 	GameInfo::getInstance().lock();
+	page = GameInfo::getInstance().mRoomPage;
 	if (GameInfo::getInstance().mUpdateRooms == PlayerInfo::STATE::ASK)
 	{
 		GameInfo::getInstance().mUpdateRooms = PlayerInfo::STATE::DOING;
@@ -162,21 +175,14 @@ void GomokuGraphics::showGames(int page)
 		if (page < 1)
 			page = 1;
 		std::cout << "doing page " << page << std::endl;
-		for (GVOButton *btn : GameInfo::getInstance().mGamelist)
-		{
-			if (btn->mText != nullptr)
-				mGameListView.removeObject(btn->mText);
-			mGameListView.removeObject(btn);
-			delete btn;
-		}
-		GameInfo::getInstance().mGamelist.clear();
+		clearGames();
 		int j = 0;
 		for (int i = (page - 1) * PAGE_GAME_COUNT; i < page * PAGE_GAME_COUNT; i++)
 		{
 			if (i >= GameInfo::getInstance().mRoomlist.size())
 				break;
-			game = new GVOButton(sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 2 + (50 * j)), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(1, 1));
-			game->mText = new GVOText(*GameInfo::getInstance().mRoomlist.at(j)->name, sf::Vector2f(WIN_X / 2 - 200, WIN_Y / 2 + (50 * j)));
+			game = new GVOButton(sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 3 + (50 * j)), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(1, 1));
+			game->mText = new GVOText(*GameInfo::getInstance().mRoomlist.at(j)->name, sf::Vector2f(WIN_X / 2 - 200, WIN_Y / 3 + (50 * j)));
 			game->addAction(new GVAMouseClickCallBack<std::string>(connect_room, *GameInfo::getInstance().mRoomlist.at(j)->name));
 			mGameListView.pushObject(game);
 			mGameListView.pushObject(game->mText);
@@ -212,7 +218,6 @@ void			GomokuGraphics::init()
 	TextureManager::getInstance().loadTexture("play", "Sprite/play.png");
 	TextureManager::getInstance().loadTexture("speaker", "Sprite/speaker.png");
 	TextureManager::getInstance().loadTexture("option", "Sprite/options.png");
-	TextureManager::getInstance().loadTexture("refresh", "Sprite/refresh.png");
 
 	delete loading;
 	
@@ -247,7 +252,7 @@ void			GomokuGraphics::init()
 
 	//Background
 	mBackground.setTexture(TextureManager::getInstance().getTexture("background"));
-	mBackground.setScale(sf::Vector2f(0.2, 0.2));
+	mBackground.setScale(sf::Vector2f(0.17, 0.17));
 	mBackground.setColor(sf::Color(75, 75, 75, 125));
 	mBackground.setOrigin(sf::Vector2f(mBackground.getLocalBounds().width / 2, mBackground.getLocalBounds().height / 2));
 	mBackground.setPosition(sf::Vector2f(WIN_X / 2, WIN_Y / 2));
@@ -306,14 +311,19 @@ void			GomokuGraphics::init()
 	mClientOptions.pushObject(btn);
 
 	//init gamelist
-	btn = new GVOButton(sf::Vector2f(500, 500), TextureManager::getInstance().getTexture("refresh"), sf::Vector2f(1,1));
-	btn->addAction(new GVAMouseClickCallBack<PlayerInfo::STATE>(refresh_games, PlayerInfo::STATE::ASK));
-	mGameListView.pushObject(btn);
-	GVOInputBox *gameCreate = new GVOInputBox("", sf::Vector2f(300, 500), sf::Vector2f(200, 30), GameInfo::getInstance().mName, GameInfo::getInstance().getMutex());
+	text = new GVOText("Connecte toi à une partie:");
+	text->getText().setCharacterSize(42);
+	text->getText().setPosition(sf::Vector2f(WIN_X / 2 - text->getText().getGlobalBounds().width / 2, WIN_Y / 3 - 100));
+	mGameListView.pushObject(text);
+	text = new GVOText("ou Créé la tienne:");
+	text->getText().setCharacterSize(42);
+	text->getText().setPosition(sf::Vector2f(WIN_X / 2 - text->getText().getGlobalBounds().width / 2, 500));
+	mGameListView.pushObject(text);
+	GVOInputBox *gameCreate = new GVOInputBox("Room Name", sf::Vector2f(300, 600), sf::Vector2f(200, 30), GameInfo::getInstance().mName, GameInfo::getInstance().getMutex());
 	gameCreate->addAction(new GVAKeyPressedFocusSave(GameInfo::getInstance().mName, GameInfo::getInstance().getMutex()));
 	gameCreate->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
 	mGameListView.pushObject(gameCreate);
-	btn = new GVOButton(sf::Vector2f(600, 500), TextureManager::getInstance().getTexture("create"), sf::Vector2f(1, 1));
+	btn = new GVOButton(sf::Vector2f(600, 600), TextureManager::getInstance().getTexture("create"), sf::Vector2f(1, 1));
 	btn->addAction(new GVAMouseClickCallBack<PlayerInfo::STATE>(create_game, PlayerInfo::STATE::ASK));
 	mGameListView.pushObject(btn);
 
@@ -336,9 +346,11 @@ void GomokuGraphics::reset(void)
 		{
 			if (mStones[i][j] != nullptr)
 				mGameView.removeObject(mStones[i][j]);
+			delete mStones[i][j];
 			mStones[i][j] = nullptr;
 		}
 	}
+	clearGames();
 }
 
 void GomokuGraphics::run()
@@ -377,7 +389,7 @@ void GomokuGraphics::run()
 		}
 		// check actual state
 		checkClientUpdates();
-		showGames(1);
+		showGames();
 		updateView();
 		backgroundEffects();
 		//clear

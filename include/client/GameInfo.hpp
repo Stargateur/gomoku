@@ -38,6 +38,7 @@ public:
 	PlayerInfo::STATE					mConnected;
 	PlayerInfo::STATE					mUpdateRooms;
 
+	int									mRoomPage;
 	std::list<GVOButton *>				mGamelist;
 	std::vector<iprotocol::Game *>		mRoomlist;
 };

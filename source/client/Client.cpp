@@ -119,6 +119,15 @@ void	Client::game_create(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, t
 
 void    Client::game_delete(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game *game)
 {
+	GameInfo::getInstance().lock();
+	std::cout << "GAME DELETED : " << *game->name << std::endl;
+	std::vector<iprotocol::Game *>::const_iterator it = GameInfo::getInstance().mRoomlist.begin();
+	while (it != GameInfo::getInstance().mRoomlist.end() && *(*it)->name != *(game->name))
+		it++;
+	if (it != GameInfo::getInstance().mRoomlist.end())
+		GameInfo::getInstance().mRoomlist.erase(it);
+	GameInfo::getInstance().mUpdateRooms = PlayerInfo::STATE::ASK;
+	GameInfo::getInstance().unlock();
 }
 
 void	Client::game_join(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game *game)
