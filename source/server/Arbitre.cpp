@@ -11,40 +11,66 @@ Square::col	Arbitre::check_capture_victory(const Board & b)
 	return (Square::col::None);
 }
 
-static bool five_capturable(const Square::Combi &s, const Board & b)
+static bool five_capturable(const Square::Combi &s, const Board & b, bool only_five)
 {
 	Square::pos p = s.getBegin();
 	Square::pos end = s.getEnd();
 	std::vector<Square::Combi> c;
+	int nb = 0;
 
+	if (only_five && s.getSize() != 5)
+		return (false);
 	while (p != end)
 	{
 		const Square sq = b.get_square(p.first, p.second);
-		if (sq.get_color() != Square::col::None && can_capture(p.first, p.second, sq.get_color(), c, b))
-			return (true);
+		Square::col col = (sq.get_color() == Square::col::Black ? Square::col::White : Square::col::Black);
+		if (sq.get_color() != Square::col::None && can_capture(p.first, p.second, col, c, b))
+		{
+			if (nb >= 5)
+				return (true);
+			nb = 0;
+		}
+		else if(sq.get_color() != Square::col::None)
+			nb++;
 		p.first += s.getCoeff().first;
 		p.second += s.getCoeff().second;
+		c.clear();
 	}
-	return (false);
+	const Square sq = b.get_square(p.first, p.second);
+	Square::col col = (sq.get_color() == Square::col::Black ? Square::col::White : Square::col::Black);
+	if (sq.get_color() != Square::col::None && can_capture(p.first, p.second, col, c, b))
+	{
+		if (nb >= 5)
+			return (true);
+		nb = 0;
+	}
+	else if (sq.get_color() != Square::col::None)
+		nb++;
+	return (nb >= 5);
 }
 
 Square::col Arbitre::check_victory(const Board & b, bool only_five, bool is_capturable)
 {
 	Square::col c;
 	Square::pos	begin = { 0, 0 };
-	Square::pos	end = { Board::size, Board::size };
+	Square::pos	end = { 18, Board::size };
 
 	if ((c = check_capture_victory(b)) != Square::col::None)
 		return (c);
-/*	while (begin != end)
+	while (begin != end)
 	{
 		const std::vector<Square::Combi> &c = b.get_square(begin.first, begin.second).get_combis();
 		for (auto it = c.begin(); it != c.end(); ++it)
 		{
-			if (only_five && it->getSize() == 5 && (!is_capturable || five_capturable(*it, b)))
+			if (is_capturable && five_capturable(*it, b, only_five) == true)
 				return (it->getSide());
-			else if (it->getSize() >= 5 && (!is_capturable || five_capturable(*it, b)))
-				return (it->getSide());
+			else if (!is_capturable)
+			{
+				if (only_five && it->getSize() == 5)
+					return (it->getSide());
+				else if (!only_five && it->getSize() >= 5)
+					return (it->getSide());
+			}
 		}
 		begin.first += 1;
 		if (begin.first == Board::size)
@@ -52,7 +78,7 @@ Square::col Arbitre::check_victory(const Board & b, bool only_five, bool is_capt
 			begin.first = 0;
 			begin.second += 1;
 		}
-	}*/
+	}
 	return Square::col::None;
 }
 

@@ -118,6 +118,7 @@ void Square::delete_line(std::pair<int, int> coeff, Board &b)
 				pos.first += coeff.first;
 				pos.second += coeff.second;
 			}
+			b.get_square(pos.first, pos.second).delete_combi(c);
 		}
 		else
 		{
@@ -315,7 +316,17 @@ bool Square::Combi::check_validity(const Board &b) const
 			y += coeff.second;
 		}
 		return (m_isBroken == isBroken);*/
-	return (*this == Combi(m_begin, m_end, b));
+	Square::pos begin = m_begin;
+	Square::pos end = m_end;
+	Square::pos p = m_begin;
+
+	if (b.get_square(p.first, p.second).get_color() == Square::col::None)
+	{
+		p.first += m_coeff.first;
+		p.second += m_coeff.second;
+	}
+	get_border(p.first, p.second, m_coeff, b, begin, end);
+	return (*this == Combi(begin, end, b));
 }
 
 std::pair<int, int>	Square::Combi::getCoeff() const

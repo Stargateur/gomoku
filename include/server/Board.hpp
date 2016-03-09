@@ -18,7 +18,7 @@ public:
 	const Square	&get_square(int x, int y) const;
 	Square		&get_square(int x, int y);
 	int			get_pos(int x, int y) const;
-	bool		is_valid(int x, int y);
+	bool		is_valid(int x, int y) const;
 	int		get_pos(Square::pos p) const;
 	int		get_point(Square::col col) const;
 	Square::col	get_turn() const;
@@ -29,6 +29,7 @@ private:
 };
 
 void	aff_tab(const Board &b);
+void get_border(int x, int y, const std::pair<int, int>& dir, const Board & b, Square::pos & start, Square::pos & end);
 void update_line(int x, int y, std::pair<int, int> dir, Board &b);
 
 bool can_capture(int x, int y, Square::col col, std::vector<Square::Combi>& Combi, const Board & b);

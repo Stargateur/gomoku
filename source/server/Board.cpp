@@ -49,6 +49,51 @@ Board::~Board()
 {
 }
 
+void get_border(int x, int y, const std::pair<int, int> &dir, const Board &b, Square::pos &start, Square::pos &end)
+{
+	Square::col			side = b.get_square(x, y).get_color();
+	bool isBroken = false;
+	int					new_x = x;
+	int					new_y = y;
+
+	while (b.is_valid(new_x, new_y) && (b.get_square(new_x, new_y).get_color() == side))
+	{
+		new_x -= dir.first;
+		new_y -= dir.second;
+	}
+	if (b.is_valid(new_x, new_y) && (b.get_square(new_x, new_y).get_color() == Square::col::None))
+	{
+		start.first = new_x;
+		start.second = new_y;
+	}
+	else
+	{
+		start.first = new_x + dir.first;
+		start.second = new_y + dir.second;
+	}
+	new_x = x;
+	new_y = y;
+	while (b.is_valid(new_x, new_y) && (isBroken == false || b.get_square(new_x, new_y).get_color() == side))
+	{
+		if (b.get_square(new_x, new_y).get_color() == Square::col::None && b.is_valid(new_x + dir.first, new_y + dir.second) && b.get_square(new_x + dir.first, new_y + dir.second).get_color() == side)
+			isBroken = true;
+		else if (b.get_square(new_x, new_y).get_color() != side)
+			break;
+		new_x += dir.first;
+		new_y += dir.second;
+	}
+	if (b.is_valid(new_x, new_y) && b.get_square(new_x, new_y).get_color() == Square::col::None)
+	{
+		end.first = new_x;
+		end.second = new_y;
+	}
+	else
+	{
+		end.first = new_x - dir.first;
+		end.second = new_y - dir.second;
+	}
+}
+
 void update_line(int x, int y, std::pair<int, int> dir, Board &b)
 {
 	Square::col			side = b.get_square(x, y).get_color();
@@ -68,56 +113,23 @@ void update_line(int x, int y, std::pair<int, int> dir, Board &b)
 		}
 		else
 		{
-			bool isBroken = false;
 			std::pair<int, int> start;
 			std::pair<int, int> end;
 			int					new_x = x;
 			int					new_y = y;
+			std::pair<int, int> new_dir = dir;
 
-			while (b.is_valid(new_x, new_y) && (b.get_square(new_x, new_y).get_color() == side))
-			{
-				new_x -= dir.first * direction[j];
-				new_y -= dir.second * direction[j];
-			}
-			if (b.is_valid(new_x, new_y) && (b.get_square(new_x, new_y).get_color() == Square::col::None))
-			{
-				start.first = new_x;
-				start.second = new_y;
-			}
-			else
-			{
-				start.first = new_x + dir.first * direction[j];
-				start.second = new_y + dir.second * direction[j];
-			}
-			new_x = x;
-			new_y = y;
-			while (b.is_valid(new_x, new_y) && (isBroken == false || b.get_square(new_x, new_y).get_color() == side))
-			{
-				if (b.get_square(new_x, new_y).get_color() == Square::col::None && b.is_valid(new_x + dir.first * direction[j], new_y + dir.second * direction[j]) && b.get_square(new_x + dir.first * direction[j], new_y + dir.second * direction[j]).get_color() == side)
-					isBroken = true;
-				else if (b.get_square(new_x, new_y).get_color() != side)
-					break;
-				new_x += dir.first * direction[j];
-				new_y += dir.second * direction[j];
-			}
-			if (b.is_valid(new_x, new_y) && b.get_square(new_x, new_y).get_color() == Square::col::None)
-			{
-				end.first = new_x;
-				end.second = new_y;
-			}
-			else
-			{
-				end.first = new_x - dir.first * direction[j];
-				end.second = new_y - dir.second * direction[j];
-			}
+			new_dir.first *= direction[j];
+			new_dir.second *= direction[j];
+			get_border(x, y, dir, b, start, end);
 			new_x = start.first;
 			new_y = start.second;
 			while (new_x != end.first || new_y != end.second)
 			{
 				Square &s = b.get_square(new_x, new_y);
 				s.update(Square::Combi(start, end, b));
-				new_x += dir.first * direction[j];
-				new_y += dir.second * direction[j];
+				new_x += dir.first;
+				new_y += dir.second;
 			}
 			b.get_square(new_x, new_y).update(Square::Combi(start, end, b));
 		}
@@ -212,7 +224,7 @@ Square & Board::get_square(int x, int y)
 	return (m_board[get_pos(x, y)]);
 }
 
-bool Board::is_valid(int x, int y)
+bool Board::is_valid(int x, int y) const
 {
 	return (x < Board::size && x > 0 &&
 		y < Board::size && y > 0);
