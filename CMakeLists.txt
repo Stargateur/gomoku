@@ -62,6 +62,7 @@ add_executable(gomoku_client
 	source/client/Client.cpp
 	source/client/GameInfo.cpp
 	source/client/GomokuGraphics.cpp
+	source/client/GomokuGraphicsHandler.cpp
 	source/client/TextureManager.cpp
 	source/client/GView.cpp
 	source/client/GVOText.cpp
@@ -72,6 +73,7 @@ add_executable(gomoku_client
 	include/client/Client.hpp
 	include/client/GameInfo.hpp
 	include/client/GomokuGraphics.hpp
+	include/client/GomokuGraphicsHandler.hpp
 	include/client/TextureManager.hpp
 	include/client/GView.hpp
 	include/client/IGVObject.hpp
