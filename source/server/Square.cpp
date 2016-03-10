@@ -320,6 +320,11 @@ bool Square::Combi::check_validity(const Board &b) const
 	Square::pos end = m_end;
 	Square::pos p = m_begin;
 
+
+	if (begin == end)
+	{
+		return (m_begin == m_end);
+	}
 	if (b.get_square(p.first, p.second).get_color() == Square::col::None)
 	{
 		p.first += m_coeff.first;
