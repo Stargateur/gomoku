@@ -16,7 +16,11 @@ Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::s
 
 Game::~Game(void)
 {
-    delete m_name;
+	for (iprotocol::ITCP_protocol<Client> *client : m_itcp_protocols)
+		delete client;
+	for (iprotocol::ITCP_protocol<Client> *client : m_disconnecteds)
+		delete client;
+	delete m_name;
 }
 
 void    Game::pre_run(ISelect &iselect)
@@ -56,8 +60,6 @@ void    Game::pre_run(ISelect &iselect)
 
 void    Game::run(ISelect &iselect)
 {
-    if (m_itcp_protocols.size() == 0 && m_disconnecteds.size() == 0)
-        throw AGame_exception();
     auto disconnect = m_disconnecteds.begin();
     while (disconnect != m_disconnecteds.end())
     {
@@ -127,6 +129,8 @@ void    Game::run(ISelect &iselect)
             delete itcp_protocol;
         }
     }
+	if (m_itcp_protocols.size() == 0 && m_disconnecteds.size() == 0)
+		throw AGame_exception();
 }
 
 void    Game::add_player(iprotocol::ITCP_protocol<Client> *player)
