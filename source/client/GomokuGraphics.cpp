@@ -124,26 +124,27 @@ void		create_game(PlayerInfo::STATE state)
 
 void			GomokuGraphics::backgroundEffects(void)
 {
-	static sf::Clock	clock;
-	static char			effect;
-	sf::Vector2f		movement;
+	static sf::Clock			clock;
+	static char					effect;
+	static const sf::Vector2f	initial(mBackground.getScale());
+	sf::Vector2f				movement;
 	
 	if (clock.getElapsedTime().asSeconds() >= 40)
 	{
 		effect = (effect - 1) * -1;
 		clock.restart();
 	}
-	movement.x = 0.0001 / mClock.getElapsedTime().asMicroseconds();
+	movement.x = 0.1 * (clock.getElapsedTime().asSeconds() / 40);
 	movement.y = movement.x;
 	switch (effect)
 	{
 	// Zoom in
 	case 0:
-		mBackground.setScale(mBackground.getScale() + movement);
+		mBackground.setScale(initial + movement);
 		break;
 	// Zoom out
 	case 1:
-		mBackground.setScale(mBackground.getScale() - movement);
+		mBackground.setScale(initial + sf::Vector2f(0.1, 0.1) - movement);
 		break;
 	}
 }
@@ -181,8 +182,8 @@ void GomokuGraphics::showGames(void)
 		{
 			if (i >= GameInfo::getInstance().mRoomlist.size())
 				break;
-			game = new GVOButton(sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 3 + (50 * j)), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(1, 1));
-			game->mText = new GVOText(*GameInfo::getInstance().mRoomlist.at(j)->name, sf::Vector2f(WIN_X / 2 - 200, WIN_Y / 3 + (50 * j)));
+			game = new GVOButton(sf::Vector2f(WIN_X / 2 + 150, WIN_Y / 3 + (WIN_Y / (3 * 5) * j)), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(1, 1));
+			game->mText = new GVOText("#" + *GameInfo::getInstance().mRoomlist.at(j)->name, sf::Vector2f(WIN_X / 2 - 200, WIN_Y / 3 + (WIN_Y / (3 * 5) * j)));
 			game->addAction(new GVAMouseClickCallBack<std::string>(connect_room, *GameInfo::getInstance().mRoomlist.at(j)->name));
 			mGameListView.pushObject(game);
 			mGameListView.pushObject(game->mText);
@@ -199,6 +200,7 @@ void			GomokuGraphics::init()
 {
 	// Création de la fenètre
 	mWindow = new sf::RenderWindow(sf::VideoMode(WIN_X, WIN_Y, 32), "Hikaru no GO");
+	mWindow->setFramerateLimit(60);
 
 	//set loading screen
 	GVOText *loading = new GVOText("Loading...");
@@ -356,6 +358,7 @@ void GomokuGraphics::reset(void)
 void GomokuGraphics::run()
 {
 	sf::String test;
+	mClock.restart();
 	while (mWindow->isOpen())
 	{
 		sf::Event event;
