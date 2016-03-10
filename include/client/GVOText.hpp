@@ -16,6 +16,7 @@ public:
 	GVOText(std::string const &text, sf::Vector2f const &pos);
 	~GVOText();
 	virtual sf::Drawable*	getDrawable(void);
+	virtual void			framePassed(void);
 	virtual void			mouseClick(sf::Vector2f const &pos);
 	virtual void			mouseMove(sf::Vector2f const &pos);
 	virtual void			keyPressed(sf::Vector2f const &pos, sf::Uint32 const &key);

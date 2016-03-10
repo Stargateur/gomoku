@@ -7,7 +7,7 @@
 void		connect(int u)
 {
 	PlayerInfo::getInstance().lock();
-	if (PlayerInfo::getInstance().mConnect != PlayerInfo::STATE::DOING && PlayerInfo::getInstance().mConnect != PlayerInfo::STATE::DONE)
+	if (true)
 	{
 		std::cout << "Asking connection" << std::endl;
 		PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::ASK;

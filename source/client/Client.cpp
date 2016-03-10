@@ -13,22 +13,7 @@ Client::Client(std::string const &host, std::string const &port) :
 {
 	PlayerInfo::getInstance().lock();
 	m_itcp_protocol->send_connect(PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().mPseudo);
-	/*iprotocol::Game game;
-	game.name = new std::string("mdr");
-	if (PlayerInfo::getInstance().mColor.compare("black") == 0)
-		m_itcp_protocol->send_game_create(game);*/
-	/*else
-		m_itcp_protocol->send_game_join(game);*/
-	/*iprotocol::Game_player_param param;
-    std::string lol("test");
-    param.name = &lol;
-    if (PlayerInfo::getInstance().mColor == "black")
-        param.type = iprotocol::Game_player_param::Black;
-    else
-        param.type = iprotocol::Game_player_param::White;*/
 	PlayerInfo::getInstance().unlock();
-	//m_itcp_protocol->send_game_player_param(param);
-	//m_itcp_protocol->send_game_ready(true);
 }
 
 Client::~Client(void)

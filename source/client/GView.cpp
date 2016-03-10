@@ -30,10 +30,13 @@ void GView::clearObjects(void)
 
 std::list<sf::Drawable *> GView::getDrawables()
 {
-	std::list<sf::Drawable *>res;
+	sf::Drawable				*dwbl;
+	std::list<sf::Drawable *>	res;
 	for (IGVObject *obj : mObjects)
 	{
-		res.push_back(obj->getDrawable());
+		dwbl = obj->getDrawable();
+		if (dwbl != nullptr)
+			res.push_back(dwbl);
 	}
 	return res;
 }

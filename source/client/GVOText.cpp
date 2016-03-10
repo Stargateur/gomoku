@@ -28,6 +28,7 @@ void GVOText::setPos(sf::Vector2f const &pos)
 {
 	mText.setPosition(pos);
 }
+void			GVOText::framePassed(void) {}
 void			GVOText::mouseClick(sf::Vector2f const &pos) {}
 void			GVOText::mouseMove(sf::Vector2f const &pos) {}
 void			GVOText::keyPressed(sf::Vector2f const &pos, sf::Uint32 const &key) {}

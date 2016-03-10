@@ -147,7 +147,11 @@ void			GomokuGraphics::init()
 	ibh->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPort, PlayerInfo::getInstance().getMutex()));
 	ibh->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
 	mConnectView.pushObject(ibh);
-	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - (TextureManager::getInstance().getTexture("connexion").getSize().x * 0.8) / 2, 2 * WIN_Y / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8));
+	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - (TextureManager::getInstance().getTexture("connexion").getSize().x * 0.8) / 2, 2 * WIN_Y / 3),
+		TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8), []() {
+		bool act = LUmutex(PlayerInfo::getInstance().mConnect, PlayerInfo::getInstance().getMutex());
+		return (act == PlayerInfo::STATE::NOTHING || act == PlayerInfo::STATE::FAILED);
+	});
 	button->addAction(new GVAMouseClickCallBack<int>(connect, 0));
 	mConnectView.pushObject(button);
 
@@ -381,10 +385,15 @@ void GomokuGraphics::updateView(void)
 		{
 			if (GameInfo::getInstance().mConnected == PlayerInfo::STATE::DONE) // Connected to game
 			{
-				if (GameInfo::getInstance().mShowLobby == true)
-					mCurrentView = &mLobbyView;
-				else
+				if (GameInfo::getInstance().mGameState != GameInfo::GAMESTATE::WAITING_PLAYERS) // Select a team
 					mCurrentView = &mGameView;
+				else
+				{
+					if (GameInfo::getInstance().mShowLobby == true) // Waiting other players
+						mCurrentView = &mLobbyView;
+					else // GameStarted
+						mCurrentView = &mGameView;
+				}
 			}
 			else // List of games
 				mCurrentView = &mGameListView;

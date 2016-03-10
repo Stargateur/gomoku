@@ -16,7 +16,15 @@ GVOInputBox::GVOInputBox(std::string const &title, sf::Vector2f const &pos, sf::
 	mSprite.setPosition(pos);
 	updateRender();
 }
-GVOInputBox::~GVOInputBox(void) {}
+GVOInputBox::~GVOInputBox(void)
+{
+	for(IGVAMouseHover* action : mHoverActions)
+		delete action;
+	for (IGVAMouseClick* action : mClickActions)
+		delete action;
+	for (IGVAKeyPressed* action : mKeyActions)
+		delete action;
+}
 
 sf::Drawable	*GVOInputBox::getDrawable(void) { updateRender(); return &mSprite; }
 void			GVOInputBox::addAction(IGVAMouseClick *action) { mClickActions.push_back(action); }

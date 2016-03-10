@@ -4,6 +4,7 @@
 #define GOMOKUGRAPHICSHANDLER_HPP_
 
 #include	<string>
+#include	<mutex>
 #include	<SFML/Graphics.hpp>
 #include	"GomokuGraphics.hpp"
 #include	"PlayerInfo.hpp"
@@ -17,5 +18,14 @@ void		validate_team(int use);
 void		mute_speaker(int volume);
 void		change_volume(float volume);
 void		create_game(PlayerInfo::STATE state);
+
+bool		LUmutex(bool info, std::mutex &mutex)
+{
+	bool	result;
+	mutex.lock();
+	result = info;
+	mutex.unlock();
+	return result;
+}
 
 #endif // !GOMOKUGRAPHICSHANDLER_HPP_
