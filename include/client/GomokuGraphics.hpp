@@ -34,7 +34,7 @@ private:
 	void	updateView(void);
 	void	backgroundEffects(void);
 	void	clearGames(void);
-	void	showGames(void);
+	void	showGames();
 
 private:
 	sf::RenderWindow	*mWindow;
@@ -45,6 +45,7 @@ private:
 	GView				mHomeView;
 	GView				mConnectView;
 	GView				mGameListView;
+	GView				mLobbyView;
 	GView				mGameView;
 	GView				mClientOptions;
 	sf::Music			mThemeSound;

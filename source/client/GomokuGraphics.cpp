@@ -93,6 +93,13 @@ void		change_view(GomokuGraphics::e_view view)
 	PlayerInfo::getInstance().mView = view;
 	PlayerInfo::getInstance().unlock();
 }
+void		validate_team(int use)
+{
+	GameInfo::getInstance().lock();
+	GameInfo::getInstance().mShowLobby = false;
+	GameInfo::getInstance().mUpdateTeam = PlayerInfo::STATE::ASK;
+	GameInfo::getInstance().unlock();
+}
 void		mute_speaker(int volume)
 {
 	PlayerInfo::getInstance().lock();
@@ -224,16 +231,6 @@ void			GomokuGraphics::init()
 	delete loading;
 	
 	//init connect
-	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - (TextureManager::getInstance().getTexture("connexion").getSize().x * 0.8) / 2, 2 * WIN_Y / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8));
-	button->addAction(new GVAMouseClickCallBack<int>(connect, 0));
-	mConnectView.pushObject(button);
-	button = new GVOButton(sf::Vector2f(WIN_X / 2 - TextureManager::getInstance().getTexture("black").getSize().x * 0.8, WIN_Y / 2), TextureManager::getInstance().getTexture("black"), sf::Vector2f(0.8, 0.8));
-	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("black")));
-	mConnectView.pushObject(button);
-	button = new GVOButton(sf::Vector2f(WIN_X / 2 + TextureManager::getInstance().getTexture("white").getSize().x * 0.8, WIN_Y / 2), TextureManager::getInstance().getTexture("white"), sf::Vector2f(0.8, 0.8));
-	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("white")));
-	mConnectView.pushObject(button);
-
 	mConnectView.pushObject(new GVOText("PSEUDO :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 3 - 20)));
 	GVOInputBox *ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 - 20), sf::Vector2f(240, 30), PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex());
 	ib->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex()));
@@ -251,6 +248,9 @@ void			GomokuGraphics::init()
 	ibh->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPort, PlayerInfo::getInstance().getMutex()));
 	ibh->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
 	mConnectView.pushObject(ibh);
+	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - (TextureManager::getInstance().getTexture("connexion").getSize().x * 0.8) / 2, 2 * WIN_Y / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8));
+	button->addAction(new GVAMouseClickCallBack<int>(connect, 0));
+	mConnectView.pushObject(button);
 
 	//Background
 	mBackground.setTexture(TextureManager::getInstance().getTexture("background"));
@@ -328,6 +328,21 @@ void			GomokuGraphics::init()
 	btn = new GVOButton(sf::Vector2f(600, 600), TextureManager::getInstance().getTexture("create"), sf::Vector2f(1, 1));
 	btn->addAction(new GVAMouseClickCallBack<PlayerInfo::STATE>(create_game, PlayerInfo::STATE::ASK));
 	mGameListView.pushObject(btn);
+
+	//init lobby
+	text = new GVOText("Choisis ton équipe :");
+	text->getText().setCharacterSize(42);
+	text->getText().setPosition(sf::Vector2f(WIN_X / 2 - text->getText().getGlobalBounds().width / 2, WIN_Y / 3 - 100));
+	mLobbyView.pushObject(text);
+	button = new GVOButton(sf::Vector2f(WIN_X / 2 - TextureManager::getInstance().getTexture("black").getSize().x * 0.8, WIN_Y / 2), TextureManager::getInstance().getTexture("black"), sf::Vector2f(0.8, 0.8));
+	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("black")));
+	mLobbyView.pushObject(button);
+	button = new GVOButton(sf::Vector2f(WIN_X / 2 + TextureManager::getInstance().getTexture("white").getSize().x * 0.8, WIN_Y / 2), TextureManager::getInstance().getTexture("white"), sf::Vector2f(0.8, 0.8));
+	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("white")));
+	mLobbyView.pushObject(button);
+	btn = new GVOButton(sf::Vector2f(WIN_X / 2 - 100, WIN_Y * 2 / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(1, 1));
+	btn->addAction(new GVAMouseClickCallBack<int>(validate_team, 0));
+	mLobbyView.pushObject(btn);
 
 	//init theme sound
 	if (!mThemeSound.openFromFile("Sound/theme.ogg"))
@@ -455,6 +470,7 @@ void GomokuGraphics::affStone()
 void GomokuGraphics::updateView(void)
 {
 	PlayerInfo::getInstance().lock();
+	GameInfo::getInstance().lock();
 	//std::cout << "valeur de view: " << PlayerInfo::getInstance().mView << std::endl;
 	switch (PlayerInfo::getInstance().mView)
 	{
@@ -465,7 +481,12 @@ void GomokuGraphics::updateView(void)
 		if (PlayerInfo::getInstance().mConnect == PlayerInfo::STATE::DONE) // Connected to server
 		{
 			if (GameInfo::getInstance().mConnected == PlayerInfo::STATE::DONE) // Connected to game
-				mCurrentView = &mGameView;
+			{
+				if (GameInfo::getInstance().mShowLobby == true)
+					mCurrentView = &mLobbyView;
+				else
+					mCurrentView = &mGameView;
+			}
 			else // List of games
 				mCurrentView = &mGameListView;
 		}
@@ -477,6 +498,7 @@ void GomokuGraphics::updateView(void)
 	default:
 		break;
 	}
+	GameInfo::getInstance().unlock();
 	PlayerInfo::getInstance().unlock();
 }
 

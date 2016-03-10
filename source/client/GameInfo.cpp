@@ -1,6 +1,6 @@
 #include "GameInfo.hpp"
 
-GameInfo::GameInfo()
+GameInfo::GameInfo() : mBlack(nullptr), mWhite(nullptr)
 {
 	reset();
 }
@@ -16,11 +16,18 @@ void GameInfo::reset()
 		for (int y = 0; y < 19; y++)
 			mPlate[x][y] = iprotocol::Game_stone::Color::None;
 	mSpecs = 0;
-	mOpponent.clear();
-	mGameEnd = false;
+	if (mBlack != nullptr)
+		delete mBlack;
+	mBlack = nullptr;
+	if (mWhite != nullptr)
+		delete mBlack;
+	mWhite = nullptr;
+	mGameState = GAMESTATE::WAITING_PLAYERS;
+	mShowLobby = true;
 	mConnected = PlayerInfo::STATE::NOTHING;
 	mUpdateRooms = PlayerInfo::STATE::NOTHING;
 	mCreate = PlayerInfo::STATE::NOTHING;
+	mUpdateTeam = PlayerInfo::STATE::NOTHING;
 	mRoomPage = 1;
 }
 

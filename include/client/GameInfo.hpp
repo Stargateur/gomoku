@@ -15,6 +15,14 @@
 
 class GameInfo
 {
+public:
+	enum GAMESTATE
+	{
+		WAITING_PLAYERS,
+		RUNNING,
+		FINISHED
+	};
+
 private:
 	GameInfo();
 	~GameInfo();
@@ -32,11 +40,14 @@ public:
 	iprotocol::Game_stone::Color		mPlate[19][19];
 	size_t								mSpecs;
 	std::string							mName;
-	std::string							mOpponent;
-	bool								mGameEnd;
+	std::string							*mBlack;
+	std::string							*mWhite;
+	bool								mShowLobby;
+	GAMESTATE							mGameState;
 	PlayerInfo::STATE					mCreate;
 	PlayerInfo::STATE					mConnected;
 	PlayerInfo::STATE					mUpdateRooms;
+	PlayerInfo::STATE					mUpdateTeam;
 
 	int									mRoomPage;
 	std::list<GVOButton *>				mGamelist;

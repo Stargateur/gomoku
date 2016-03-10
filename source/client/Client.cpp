@@ -135,15 +135,6 @@ void	Client::game_join(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typ
 	std::cout << "TU AS REJOINDS LA GAME" << std::endl;
 	GameInfo::getInstance().lock();
 	GameInfo::getInstance().mConnected = PlayerInfo::STATE::DONE;
-	iprotocol::Game_player_param param;
-	std::string lol("test");
-	param.name = &lol;
-	if (PlayerInfo::getInstance().mColor == "black")
-		param.type = iprotocol::Game_player_param::Black;
-	else
-		param.type = iprotocol::Game_player_param::White;
-	m_itcp_protocol->send_game_player_param(param);
-	m_itcp_protocol->send_game_ready(true);
 	GameInfo::getInstance().unlock();
 }
 
@@ -184,6 +175,7 @@ void	Client::game_player_leave(iprotocol::ITCP_protocol<ITCP_client> &itcp_proto
 
 void	Client::game_start(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
 {
+
 }
 
 void	Client::game_ready(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, bool ready)
@@ -248,6 +240,20 @@ void Client::checkUserInputs(void)
 		iprotocol::Game game;
 		game.name = new std::string(GameInfo::getInstance().mName);
 		m_itcp_protocol->send_game_create(game);
+	}
+	if (GameInfo::getInstance().mConnected == PlayerInfo::STATE::DONE && GameInfo::getInstance().mUpdateTeam == PlayerInfo::STATE::ASK)
+	{
+		GameInfo::getInstance().mUpdateTeam = PlayerInfo::STATE::DONE;
+		iprotocol::Game_player_param param;
+		std::string lol("test");
+		param.name = &lol;
+		if (PlayerInfo::getInstance().mColor == "black")
+			param.type = iprotocol::Game_player_param::Black;
+		else
+			param.type = iprotocol::Game_player_param::White;
+		m_itcp_protocol->send_game_player_param(param);
+		m_itcp_protocol->send_game_ready(true);
+		GameInfo::getInstance().mUpdateTeam = PlayerInfo::STATE::DONE;
 	}
 	GameInfo::getInstance().unlock();
 }
