@@ -180,6 +180,9 @@ void	Server::run(void)
         }
         catch (std::exception &e)
         {
+			#ifndef NDEBUG
+			std::cerr << "SERVER : DELETE GAME" << std::endl;
+			#endif
             it_game = m_games.erase(it_game);
             std::cerr << e.what() << std::endl;
             for (auto it = game->get_players().begin(); it != game->get_players().end(); it = game->get_players().erase(it))
@@ -187,7 +190,7 @@ void	Server::run(void)
                 (*it)->set_callback(this);
                 m_itcp_protocols.push_back(*it);
             }
-            for (iprotocol::ITCP_protocol<Client> * itcp_protocol : m_itcp_protocols)
+			for (iprotocol::ITCP_protocol<Client> *itcp_protocol : m_itcp_protocols)
                 game->send_game_delete(*itcp_protocol);
             for (Game *game_it : m_games)
                 for (iprotocol::ITCP_protocol<Client> *game_player_it : game_it->get_players())
