@@ -18,14 +18,8 @@ void		validate_team(int use);
 void		mute_speaker(int volume);
 void		change_volume(float volume);
 void		create_game(PlayerInfo::STATE state);
+void		change_gamepage(int modifier);
 
-bool		LUmutex(bool info, std::mutex &mutex)
-{
-	bool	result;
-	mutex.lock();
-	result = info;
-	mutex.unlock();
-	return result;
-}
+bool		LUmutex(bool info, std::mutex &mutex);
 
 #endif // !GOMOKUGRAPHICSHANDLER_HPP_

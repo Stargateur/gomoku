@@ -56,9 +56,15 @@ void	Client::result(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, iproto
 	switch (error)
 	{
 	case (iprotocol::Error::Not_connected):
+		GameInfo::getInstance().lock();
+		GameInfo::getInstance().mConnected = PlayerInfo::STATE::FAILED;
+		GameInfo::getInstance().mErrorMessage = "Impossible de se connecter au serveur !";
+		GameInfo::getInstance().unlock();
+		break;
 	case (iprotocol::Error::Already_in_game):
 		GameInfo::getInstance().lock();
 		GameInfo::getInstance().mConnected = PlayerInfo::STATE::FAILED;
+		GameInfo::getInstance().mErrorMessage = "Vous êtes déjà dans une partie !";
 		GameInfo::getInstance().unlock();
 		break;
 	default:

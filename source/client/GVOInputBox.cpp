@@ -1,11 +1,11 @@
 #include	"GVOInputBox.hpp"
 
-GVOInputBox::GVOInputBox(std::string const &title, sf::Vector2f const &pos, sf::Vector2f const &size, std::string &content, std::mutex &mutex) : 
-	mTitle(title), mContent(content), mMutex(mutex), mTextPos(e_position::ALIGN_LEFT)
+GVOInputBox::GVOInputBox(std::string const &title, sf::Vector2f const &pos, sf::Vector2f const &size, std::string &content, std::mutex &mutex) :
+	mTitle(title), mContent(content), mMutex(mutex), mTextPos(e_position::ALIGN_LEFT), mTextColor(sf::Color::Black)
 {
 	mFont.loadFromFile("Font/TCCEB.TTF");
 	mText.setFont(mFont);
-	mText.setColor(sf::Color::Black);
+	mText.setColor(mTextColor);
 	mText.setCharacterSize(24);
 	mText.setPosition(sf::Vector2f(5, 0));
 
@@ -27,6 +27,7 @@ GVOInputBox::~GVOInputBox(void)
 }
 
 sf::Drawable	*GVOInputBox::getDrawable(void) { updateRender(); return &mSprite; }
+sf::Text & GVOInputBox::getText(void) { return mText; }
 void			GVOInputBox::addAction(IGVAMouseClick *action) { mClickActions.push_back(action); }
 void			GVOInputBox::addAction(IGVAMouseHover *action) { mHoverActions.push_back(action); }
 void			GVOInputBox::addAction(IGVAKeyPressed *action) { mKeyActions.push_back(action); }
@@ -34,6 +35,11 @@ void			GVOInputBox::addAction(IGVAKeyPressed *action) { mKeyActions.push_back(ac
 void GVOInputBox::setTextPosition(e_position const &pos)
 {
 	mTextPos = pos;
+}
+
+void GVOInputBox::setTextColor(sf::Color const & color)
+{
+	mTextColor = color;
 }
 
 #include <iostream>
@@ -79,11 +85,11 @@ void			GVOInputBox::updateRender(void)
 	else
 	{
 		mText.setString(mContent);
-		mText.setColor(sf::Color::Black);
+		mText.setColor(mTextColor);
 	}
 	updateTextPosition();
 	mMutex.unlock();
-	mRendered.clear();
+	mRendered.clear(sf::Color::Transparent);
 	mRendered.draw(mBackground);
 	mRendered.draw(mText);
 	mRendered.display();
@@ -112,4 +118,9 @@ void			GVOInputBox::keyPressed(sf::Vector2f const &pos, sf::Uint32 const &key)
 {
 	for (IGVAKeyPressed* action : mKeyActions)
 		action->Act(mSprite, pos, key);
+}
+
+void			GVOInputBox::setBackground(sf::Color const &color)
+{
+	mBackground.setFillColor(color);
 }

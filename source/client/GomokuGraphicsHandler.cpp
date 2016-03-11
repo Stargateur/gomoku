@@ -3,6 +3,7 @@
 #include	"GomokuGraphics.hpp"
 #include	"GameInfo.hpp"
 #include	"PlayerInfo.hpp"
+#include "..\..\include\client\GomokuGraphicsHandler.hpp"
 
 void		connect(int u)
 {
@@ -108,4 +109,25 @@ void		create_game(PlayerInfo::STATE state)
 		GameInfo::getInstance().mCreate = state;
 	}
 	GameInfo::getInstance().unlock();
+}
+
+void change_gamepage(int modifier)
+{
+	std::cout << "Changing page" << std::endl;
+	GameInfo::getInstance().lock();
+	GameInfo::getInstance().mRoomPage += modifier;
+	if (GameInfo::getInstance().mRoomPage < 1)
+		GameInfo::getInstance().mRoomPage = 1;
+	GameInfo::getInstance().mUpdateRooms = PlayerInfo::STATE::ASK;
+	std::cout << "Page changed to " << GameInfo::getInstance().mRoomPage << " !" << std::endl;
+	GameInfo::getInstance().unlock();
+}
+
+bool LUmutex(bool info, std::mutex &mutex)
+{
+	bool	result;
+	mutex.lock();
+	result = info;
+	mutex.unlock();
+	return result;
 }
