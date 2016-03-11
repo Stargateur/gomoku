@@ -148,10 +148,6 @@ void    Client::game_param(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol,
 
 void	Client::game_player_join(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
 {
-	/*if (name != nullptr)
-		std::cout << "PLAYER JOINED (" << *name << ")" << std::endl;
-	else*/
-		std::cout << "PLAYER NULL JOINED" << std::endl;
 }
 
 void	Client::game_player_leave(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
@@ -160,7 +156,9 @@ void	Client::game_player_leave(iprotocol::ITCP_protocol<ITCP_client> &itcp_proto
 
 void	Client::game_start(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
 {
-
+	GameInfo::getInstance().lock();
+	GameInfo::getInstance().mGameState = GameInfo::GAMESTATE::RUNNING;
+	GameInfo::getInstance().unlock();
 }
 
 void	Client::game_ready(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, bool ready)

@@ -144,7 +144,11 @@ void			GomokuGraphics::init()
 	mConnectView.pushObject(new GVOText(":", sf::Vector2f(WIN_X / 2 + 107, WIN_Y / 3 + 50)));
 	ibh = new GVOInputBox("", sf::Vector2f(WIN_X / 2 + 120, WIN_Y / 3 + 50), sf::Vector2f(70, 30), PlayerInfo::getInstance().mPort, PlayerInfo::getInstance().getMutex());
 	ibh->setTextPosition(GVOInputBox::e_position::CENTERED);
-	ibh->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPort, PlayerInfo::getInstance().getMutex()));
+	ibh->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPort, PlayerInfo::getInstance().getMutex(), [](sf::Uint32 const &key) {
+		if (key >= '0' && key <= '9')
+			return true;
+		return false;
+	}));
 	ibh->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
 	mConnectView.pushObject(ibh);
 	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - (TextureManager::getInstance().getTexture("connexion").getSize().x * 0.8) / 2, 2 * WIN_Y / 3),

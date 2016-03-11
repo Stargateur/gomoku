@@ -22,6 +22,7 @@ void GameInfo::reset()
 	if (mWhite != nullptr)
 		delete mBlack;
 	mWhite = nullptr;
+	mName = "";
 	mGameState = GAMESTATE::WAITING_PLAYERS;
 	mShowLobby = true;
 	mConnected = PlayerInfo::STATE::NOTHING;
