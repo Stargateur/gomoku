@@ -3,7 +3,7 @@
 #include	"GomokuGraphics.hpp"
 #include	"GameInfo.hpp"
 #include	"PlayerInfo.hpp"
-#include "..\..\include\client\GomokuGraphicsHandler.hpp"
+#include	"GomokuGraphicsHandler.hpp"
 
 void		connect(int u)
 {
