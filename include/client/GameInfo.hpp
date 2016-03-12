@@ -42,6 +42,7 @@ public:
 	std::string							mName;
 	std::string							*mBlack;
 	std::string							*mWhite;
+	std::string							mErrorMessage;
 	bool								mShowLobby;
 	GAMESTATE							mGameState;
 	PlayerInfo::STATE					mCreate;

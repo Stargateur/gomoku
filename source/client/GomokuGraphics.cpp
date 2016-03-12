@@ -81,7 +81,6 @@ void GomokuGraphics::showGames(void)
 			page--;
 		if (page < 1)
 			page = 1;
-		std::cout << "doing page " << page << std::endl;
 		clearGames();
 		int j = 0;
 		for (int i = (page - 1) * PAGE_GAME_COUNT; i < page * PAGE_GAME_COUNT; i++)
@@ -89,8 +88,8 @@ void GomokuGraphics::showGames(void)
 			if (i >= GameInfo::getInstance().mRoomlist.size())
 				break;
 			game = new GVOButton(sf::Vector2f(WIN_X / 2 + 150, WIN_Y / 3 + (WIN_Y / (3 * 5) * j)), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(1, 1));
-			game->mText = new GVOText("#" + *GameInfo::getInstance().mRoomlist.at(j)->name, sf::Vector2f(WIN_X / 2 - 200, WIN_Y / 3 + (WIN_Y / (3 * 5) * j)));
-			game->addAction(new GVAMouseClickCallBack<std::string>(connect_room, *GameInfo::getInstance().mRoomlist.at(j)->name));
+			game->mText = new GVOText("#" + *GameInfo::getInstance().mRoomlist.at(i)->name, sf::Vector2f(WIN_X / 2 - 200, WIN_Y / 3 + (WIN_Y / (3 * 5) * j)));
+			game->addAction(new GVAMouseClickCallBack<std::string>(connect_room, *(GameInfo::getInstance().mRoomlist.at(i)->name)));
 			mGameListView.pushObject(game);
 			mGameListView.pushObject(game->mText);
 			GameInfo::getInstance().mGamelist.push_back(game);
@@ -124,11 +123,12 @@ void			GomokuGraphics::init()
 	TextureManager::getInstance().loadTexture("histo", "Sprite/histo.png");
 	TextureManager::getInstance().loadTexture("home", "Sprite/home.png");
 	TextureManager::getInstance().loadTexture("play", "Sprite/play.png");
+	TextureManager::getInstance().loadTexture("arrows", "Sprite/prevnext.png");
 	TextureManager::getInstance().loadTexture("speaker", "Sprite/speaker.png");
 	TextureManager::getInstance().loadTexture("option", "Sprite/options.png");
 
 	delete loading;
-	
+
 	//init connect
 	mConnectView.pushObject(new GVOText("PSEUDO :", sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 3 - 20)));
 	GVOInputBox *ib = new GVOInputBox("", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 3 - 20), sf::Vector2f(240, 30), PlayerInfo::getInstance().mPseudo, PlayerInfo::getInstance().getMutex());
@@ -144,7 +144,11 @@ void			GomokuGraphics::init()
 	mConnectView.pushObject(new GVOText(":", sf::Vector2f(WIN_X / 2 + 107, WIN_Y / 3 + 50)));
 	ibh = new GVOInputBox("", sf::Vector2f(WIN_X / 2 + 120, WIN_Y / 3 + 50), sf::Vector2f(70, 30), PlayerInfo::getInstance().mPort, PlayerInfo::getInstance().getMutex());
 	ibh->setTextPosition(GVOInputBox::e_position::CENTERED);
-	ibh->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPort, PlayerInfo::getInstance().getMutex()));
+	ibh->addAction(new GVAKeyPressedFocusSave(PlayerInfo::getInstance().mPort, PlayerInfo::getInstance().getMutex(), [](sf::Uint32 const &key) {
+		if (key >= '0' && key <= '9')
+			return true;
+		return false;
+	}));
 	ibh->addAction(new GVAMouseHoverChangeColor(sf::Color(150, 150, 255, 255), sf::Color(255, 255, 255, 255)));
 	mConnectView.pushObject(ibh);
 	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - (TextureManager::getInstance().getTexture("connexion").getSize().x * 0.8) / 2, 2 * WIN_Y / 3),
@@ -193,6 +197,11 @@ void			GomokuGraphics::init()
 	PlayerInfo::getInstance().unlock();
 	btn->addAction(new GVAMouseHoverChangeColor(sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(180)), sf::Color(sf::Uint8(255), sf::Uint8(255), sf::Uint8(255), sf::Uint8(255))));
 	mMenuView.pushObject(btn);
+	ibh = new GVOInputBox("", sf::Vector2f(WIN_X - 650, 10), sf::Vector2f(640, 30), GameInfo::getInstance().mErrorMessage, GameInfo::getInstance().getMutex());
+	ibh->setBackground(sf::Color::Transparent);
+	ibh->setTextPosition(GVOInputBox::e_position::ALIGN_RIGHT);
+	ibh->setTextColor(sf::Color::Red);
+	mMenuView.pushObject(ibh);
 
 	//init home
 	GVOText *text = new GVOText("Ah, te revoila !", sf::Vector2f(WIN_X / 2 - 50, WIN_Y / 2 - 10));
@@ -230,6 +239,44 @@ void			GomokuGraphics::init()
 	mGameListView.pushObject(gameCreate);
 	btn = new GVOButton(sf::Vector2f(600, 600), TextureManager::getInstance().getTexture("create"), sf::Vector2f(1, 1));
 	btn->addAction(new GVAMouseClickCallBack<PlayerInfo::STATE>(create_game, PlayerInfo::STATE::ASK));
+	mGameListView.pushObject(btn);
+	btn = new GVOButton(sf::Vector2f(150, 300), TextureManager::getInstance().getTexture("arrows"), sf::Vector2f(0.8, 0.8), []() {
+		GameInfo::getInstance().lock();
+		int currentPage = GameInfo::getInstance().mRoomPage;
+		GameInfo::getInstance().unlock();
+		if (currentPage > 1)
+			return true;
+		return false;
+	}, []() {
+		GameInfo::getInstance().lock();
+		int currentPage = GameInfo::getInstance().mRoomPage;
+		GameInfo::getInstance().unlock();
+		if (currentPage > 1)
+			return true;
+		return false;
+	});
+	btn->getSprite().setTextureRect(sf::IntRect(0, 0, 128, 128));
+	btn->addAction(new GVAMouseClickCallBack<int>(change_gamepage, -1));
+	mGameListView.pushObject(btn);
+	btn = new GVOButton(sf::Vector2f(WIN_X - 150, 300), TextureManager::getInstance().getTexture("arrows"), sf::Vector2f(0.8, 0.8), []() {
+		GameInfo::getInstance().lock();
+		size_t nbGames = GameInfo::getInstance().mRoomlist.size();
+		int currentPage = GameInfo::getInstance().mRoomPage;
+		GameInfo::getInstance().unlock();
+		if (nbGames > 5 && currentPage * 5 < nbGames)
+			return true;
+		return false;
+	}, []() {
+		GameInfo::getInstance().lock();
+		size_t nbGames = GameInfo::getInstance().mRoomlist.size();
+		int currentPage = GameInfo::getInstance().mRoomPage;
+		GameInfo::getInstance().unlock();
+		if (nbGames > 5 && currentPage * 5 < nbGames)
+			return true;
+		return false;
+	});
+	btn->getSprite().setTextureRect(sf::IntRect(128, 0, 128, 128));
+	btn->addAction(new GVAMouseClickCallBack<int>(change_gamepage, 1));
 	mGameListView.pushObject(btn);
 
 	//init lobby

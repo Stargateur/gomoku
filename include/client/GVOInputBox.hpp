@@ -25,6 +25,7 @@ public:
 	GVOInputBox(std::string const &title, sf::Vector2f const &pos, sf::Vector2f const &size, std::string &content, std::mutex &mutex);
 	virtual ~GVOInputBox(void);
 	virtual sf::Drawable	*getDrawable(void);
+	sf::Text				&getText(void);
 	virtual void			mouseClick(sf::Vector2f const &pos);
 	virtual void			mouseMove(sf::Vector2f const &pos);
 	virtual void			keyPressed(sf::Vector2f const &pos, sf::Uint32 const &key);
@@ -34,6 +35,8 @@ public:
 	void	addAction(IGVAMouseHover *action);
 	void	addAction(IGVAKeyPressed *action);
 	void	setTextPosition(e_position const &pos);
+	void	setTextColor(sf::Color const &color);
+	void	setBackground(sf::Color const &color);
 
 private:
 	void	updateRender(void);
@@ -44,6 +47,7 @@ private:
 	sf::RenderTexture	mRendered;
 	sf::RectangleShape	mBackground;
 	sf::Text			mText;
+	sf::Color			mTextColor;
 	sf::Font			mFont;
 	std::string			mTitle;
 	std::string			&mContent;

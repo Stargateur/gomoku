@@ -56,9 +56,15 @@ void	Client::result(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, iproto
 	switch (error)
 	{
 	case (iprotocol::Error::Not_connected):
+		GameInfo::getInstance().lock();
+		GameInfo::getInstance().mConnected = PlayerInfo::STATE::FAILED;
+		GameInfo::getInstance().mErrorMessage = "Impossible de se connecter au serveur !";
+		GameInfo::getInstance().unlock();
+		break;
 	case (iprotocol::Error::Already_in_game):
 		GameInfo::getInstance().lock();
 		GameInfo::getInstance().mConnected = PlayerInfo::STATE::FAILED;
+		GameInfo::getInstance().mErrorMessage = "Vous êtes déjà dans une partie !";
 		GameInfo::getInstance().unlock();
 		break;
 	default:
@@ -148,10 +154,6 @@ void    Client::game_param(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol,
 
 void	Client::game_player_join(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
 {
-	/*if (name != nullptr)
-		std::cout << "PLAYER JOINED (" << *name << ")" << std::endl;
-	else*/
-		std::cout << "PLAYER NULL JOINED" << std::endl;
 }
 
 void	Client::game_player_leave(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, std::string *name)
@@ -160,7 +162,9 @@ void	Client::game_player_leave(iprotocol::ITCP_protocol<ITCP_client> &itcp_proto
 
 void	Client::game_start(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol)
 {
-
+	GameInfo::getInstance().lock();
+	GameInfo::getInstance().mGameState = GameInfo::GAMESTATE::RUNNING;
+	GameInfo::getInstance().unlock();
 }
 
 void	Client::game_ready(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, bool ready)

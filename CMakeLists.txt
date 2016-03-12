@@ -101,9 +101,7 @@ add_custom_command(TARGET gomoku_client POST_BUILD
         $<TARGET_FILE_DIR:gomoku_client>/Sprite
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${PROJECT_SOURCE_DIR}/Font/"
-        $<TARGET_FILE_DIR:gomoku_client>/Font
-	COMMAND ${CMAKE_COMMAND} -E make_directory
-		$<TARGET_FILE_DIR:gomoku_client>/Sound)
+        $<TARGET_FILE_DIR:gomoku_client>/Font)
 
 add_executable(gomoku_server
 	source/server/Arbitre.cpp

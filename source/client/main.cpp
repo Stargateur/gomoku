@@ -3,6 +3,7 @@
 #include	<thread>
 #include	<SFML/Graphics.hpp>
 #include	<SFML/Network.hpp>
+#include	<boost/filesystem.hpp>
 #include	"Client.hpp"
 #include	"PlayerInfo.hpp"
 #include	"GameInfo.hpp"
@@ -28,6 +29,9 @@ void start_tcpclient()
 				std::string host(PlayerInfo::getInstance().mHost);
 				std::string port(PlayerInfo::getInstance().mPort);
 				PlayerInfo::getInstance().unlock();
+				GameInfo::getInstance().lock();
+				GameInfo::getInstance().mErrorMessage = "";
+				GameInfo::getInstance().unlock();
 				Client		client(host, port);
 				PlayerInfo::getInstance().lock();
 				PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::DONE;
@@ -40,7 +44,10 @@ void start_tcpclient()
 				PlayerInfo::getInstance().lock();
 				PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::FAILED;
 				PlayerInfo::getInstance().mErrorMessage = "Connection error !";
-				std::cout << "Error de connexion" << std::endl;
+				GameInfo::getInstance().lock();
+				GameInfo::getInstance().mErrorMessage = "Impossible de se connecter au serveur !";
+				GameInfo::getInstance().unlock();
+				std::cout << "Couldn't join server" << std::endl;
 				std::cout << e.what() << std::endl;
 				PlayerInfo::getInstance().unlock();
 			}
@@ -60,6 +67,10 @@ void start_tcpclient()
 void start_ui()
 {
 	sf::Music test;
+	
+	boost::filesystem::create_directory("Sound");
+	boost::filesystem::create_directory("Sprite");
+	boost::filesystem::create_directory("Font");
 	if (!test.openFromFile("Sound/theme.ogg"))
 	{
 		std::cout << "Connecting to FTP...";
