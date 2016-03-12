@@ -138,6 +138,8 @@ void update_line(int x, int y, std::pair<int, int> dir, Board &b)
 
 bool can_capture(int x, int y, Square::col col, std::vector<Square::Combi> &Combi, const Board &b)
 {
+	if (col == Square::col::None)
+		return (false);
 	const std::vector<Square::Combi> &c = b.get_square(x, y).get_combis();
 	for (auto it = c.begin(); it != c.end(); ++it)
 	{
