@@ -256,9 +256,6 @@ void	Game::game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprot
 				for (iprotocol::ITCP_protocol<Client> *client : m_itcp_protocols)
 					client->send_game_result(result);
 			}
-			else
-			{
-			}
         }
     }
     delete stone;

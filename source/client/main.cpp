@@ -24,15 +24,18 @@ void start_tcpclient()
 			/*PlayerInfo::getInstance().lock();
 			PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::DOING;
 			PlayerInfo::getInstance().unlock();*/
+			GameInfo::getInstance().lock();
+			GameInfo::getInstance().mErrorMessage = "Connexion...";
+			GameInfo::getInstance().unlock();
 			try {
 				PlayerInfo::getInstance().lock();
 				std::string host(PlayerInfo::getInstance().mHost);
 				std::string port(PlayerInfo::getInstance().mPort);
 				PlayerInfo::getInstance().unlock();
+				Client		client(host, port);
 				GameInfo::getInstance().lock();
 				GameInfo::getInstance().mErrorMessage = "";
 				GameInfo::getInstance().unlock();
-				Client		client(host, port);
 				PlayerInfo::getInstance().lock();
 				PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::DONE;
 				PlayerInfo::getInstance().unlock();
@@ -46,6 +49,7 @@ void start_tcpclient()
 				PlayerInfo::getInstance().mErrorMessage = "Connection error !";
 				GameInfo::getInstance().lock();
 				GameInfo::getInstance().mErrorMessage = "Erreur de connexion !";
+				GameInfo::getInstance().reset();
 				GameInfo::getInstance().unlock();
 				std::cout << "Couldn't join server" << std::endl;
 				std::cout << e.what() << std::endl;

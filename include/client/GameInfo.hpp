@@ -38,18 +38,22 @@ public:
 public:
 	std::list<iprotocol::Game_stone *>	mHisto;
 	iprotocol::Game_stone::Color		mPlate[19][19];
+	iprotocol::Game_stone::Color		mWinner;
 	size_t								mSpecs;
 	std::string							mName;
 	std::string							*mBlack;
 	std::string							*mWhite;
 	std::string							mErrorMessage;
 	bool								mShowLobby;
+	bool								mShowCreator;
+	iprotocol::Game_param				mGameParam;
 	GAMESTATE							mGameState;
 	PlayerInfo::STATE					mCreate;
 	PlayerInfo::STATE					mConnected;
 	PlayerInfo::STATE					mDisconnect;
 	PlayerInfo::STATE					mUpdateRooms;
 	PlayerInfo::STATE					mUpdateTeam;
+	PlayerInfo::STATE					mUpdateGameParam;
 
 	int									mRoomPage;
 	std::list<GVOButton *>				mGamelist;

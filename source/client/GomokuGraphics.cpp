@@ -127,6 +127,9 @@ void			GomokuGraphics::init()
 	TextureManager::getInstance().loadTexture("speaker", "Sprite/speaker.png");
 	TextureManager::getInstance().loadTexture("option", "Sprite/options.png");
 	TextureManager::getInstance().loadTexture("quitgame", "Sprite/quitgame.png");
+	TextureManager::getInstance().loadTexture("winwhite", "Sprite/winwhite.png");
+	TextureManager::getInstance().loadTexture("winblack", "Sprite/winblack.png");
+	TextureManager::getInstance().loadTexture("tick", "Sprite/tick.png");
 
 	delete loading;
 
@@ -154,7 +157,7 @@ void			GomokuGraphics::init()
 	mConnectView.pushObject(ibh);
 	GVOButton *button = new GVOButton(sf::Vector2f(WIN_X / 2 - (TextureManager::getInstance().getTexture("connexion").getSize().x * 0.8) / 2, 2 * WIN_Y / 3),
 		TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(0.8, 0.8), []() {
-		bool act = LUmutex(PlayerInfo::getInstance().mConnect, PlayerInfo::getInstance().getMutex());
+		bool act = LUmutex<PlayerInfo::STATE>(PlayerInfo::getInstance().mConnect, PlayerInfo::getInstance().getMutex());
 		return (act == PlayerInfo::STATE::NOTHING || act == PlayerInfo::STATE::FAILED);
 	});
 	button->addAction(new GVAMouseClickCallBack<int>(connect, 0));
@@ -173,9 +176,111 @@ void			GomokuGraphics::init()
 	mGameView.pushObject(button2);
 	GVOButton *histo = new GVOButton(sf::Vector2f(0, 81.6), TextureManager::getInstance().getTexture("histo"), sf::Vector2f(0.8, 0.8));
 	mGameView.pushObject(histo);
-	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 - 120, 15), TextureManager::getInstance().getTexture("quitgame"), sf::Vector2f(0.5, 0.5));
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 + 30, 15), TextureManager::getInstance().getTexture("quitgame"), sf::Vector2f(0.5, 0.5));
 	button2->addAction(new GVAMouseClickCallBack<int>(quit_game, 1));
 	mGameView.pushObject(button2);
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 - 300, 15), TextureManager::getInstance().getTexture("winwhite"), sf::Vector2f(0.5, 0.5), []() {
+		GameInfo::getInstance().lock();
+		bool should = GameInfo::getInstance().mGameState == GameInfo::GAMESTATE::FINISHED && GameInfo::getInstance().mWinner == iprotocol::Game_stone::Color::White;
+		GameInfo::getInstance().unlock();
+		return should;
+	}, []() {
+		GameInfo::getInstance().lock();
+		bool should = GameInfo::getInstance().mGameState == GameInfo::GAMESTATE::FINISHED && GameInfo::getInstance().mWinner == iprotocol::Game_stone::Color::White;
+		GameInfo::getInstance().unlock();
+		return should;
+	});
+	mGameView.pushObject(button2);
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 - 300, 15), TextureManager::getInstance().getTexture("winblack"), sf::Vector2f(0.5, 0.5), []() {
+		GameInfo::getInstance().lock();
+		bool should = GameInfo::getInstance().mGameState == GameInfo::GAMESTATE::FINISHED && GameInfo::getInstance().mWinner == iprotocol::Game_stone::Color::Black;
+		GameInfo::getInstance().unlock();
+		return should;
+	}, []() {
+		GameInfo::getInstance().lock();
+		bool should = GameInfo::getInstance().mGameState == GameInfo::GAMESTATE::FINISHED && GameInfo::getInstance().mWinner == iprotocol::Game_stone::Color::Black;
+		GameInfo::getInstance().unlock();
+		return should;
+	});
+	mGameView.pushObject(button2);
+
+	//init creator view
+	GVOText *title = new GVOText("Paramètres de la partie :");
+	title->getText().setCharacterSize(42);
+	title->getText().setPosition(sf::Vector2f(WIN_X / 2 - title->getText().getGlobalBounds().width / 2, WIN_Y / 3 - 100));
+	mCreatorView.pushObject(title);
+	/*five breackable*/
+	mCreatorView.pushObject(new GVOText("Activer / Désactiver le cinq cassable :", sf::Vector2f(WIN_X / 2 - 250, WIN_Y / 2 - 70)));
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 + 250, WIN_Y / 2 - 70), TextureManager::getInstance().getTexture("tick"), sf::Vector2f(0.3, 0.3), []() {
+		return true;
+	}, []() {
+		return LUmutex<bool>(GameInfo::getInstance().mGameParam.five_breakable, GameInfo::getInstance().getMutex()) == false;
+	});
+	button2->getSprite().setTextureRect(sf::IntRect(0, 0, 128, 128));
+	button2->addAction(new GVAMouseClickCallBack<int>(toggle_gameparam, 0));
+	mCreatorView.pushObject(button2);
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 + 250, WIN_Y / 2 - 70), TextureManager::getInstance().getTexture("tick"), sf::Vector2f(0.3, 0.3), []() {
+		return true;
+	}, []() {
+		return LUmutex<bool>(GameInfo::getInstance().mGameParam.five_breakable, GameInfo::getInstance().getMutex()) == true;
+	});
+	button2->getSprite().setTextureRect(sf::IntRect(128, 0, 128, 128));
+	mCreatorView.pushObject(button2);
+	/*three and three*/
+	mCreatorView.pushObject(new GVOText("Activer / Désactiver le double trois :", sf::Vector2f(WIN_X / 2 - 250, WIN_Y / 2)));
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 + 250, WIN_Y / 2), TextureManager::getInstance().getTexture("tick"), sf::Vector2f(0.3, 0.3), []() {
+		return true;
+	}, []() {
+		return LUmutex<bool>(GameInfo::getInstance().mGameParam.three_and_three, GameInfo::getInstance().getMutex()) == false;
+	});
+	button2->getSprite().setTextureRect(sf::IntRect(0, 0, 128, 128));
+	button2->addAction(new GVAMouseClickCallBack<int>(toggle_gameparam, 1));
+	mCreatorView.pushObject(button2);
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 + 250, WIN_Y / 2), TextureManager::getInstance().getTexture("tick"), sf::Vector2f(0.3, 0.3), []() {
+		return true;
+	}, []() {
+		return LUmutex<bool>(GameInfo::getInstance().mGameParam.three_and_three , GameInfo::getInstance().getMutex()) == true;
+	});
+	button2->getSprite().setTextureRect(sf::IntRect(128, 0, 128, 128));
+	mCreatorView.pushObject(button2);
+	/*ia black*/
+	mCreatorView.pushObject(new GVOText("Activer / Désactiver l'IA pour les noirs :", sf::Vector2f(WIN_X / 2 - 250, WIN_Y / 2 + 70)));
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 + 250, WIN_Y / 2 + 70), TextureManager::getInstance().getTexture("tick"), sf::Vector2f(0.3, 0.3), []() {
+		return true;
+	}, []() {
+		return LUmutex<bool>(GameInfo::getInstance().mGameParam.ai_black, GameInfo::getInstance().getMutex()) == false;
+	});
+	button2->getSprite().setTextureRect(sf::IntRect(0, 0, 128, 128));
+	button2->addAction(new GVAMouseClickCallBack<int>(toggle_gameparam, 2));
+	mCreatorView.pushObject(button2);
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 + 250, WIN_Y / 2 + 70), TextureManager::getInstance().getTexture("tick"), sf::Vector2f(0.3, 0.3), []() {
+		return true;
+	}, []() {
+		return LUmutex<bool>(GameInfo::getInstance().mGameParam.ai_black, GameInfo::getInstance().getMutex()) == true;
+	});
+	button2->getSprite().setTextureRect(sf::IntRect(128, 0, 128, 128));
+	mCreatorView.pushObject(button2);
+	/*ia white*/
+	mCreatorView.pushObject(new GVOText("Activer / Désactiver l'IA pour les blancs :", sf::Vector2f(WIN_X / 2 - 250, WIN_Y / 2 + 140)));
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 + 250, WIN_Y / 2 + 140), TextureManager::getInstance().getTexture("tick"), sf::Vector2f(0.3, 0.3), []() {
+		return true;
+	}, []() {
+		return LUmutex<bool>(GameInfo::getInstance().mGameParam.ai_white, GameInfo::getInstance().getMutex()) == false;
+	});
+	button2->getSprite().setTextureRect(sf::IntRect(0, 0, 128, 128));
+	button2->addAction(new GVAMouseClickCallBack<int>(toggle_gameparam, 3));
+	mCreatorView.pushObject(button2);
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 + 250, WIN_Y / 2 + 140), TextureManager::getInstance().getTexture("tick"), sf::Vector2f(0.3, 0.3), []() {
+		return true;
+	}, []() {
+		return LUmutex<bool>(GameInfo::getInstance().mGameParam.ai_white, GameInfo::getInstance().getMutex()) == true;
+	});
+	button2->getSprite().setTextureRect(sf::IntRect(128, 0, 128, 128));
+	mCreatorView.pushObject(button2);
+	/*validate*/
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 - 150, WIN_Y / 2 + 250), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(1, 1));
+	button2->addAction(new GVAMouseClickCallBack<int>(validate_gameparam, 0));
+	mCreatorView.pushObject(button2);
 
 	//init menu
 	GVOButton *btn = new GVOButton(sf::Vector2f(0, 0), TextureManager::getInstance().getTexture("home"), sf::Vector2f(0.5, 0.5));
@@ -294,7 +399,7 @@ void			GomokuGraphics::init()
 	button = new GVOButton(sf::Vector2f(WIN_X / 2 + TextureManager::getInstance().getTexture("white").getSize().x * 0.8, WIN_Y / 2), TextureManager::getInstance().getTexture("white"), sf::Vector2f(0.8, 0.8));
 	button->addAction(new GVAMouseClickCallBack<std::string>(change_color, std::string("white")));
 	mLobbyView.pushObject(button);
-	btn = new GVOButton(sf::Vector2f(WIN_X / 2 - 100, WIN_Y * 2 / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(1, 1));
+	btn = new GVOButton(sf::Vector2f(WIN_X / 2 - 150, WIN_Y * 2 / 3), TextureManager::getInstance().getTexture("connexion"), sf::Vector2f(1, 1));
 	btn->addAction(new GVAMouseClickCallBack<int>(validate_team, 0));
 	mLobbyView.pushObject(btn);
 
@@ -436,11 +541,13 @@ void GomokuGraphics::updateView(void)
 		{
 			if (GameInfo::getInstance().mConnected == PlayerInfo::STATE::DONE) // Connected to game
 			{
-				if (GameInfo::getInstance().mGameState != GameInfo::GAMESTATE::WAITING_PLAYERS) // Select a team
+				if (GameInfo::getInstance().mGameState != GameInfo::GAMESTATE::WAITING_PLAYERS) // Game as already started
 					mCurrentView = &mGameView;
 				else
 				{
-					if (GameInfo::getInstance().mShowLobby == true) // Waiting other players
+					if (GameInfo::getInstance().mShowCreator == true) // Set Game Params
+						mCurrentView = &mCreatorView;
+					else if (GameInfo::getInstance().mShowLobby == true) // Select a team
 						mCurrentView = &mLobbyView;
 					else // GameStarted
 						mCurrentView = &mGameView;

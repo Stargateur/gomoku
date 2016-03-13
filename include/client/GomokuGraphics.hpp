@@ -45,6 +45,7 @@ private:
 	GView				mHomeView;
 	GView				mConnectView;
 	GView				mGameListView;
+	GView				mCreatorView;
 	GView				mLobbyView;
 	GView				mGameView;
 	GView				mClientOptions;

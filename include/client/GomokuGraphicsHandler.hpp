@@ -20,7 +20,17 @@ void		change_volume(float volume);
 void		create_game(PlayerInfo::STATE state);
 void		change_gamepage(int modifier);
 void		quit_game(int use);
+void		toggle_gameparam(int paramid);
+void		validate_gameparam(int use);
 
-bool		LUmutex(bool info, std::mutex &mutex);
+template<typename T>
+bool		LUmutex(T &info, std::mutex &mutex)
+{
+	T		result;
+	mutex.lock();
+	result = info;
+	mutex.unlock();
+	return result;
+}
 
 #endif // !GOMOKUGRAPHICSHANDLER_HPP_
