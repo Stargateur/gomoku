@@ -55,8 +55,11 @@ void	AI::play(Board const &board, iprotocol::Game_stone &stone_final, uintmax_t 
 		result.push_back(vic);
 	}
 	for (victoire_stone &i : result)
-		if (vic.score > i.score)
+	{
+		if (vic.score < i.score)
 			vic = i;
+		std::cout << i.score << std::endl;
+	}
 	stone_final.color = board.get_turn();
 	stone_final.x = vic.x;
 	stone_final.y = vic.y;
@@ -65,7 +68,7 @@ void	AI::play(Board const &board, iprotocol::Game_stone &stone_final, uintmax_t 
 iprotocol::Game_stone::Color	AI::play(Board &board, std::vector<position> &pos, std::default_random_engine &gen, std::uniform_int_distribution<uintmax_t> &dist)
 {
 	iprotocol::Game_stone::Color	col;
-	while ((col = Arbitre::check_victory(board, false, true)) != iprotocol::Game_stone::None && pos.size() != 0)
+	while ((col = Arbitre::check_victory(board, false, true)) == iprotocol::Game_stone::None && pos.size() != 0)
 	{
 		uintmax_t choix = dist(gen) % pos.size();
 		position i;

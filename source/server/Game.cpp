@@ -233,7 +233,7 @@ void	Game::game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprot
 			else
 			{
 				iprotocol::Game_stone	ai;
-				AI::play(m_board, ai, 1);
+				AI::play(m_board, ai, 10);
 				if (Arbitre::can_put_stone(&ai, m_board, false))
 				{
 					std::vector<iprotocol::Game_stone *>    stones;
