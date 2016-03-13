@@ -185,9 +185,9 @@ void    Client::game_hint(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, 
 
 void	Client::game_result(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Game_result *game_result)
 {
-	PlayerInfo::getInstance().lock();
-	PlayerInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
-	PlayerInfo::getInstance().unlock();
+	GameInfo::getInstance().lock();
+	GameInfo::getInstance().mGameState = GameInfo::GAMESTATE::FINISHED;
+	GameInfo::getInstance().unlock();
 }
 
 void	Client::game_message(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, typename iprotocol::Message *message)
@@ -242,7 +242,16 @@ void Client::checkUserInputs(void)
 			param.type = iprotocol::Game_player_param::White;
 		m_itcp_protocol->send_game_player_param(param);
 		m_itcp_protocol->send_game_ready(true);
+		GameInfo::getInstance().mGameState = GameInfo::GAMESTATE::RUNNING;
 		GameInfo::getInstance().mUpdateTeam = PlayerInfo::STATE::DONE;
+	}
+	if (GameInfo::getInstance().mDisconnect == PlayerInfo::STATE::ASK && GameInfo::getInstance().mConnected == PlayerInfo::STATE::DONE)
+	{
+		m_itcp_protocol->send_game_leave();
+		GameInfo::getInstance().mShowLobby = true;
+		GameInfo::getInstance().mDisconnect = PlayerInfo::STATE::DONE;
+		GameInfo::getInstance().mConnected = PlayerInfo::STATE::NOTHING;
+		GameInfo::getInstance().mUpdateRooms = PlayerInfo::STATE::ASK;
 	}
 	GameInfo::getInstance().unlock();
 }

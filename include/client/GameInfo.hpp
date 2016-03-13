@@ -47,6 +47,7 @@ public:
 	GAMESTATE							mGameState;
 	PlayerInfo::STATE					mCreate;
 	PlayerInfo::STATE					mConnected;
+	PlayerInfo::STATE					mDisconnect;
 	PlayerInfo::STATE					mUpdateRooms;
 	PlayerInfo::STATE					mUpdateTeam;
 
