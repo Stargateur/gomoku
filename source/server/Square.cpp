@@ -99,7 +99,7 @@ void Square::update(Board &b)
 
 void Square::delete_line(std::pair<int, int> coeff, Board &b)
 {
-	std::cout << "coeff : " << coeff.first << "-" << coeff.second << " " << m_pos.first << "-" << m_pos.second << std::endl;
+//	std::cout << "coeff : " << coeff.first << "-" << coeff.second << " " << m_pos.first << "-" << m_pos.second << std::endl;
 	auto it = m_combis.begin();
 	while (it != m_combis.end())
 	{
@@ -125,7 +125,7 @@ void Square::delete_line(std::pair<int, int> coeff, Board &b)
 			++it;
 		}
 	}
-	std::cout << std::endl;
+//	std::cout << std::endl;
 }
 
 void Square::delete_combi(const Combi & combi)
