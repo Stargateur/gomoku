@@ -19,6 +19,7 @@ void		mute_speaker(int volume);
 void		change_volume(float volume);
 void		create_game(PlayerInfo::STATE state);
 void		change_gamepage(int modifier);
+void		quit_game(int use);
 
 bool		LUmutex(bool info, std::mutex &mutex);
 

@@ -26,6 +26,7 @@ void GameInfo::reset()
 	mGameState = GAMESTATE::WAITING_PLAYERS;
 	mShowLobby = true;
 	mConnected = PlayerInfo::STATE::NOTHING;
+	mDisconnect = PlayerInfo::STATE::NOTHING;
 	mUpdateRooms = PlayerInfo::STATE::NOTHING;
 	mCreate = PlayerInfo::STATE::NOTHING;
 	mUpdateTeam = PlayerInfo::STATE::NOTHING;

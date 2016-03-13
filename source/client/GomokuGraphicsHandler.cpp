@@ -33,7 +33,12 @@ void		click_plateau(sf::Vector2f *param)
 	size_t		xStart = 242;
 	size_t		yStart = 98;
 	size_t		prec = 10;
-	if (param != NULL)
+	bool		canPlay = false;
+
+	GameInfo::getInstance().lock();
+	canPlay = GameInfo::getInstance().mGameState == GameInfo::GAMESTATE::RUNNING;
+	GameInfo::getInstance().unlock();
+	if (param != NULL && canPlay)
 	{
 		for (size_t x = 0; x < 19; x++)
 		{
@@ -120,6 +125,12 @@ void change_gamepage(int modifier)
 		GameInfo::getInstance().mRoomPage = 1;
 	GameInfo::getInstance().mUpdateRooms = PlayerInfo::STATE::ASK;
 	std::cout << "Page changed to " << GameInfo::getInstance().mRoomPage << " !" << std::endl;
+	GameInfo::getInstance().unlock();
+}
+void quit_game(int use)
+{
+	GameInfo::getInstance().lock();
+	GameInfo::getInstance().mDisconnect = PlayerInfo::STATE::ASK;
 	GameInfo::getInstance().unlock();
 }
 

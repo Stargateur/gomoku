@@ -45,7 +45,7 @@ void start_tcpclient()
 				PlayerInfo::getInstance().mConnect = PlayerInfo::STATE::FAILED;
 				PlayerInfo::getInstance().mErrorMessage = "Connection error !";
 				GameInfo::getInstance().lock();
-				GameInfo::getInstance().mErrorMessage = "Impossible de se connecter au serveur !";
+				GameInfo::getInstance().mErrorMessage = "Erreur de connexion !";
 				GameInfo::getInstance().unlock();
 				std::cout << "Couldn't join server" << std::endl;
 				std::cout << e.what() << std::endl;
