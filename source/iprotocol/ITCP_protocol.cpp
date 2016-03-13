@@ -81,17 +81,18 @@ iprotocol::Game_stone::Game_stone(void) :
 {
 }
 
-iprotocol::Game_stone::Color    iprotocol::Game_stone::operator!(void)
-{
-	if (color == Black)
-		return White;
-	else if (color == White)
-		return Black;
-	else
-		return None;
-}
 
 std::ostream    &iprotocol::operator<<(std::ostream &os, Error error)
 {
     return os << get_str_error(error);
+}
+
+iprotocol::Game_stone::Color iprotocol::operator!(Game_stone::Color color)
+{
+	if (color == Game_stone::Black)
+		return Game_stone::White;
+	else if (color == Game_stone::White)
+		return Game_stone::Black;
+	else
+		return Game_stone::None;
 }

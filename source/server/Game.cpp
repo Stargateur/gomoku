@@ -1,6 +1,7 @@
 #include    <iostream>
 #include    "Game.hpp"
 #include    "Utils.hpp"
+#include    "AI.hpp"
 
 Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::string *name) :
     ACallback(callback),
@@ -228,6 +229,30 @@ void	Game::game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprot
 				result.winner = col == Square::col::Black ? iprotocol::Game_result::Black : iprotocol::Game_result::White;
 				for (iprotocol::ITCP_protocol<Client> *client : m_itcp_protocols)
 					client->send_game_result(result);
+			}
+			else
+			{
+				iprotocol::Game_stone	ai;
+				AI::play(m_board, ai, 10);
+				if (Arbitre::can_put_stone(&ai, m_board, false))
+				{
+					std::vector<iprotocol::Game_stone *>    stones;
+					m_board.put_stone(ai.x, ai.y, ai.color, stones);
+					for (iprotocol::Game_stone *sto : stones)
+					{
+						for (iprotocol::ITCP_protocol<Client> *client : m_itcp_protocols)
+							client->send_game_stone_put(*sto);
+						delete sto;
+					}
+					Square::col	col;
+					if ((col = Arbitre::check_victory(m_board, false, true)) != Square::col::None)
+					{
+						iprotocol::Game_result	result;
+						result.winner = col == Square::col::Black ? iprotocol::Game_result::Black : iprotocol::Game_result::White;
+						for (iprotocol::ITCP_protocol<Client> *client : m_itcp_protocols)
+							client->send_game_result(result);
+					}
+				}
 			}
         }
     }

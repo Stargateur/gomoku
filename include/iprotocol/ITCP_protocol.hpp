@@ -87,8 +87,9 @@ namespace iprotocol
         }       color;
       Game_stone(uint8_t _x, uint8_t _y, Color _color);
       Game_stone(void);
-      Color operator!(void);
     };
+
+	Game_stone::Color	operator!(Game_stone::Color color);
 
     struct  Game_score
     {
