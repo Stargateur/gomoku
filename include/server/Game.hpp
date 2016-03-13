@@ -41,6 +41,7 @@ private:
     Black	m_black;
     White   m_white;
     std::chrono::seconds   m_timeout;
+    iprotocol::Game_param   m_param;
 private:
     std::list<iprotocol::ITCP_protocol<Client> *>  m_itcp_protocols;
     std::list<iprotocol::ITCP_protocol<Client> *>  m_disconnecteds;

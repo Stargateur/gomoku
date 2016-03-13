@@ -11,7 +11,8 @@ Game::Game(typename iprotocol::ITCP_protocol<Client>::Callback &callback, std::s
     m_arbitre(),
     m_black(*this),
     m_white(*this),
-    m_timeout(5)
+    m_timeout(5),
+    m_param({true, true, false, false})
 {
 }
 
@@ -132,6 +133,31 @@ void    Game::run(ISelect &iselect)
     }
 	if (m_itcp_protocols.size() == 0 && m_disconnecteds.size() == 0)
 		throw AGame_exception();
+    if (m_param.ai_white == true && m_board.get_turn() == iprotocol::Game_stone::White
+        || m_param.ai_black == true && m_board.get_turn() == iprotocol::Game_stone::Black)
+    {
+        iprotocol::Game_stone   ai;
+        AI::play(m_board, ai, 1);
+        if (Arbitre::can_put_stone(&ai, m_board, false))
+        {
+            std::vector<iprotocol::Game_stone *>    stones;
+            m_board.put_stone(ai.x, ai.y, ai.color, stones);
+            for (iprotocol::Game_stone *sto : stones)
+            {
+                for (iprotocol::ITCP_protocol<Client> *client : m_itcp_protocols)
+                    client->send_game_stone_put(*sto);
+                delete sto;
+            }
+            Square::col col;
+            if ((col = Arbitre::check_victory(m_board, false, true)) != Square::col::None)
+            {
+                iprotocol::Game_result  result;
+                result.winner = col == Square::col::Black ? iprotocol::Game_result::Black : iprotocol::Game_result::White;
+                for (iprotocol::ITCP_protocol<Client> *client : m_itcp_protocols)
+                    client->send_game_result(result);
+            }
+        }
+    }
 }
 
 void    Game::add_player(iprotocol::ITCP_protocol<Client> *player)
@@ -232,27 +258,6 @@ void	Game::game_stone_put(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprot
 			}
 			else
 			{
-				iprotocol::Game_stone	ai;
-				AI::play(m_board, ai, 1);
-				if (Arbitre::can_put_stone(&ai, m_board, false))
-				{
-					std::vector<iprotocol::Game_stone *>    stones;
-					m_board.put_stone(ai.x, ai.y, ai.color, stones);
-					for (iprotocol::Game_stone *sto : stones)
-					{
-						for (iprotocol::ITCP_protocol<Client> *client : m_itcp_protocols)
-							client->send_game_stone_put(*sto);
-						delete sto;
-					}
-					Square::col	col;
-					if ((col = Arbitre::check_victory(m_board, false, true)) != Square::col::None)
-					{
-						iprotocol::Game_result	result;
-						result.winner = col == Square::col::Black ? iprotocol::Game_result::Black : iprotocol::Game_result::White;
-						for (iprotocol::ITCP_protocol<Client> *client : m_itcp_protocols)
-							client->send_game_result(result);
-					}
-				}
 			}
         }
     }
@@ -273,6 +278,7 @@ void    Game::game_player_param(iprotocol::ITCP_protocol<Client> &itcp_protocol,
 
 void    Game::game_param(iprotocol::ITCP_protocol<Client> &itcp_protocol, iprotocol::Game_param *param)
 {
+    m_param = *param;    
     delete param;
 }
 
