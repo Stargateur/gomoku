@@ -127,6 +127,8 @@ void			GomokuGraphics::init()
 	TextureManager::getInstance().loadTexture("speaker", "Sprite/speaker.png");
 	TextureManager::getInstance().loadTexture("option", "Sprite/options.png");
 	TextureManager::getInstance().loadTexture("quitgame", "Sprite/quitgame.png");
+	TextureManager::getInstance().loadTexture("winwhite", "Sprite/winwhite.png");
+	TextureManager::getInstance().loadTexture("winblack", "Sprite/winblack.png");
 
 	delete loading;
 
@@ -173,8 +175,32 @@ void			GomokuGraphics::init()
 	mGameView.pushObject(button2);
 	GVOButton *histo = new GVOButton(sf::Vector2f(0, 81.6), TextureManager::getInstance().getTexture("histo"), sf::Vector2f(0.8, 0.8));
 	mGameView.pushObject(histo);
-	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 - 120, 15), TextureManager::getInstance().getTexture("quitgame"), sf::Vector2f(0.5, 0.5));
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2, 15), TextureManager::getInstance().getTexture("quitgame"), sf::Vector2f(0.5, 0.5));
 	button2->addAction(new GVAMouseClickCallBack<int>(quit_game, 1));
+	mGameView.pushObject(button2);
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 - 300, 15), TextureManager::getInstance().getTexture("winwhite"), sf::Vector2f(0.5, 0.5), []() {
+		GameInfo::getInstance().lock();
+		bool should = GameInfo::getInstance().mGameState == GameInfo::GAMESTATE::FINISHED && GameInfo::getInstance().mWinner == iprotocol::Game_stone::Color::White;
+		GameInfo::getInstance().unlock();
+		return should;
+	}, []() {
+		GameInfo::getInstance().lock();
+		bool should = GameInfo::getInstance().mGameState == GameInfo::GAMESTATE::FINISHED && GameInfo::getInstance().mWinner == iprotocol::Game_stone::Color::White;
+		GameInfo::getInstance().unlock();
+		return should;
+	});
+	mGameView.pushObject(button2);
+	button2 = new GVOButton(sf::Vector2f(WIN_X / 2 - 300, 15), TextureManager::getInstance().getTexture("winblack"), sf::Vector2f(0.5, 0.5), []() {
+		GameInfo::getInstance().lock();
+		bool should = GameInfo::getInstance().mGameState == GameInfo::GAMESTATE::FINISHED && GameInfo::getInstance().mWinner == iprotocol::Game_stone::Color::Black;
+		GameInfo::getInstance().unlock();
+		return should;
+	}, []() {
+		GameInfo::getInstance().lock();
+		bool should = GameInfo::getInstance().mGameState == GameInfo::GAMESTATE::FINISHED && GameInfo::getInstance().mWinner == iprotocol::Game_stone::Color::Black;
+		GameInfo::getInstance().unlock();
+		return should;
+	});
 	mGameView.pushObject(button2);
 
 	//init menu

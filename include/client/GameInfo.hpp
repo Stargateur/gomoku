@@ -38,6 +38,7 @@ public:
 public:
 	std::list<iprotocol::Game_stone *>	mHisto;
 	iprotocol::Game_stone::Color		mPlate[19][19];
+	iprotocol::Game_stone::Color		mWinner;
 	size_t								mSpecs;
 	std::string							mName;
 	std::string							*mBlack;

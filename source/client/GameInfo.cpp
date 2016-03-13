@@ -22,6 +22,7 @@ void GameInfo::reset()
 	if (mWhite != nullptr)
 		delete mBlack;
 	mWhite = nullptr;
+	mWinner = iprotocol::Game_stone::Color::None;
 	mName = "";
 	mGameState = GAMESTATE::WAITING_PLAYERS;
 	mShowLobby = true;
