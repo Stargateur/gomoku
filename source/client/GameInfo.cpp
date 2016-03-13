@@ -26,11 +26,17 @@ void GameInfo::reset()
 	mName = "";
 	mGameState = GAMESTATE::WAITING_PLAYERS;
 	mShowLobby = true;
+	mShowCreator = false;
+	mGameParam.ai_black = false;
+	mGameParam.ai_white = false;
+	mGameParam.five_breakable = true;
+	mGameParam.three_and_three = true;
 	mConnected = PlayerInfo::STATE::NOTHING;
 	mDisconnect = PlayerInfo::STATE::NOTHING;
 	mUpdateRooms = PlayerInfo::STATE::NOTHING;
 	mCreate = PlayerInfo::STATE::NOTHING;
 	mUpdateTeam = PlayerInfo::STATE::NOTHING;
+	mUpdateGameParam = PlayerInfo::STATE::NOTHING;
 	mRoomPage = 1;
 }
 

@@ -134,11 +134,32 @@ void quit_game(int use)
 	GameInfo::getInstance().unlock();
 }
 
-bool LUmutex(bool info, std::mutex &mutex)
+void toggle_gameparam(int paramid)
 {
-	bool	result;
-	mutex.lock();
-	result = info;
-	mutex.unlock();
-	return result;
+	GameInfo::getInstance().lock();
+	switch (paramid)
+	{
+	case 0:
+		GameInfo::getInstance().mGameParam.five_breakable = !GameInfo::getInstance().mGameParam.five_breakable;
+		break;
+	case 1:
+		GameInfo::getInstance().mGameParam.three_and_three = !GameInfo::getInstance().mGameParam.three_and_three;
+		break;
+	case 2:
+		GameInfo::getInstance().mGameParam.ai_black = !GameInfo::getInstance().mGameParam.ai_black;
+		GameInfo::getInstance().mGameParam.ai_white = false;
+		break;
+	case 3:
+		GameInfo::getInstance().mGameParam.ai_black = false;
+		GameInfo::getInstance().mGameParam.ai_white = !GameInfo::getInstance().mGameParam.ai_white;
+		break;
+	};
+	GameInfo::getInstance().unlock();
+}
+
+void validate_gameparam(int use)
+{
+	GameInfo::getInstance().lock();
+	GameInfo::getInstance().mUpdateGameParam = PlayerInfo::STATE::ASK;
+	GameInfo::getInstance().unlock();
 }

@@ -45,12 +45,15 @@ public:
 	std::string							*mWhite;
 	std::string							mErrorMessage;
 	bool								mShowLobby;
+	bool								mShowCreator;
+	iprotocol::Game_param				mGameParam;
 	GAMESTATE							mGameState;
 	PlayerInfo::STATE					mCreate;
 	PlayerInfo::STATE					mConnected;
 	PlayerInfo::STATE					mDisconnect;
 	PlayerInfo::STATE					mUpdateRooms;
 	PlayerInfo::STATE					mUpdateTeam;
+	PlayerInfo::STATE					mUpdateGameParam;
 
 	int									mRoomPage;
 	std::list<GVOButton *>				mGamelist;

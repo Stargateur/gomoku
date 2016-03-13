@@ -104,6 +104,7 @@ void	Client::game_create(iprotocol::ITCP_protocol<ITCP_client> &itcp_protocol, t
 	if (GameInfo::getInstance().mCreate == PlayerInfo::STATE::DOING && GameInfo::getInstance().mName == *game->name)
 	{
 		GameInfo::getInstance().mCreate = PlayerInfo::STATE::DONE;
+		GameInfo::getInstance().mShowCreator = true;
 	}
 	GameInfo::getInstance().unlock();
 }
@@ -248,6 +249,12 @@ void Client::checkUserInputs(void)
 		m_itcp_protocol->send_game_ready(true);
 		GameInfo::getInstance().mGameState = GameInfo::GAMESTATE::RUNNING;
 		GameInfo::getInstance().mUpdateTeam = PlayerInfo::STATE::DONE;
+	}
+	if (GameInfo::getInstance().mConnected == PlayerInfo::STATE::DONE && GameInfo::getInstance().mUpdateGameParam == PlayerInfo::STATE::ASK)
+	{
+		GameInfo::getInstance().mUpdateGameParam = PlayerInfo::STATE::DONE;
+		m_itcp_protocol->send_game_param(GameInfo::getInstance().mGameParam);
+		GameInfo::getInstance().mShowCreator = false;
 	}
 	if (GameInfo::getInstance().mDisconnect == PlayerInfo::STATE::ASK && GameInfo::getInstance().mConnected == PlayerInfo::STATE::DONE)
 	{
