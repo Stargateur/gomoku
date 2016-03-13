@@ -147,14 +147,17 @@ bool can_capture(int x, int y, Square::col col, std::vector<Square::Combi> &Comb
 		{
 			if (std::make_pair(x, y) == it->getBegin())
 			{
-				if (b.get_square(it->getEnd().first + it->getCoeff().first, it->getEnd().second + it->getCoeff().second).get_color() == col)
+				if (b.is_valid(it->getEnd().first + it->getCoeff().first, it->getEnd().second + it->getCoeff().second) && b.get_square(it->getEnd().first + it->getCoeff().first, it->getEnd().second + it->getCoeff().second).get_color() == col)
 					Combi.push_back(*it);
 			}
 			else
 			{
-				Square::col c = b.get_square(it->getBegin().first - it->getCoeff().first, it->getBegin().second - it->getCoeff().second).get_color();
-				if (c == col)
-					Combi.push_back(*it);
+				if (b.is_valid(it->getBegin().first - it->getCoeff().first, it->getBegin().second - it->getCoeff().second))
+				{
+					Square::col c = b.get_square(it->getBegin().first - it->getCoeff().first, it->getBegin().second - it->getCoeff().second).get_color();
+					if (c == col)
+						Combi.push_back(*it);
+				}
 			}
 		}
 	}
@@ -228,8 +231,8 @@ Square & Board::get_square(int x, int y)
 
 bool Board::is_valid(int x, int y) const
 {
-	return (x < Board::size && x > 0 &&
-		y < Board::size && y > 0);
+	return (x < Board::size && x >= 0 &&
+		y < Board::size && y >= 0);
 }
 
 int Board::get_pos(int x, int y) const
