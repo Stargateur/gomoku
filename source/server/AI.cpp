@@ -53,12 +53,12 @@ void	AI::play(Board const &board, iprotocol::Game_stone &stone_final, uintmax_t 
 		vic.x = i.x;
 		vic.y = i.y;
 		result.push_back(vic);
+		std::cout << (int)vic.x << " " << (int)vic.y << " " << vic.score << std::endl;
 	}
 	for (victoire_stone &i : result)
 	{
 		if (vic.score < i.score)
 			vic = i;
-		std::cout << i.score << std::endl;
 	}
 	stone_final.color = board.get_turn();
 	stone_final.x = vic.x;
