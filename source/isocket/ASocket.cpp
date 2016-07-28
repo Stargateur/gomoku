@@ -1,6 +1,7 @@
 #include	<algorithm>
 #include	<exception>
 #include	<cstring>
+#include	<cerrno>
 #include	<fcntl.h>
 #include	"ASocket.hpp"
 
