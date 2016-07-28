@@ -2,15 +2,41 @@
 #include    "AI.hpp"
 #include    "Arbitre.hpp"
 
-void	AI::utils(Board const &board, std::vector<position> &pos)
+void	AI::utils(Board const &board, std::vector<position> &pos, int &nb_stone)
 {
 	position	i;
+	std::array<std::pair<int, int>, 8> posb =
+	{
+		std::make_pair(1, 0),
+		std::make_pair(1, 1),
+		std::make_pair(1, -1),
+		std::make_pair(0, 1),
+		std::make_pair(0, -1),
+		std::make_pair(-1, 0),
+		std::make_pair(-1, 1),
+		std::make_pair(-1, -1)
+	};
 	for (i.x = 0; i.x < Board::size; i.x++)
 		for (i.y = 0; i.y < Board::size; i.y++)
 		{
-			iprotocol::Game_stone	stone(i.x, i.y, board.get_turn());
-			if (Arbitre::can_put_stone(&stone, board, false))
-				pos.push_back(i);
+			Square::col c = board.get_square(i.x, i.y).get_color();
+			if (c == Square::col::None)
+				continue;
+			nb_stone++;
+			for (auto it = posb.begin(); it != posb.end(); ++it)
+			{
+				for (int l = 1; l < 3; ++l)
+				{
+					iprotocol::Game_stone	stone(i.x + it->first * l, i.y + it->second * l, board.get_turn());
+					if (board.is_valid(i.x + it->first * l, i.y + it->second * l) && Arbitre::can_put_stone(&stone, board, false))
+					{
+						position t;
+						t.x = i.x + it->first * l;
+						t.y = i.y + it->second * l;
+						pos.push_back(t);
+					}
+				}
+			}
 		}
 }
 
@@ -37,10 +63,13 @@ void	AI::play(Board const &board, iprotocol::Game_stone &stone_final, uintmax_t 
 	std::list<victoire_stone>	result;
 	std::vector<position>	pos;
 	victoire_stone vic;
+	int nb_stone = 0;
 
-	utils(board, pos);
+	utils(board, pos, nb_stone);
 	for (position &i : pos)
 	{
+		if (dist(gen) % (nb_stone * nb_stone))
+			continue;
 		vic.score = 0;
 		for (uintmax_t k = 0; k < n; k++)
 		{
@@ -53,12 +82,12 @@ void	AI::play(Board const &board, iprotocol::Game_stone &stone_final, uintmax_t 
 		vic.x = i.x;
 		vic.y = i.y;
 		result.push_back(vic);
+		std::cout << (int)vic.x << " " << (int)vic.y << " " << vic.score << std::endl;
 	}
 	for (victoire_stone &i : result)
 	{
 		if (vic.score < i.score)
 			vic = i;
-		std::cout << i.score << std::endl;
 	}
 	stone_final.color = board.get_turn();
 	stone_final.x = vic.x;

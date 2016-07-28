@@ -18,7 +18,7 @@ static bool five_capturable(const Square::Combi &s, const Board & b, bool only_f
 	std::vector<Square::Combi> c;
 	int nb = 0;
 
-	if (only_five && s.getSize() != 5)
+	if (s.isBroken() && only_five && s.getSize() != 5)
 		return (false);
 	while (p != end)
 	{

@@ -137,7 +137,7 @@ void    Game::run(ISelect &iselect)
         || m_param.ai_black == true && m_board.get_turn() == iprotocol::Game_stone::Black)
     {
         iprotocol::Game_stone   ai;
-        AI::play(m_board, ai, 1);
+        AI::play(m_board, ai, 5);
         if (Arbitre::can_put_stone(&ai, m_board, false))
         {
             std::vector<iprotocol::Game_stone *>    stones;

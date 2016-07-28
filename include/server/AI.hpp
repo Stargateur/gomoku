@@ -20,7 +20,7 @@ public:
 		uint8_t	y;
 	};
 	static void	play(Board const &board, iprotocol::Game_stone &stone_final, uintmax_t n);
-	static void	utils(Board const &board, std::vector<position> &pos);
+	static void	utils(Board const &board, std::vector<position> &pos, int &nb_stone);
 	static void	utils(Board &board, std::vector<position> &pos, position const &i);
 	static iprotocol::Game_stone::Color	play(Board &board, std::vector<position> &pos, std::default_random_engine &gen, std::uniform_int_distribution<uintmax_t> &dist);
 	/*
